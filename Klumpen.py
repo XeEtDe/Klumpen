@@ -649,49 +649,49 @@ def Mehr_Kombi(Grund_Karte):
                             Neue_Kombis.append(Neue_1)
                         if (not Neue_2 in Neue_Kombis) and (not Neue_2_ in Neue_Kombis):
                             Neue_Kombis.append(Neue_2)
-                #for Kombi_1_ in Kombi_Karten[0].Kombi:
-                    #Kombi_1_L = Kombi_1_.split("+")
-                    #for Kombi_2_ in Kombi_Karten[1].Kombi:
-                        #Kombi_2_L = Kombi_2_.split("+")
-                        #Vier_Liste = []
-                        #for K in Kombi_1_L:
-                            #Vier_Liste.append(K)
-                        #for K in Kombi_2_L:
-                            #Vier_Liste.append(K)
-                        #Tief_K_1_1 = Vier_Liste[0] + "+" + Vier_Liste[2]
-                        #Tief_K_1_1_ = Vier_Liste[2] + "+" + Vier_Liste[0]
-                        #Tief_K_1_2 = Vier_Liste[1] + "+" + Vier_Liste[3]
-                        #Tief_K_1_2_ = Vier_Liste[3] + "+" + Vier_Liste[1]
-                        #Karte_1 = None
-                        #Karte_2 = None
-                        #for A in Alle_Karten:
-                            #for K in A.Kombi:
-                                #if Tief_K_1_1 == K or Tief_K_1_1_ == K:
-                                    #Karte_1 = A
-#                                if Tief_K_1_2 == K or Tief_K_1_2_ == K:
- #                                   Karte_2 = A
-  #                      if (not Karte_1 == None) and (not Karte_2 == None):
-   #                             Neue_1 = Karte_1.Name + "+" + Karte_2.Name
-    #                            Neue_2 = Karte_2.Name + "+" + Karte_1.Name
-     #                           if (not Neue_1 in Neue_Kombis) and (not Neue_2 in Neue_Kombis):
-      #                              Neue_Kombis.append(Neue_1)
-       #                 Tief_K_2_1 = Vier_Liste[0] + "+" + Vier_Liste[3]
-        #                Tief_K_2_1_ = Vier_Liste[3] + "+" + Vier_Liste[0]
-         #               Tief_K_2_2 = Vier_Liste[1] + "+" + Vier_Liste[2]
-          #              Tief_K_2_2_ = Vier_Liste[2] + "+" + Vier_Liste[1]
-           #             Karte_1 = None
-            #            Karte_2 = None
-             #           for A in Alle_Karten:
-              #              for K in A.Kombi:
-               #                 if Tief_K_2_1 == K or Tief_K_2_1_ == K:
-                #                    Karte_1 = A
-                 #               if Tief_K_2_2 == K or Tief_K_2_2_ == K:
-                  #                  Karte_2 = A
-                   #     if (not Karte_1 == None) and (not Karte_2 == None):
-                    #            Neue_1 = Karte_1.Name + "+" + Karte_2.Name
-                     #           Neue_2 = Karte_2.Name + "+" + Karte_1.Name
-                      #          if (not Neue_1 in Neue_Kombis) and (not Neue_2 in Neue_Kombis):
-                       #             Neue_Kombis.append(Neue_1)
+                for Kombi_1_ in Kombi_Karten[0].Kombi:
+                    Kombi_1_L = Kombi_1_.split("+")
+                    for Kombi_2_ in Kombi_Karten[1].Kombi:
+                        Kombi_2_L = Kombi_2_.split("+")
+                        Vier_Liste = []
+                        for K in Kombi_1_L:
+                            Vier_Liste.append(K)
+                        for K in Kombi_2_L:
+                            Vier_Liste.append(K)
+                        Tief_K_1_1 = Vier_Liste[0] + "+" + Vier_Liste[2]
+                        Tief_K_1_1_ = Vier_Liste[2] + "+" + Vier_Liste[0]
+                        Tief_K_1_2 = Vier_Liste[1] + "+" + Vier_Liste[3]
+                        Tief_K_1_2_ = Vier_Liste[3] + "+" + Vier_Liste[1]
+                        Karte_1 = None
+                        Karte_2 = None
+                        for A in Alle_Karten:
+                            for K in A.Kombi:
+                                if Tief_K_1_1 == K or Tief_K_1_1_ == K:
+                                    Karte_1 = A
+                                if Tief_K_1_2 == K or Tief_K_1_2_ == K:
+                                    Karte_2 = A
+                        if (not Karte_1 == None) and (not Karte_2 == None):
+                                Neue_1 = Karte_1.Name + "+" + Karte_2.Name
+                                Neue_2 = Karte_2.Name + "+" + Karte_1.Name
+                                if (not Neue_1 in Neue_Kombis) and (not Neue_2 in Neue_Kombis):
+                                    Neue_Kombis.append(Neue_1)
+                        Tief_K_2_1 = Vier_Liste[0] + "+" + Vier_Liste[3]
+                        Tief_K_2_1_ = Vier_Liste[3] + "+" + Vier_Liste[0]
+                        Tief_K_2_2 = Vier_Liste[1] + "+" + Vier_Liste[2]
+                        Tief_K_2_2_ = Vier_Liste[2] + "+" + Vier_Liste[1]
+                        Karte_1 = None
+                        Karte_2 = None
+                        for A in Alle_Karten:
+                            for K in A.Kombi:
+                                if Tief_K_2_1 == K or Tief_K_2_1_ == K:
+                                    Karte_1 = A
+                                if Tief_K_2_2 == K or Tief_K_2_2_ == K:
+                                    Karte_2 = A
+                        if (not Karte_1 == None) and (not Karte_2 == None):
+                                Neue_1 = Karte_1.Name + "+" + Karte_2.Name
+                                Neue_2 = Karte_2.Name + "+" + Karte_1.Name
+                                if (not Neue_1 in Neue_Kombis) and (not Neue_2 in Neue_Kombis):
+                                    Neue_Kombis.append(Neue_1)
         for Ding in Neue_Kombis:
             if not Ding in Alle_Kombis:
                 Liste = LW.Kombi
@@ -753,30 +753,28 @@ Werteverbesserung_Übersicht = {Feenkönigin:1,
                                Himmels_Doppelzottel:5}
 
 #Karten mit Extrafunktion, die auf LW angewandt werden: Keine Kombis mit LWs
-Keine_LW_Kombis = [Parasit]
+Keine_LW_Kombis = ["Parasit"]
 for Karte in Werteverbesserung_Übersicht:
-    Keine_LW_Kombis.append(Karte)
-for Karte_A in ExtraLRs:
-    Keine_LW_Kombis.append(Karte_A)
-for Karte_X in Alle_Karten:
-    for Kombi_X in Karte_X.Kombi:
-        Karten = Kombi_X.split("+")
-        for Extra_Karte in Keine_LW_Kombis:
-            Fertig = False
-            if Karten[0] == Extra_Karte.Name or Karten[1] == Extra_Karte.Name:
-                if Karten[0] == Extra_Karte.Name:
-                    Andere_Karte = Karten[1]
-                else:
-                    Andere_Karte = Karten[0]
-                for LW_Karte in Alle_Lebewesen:
-                    if Andere_Karte == LW_Karte.Name:
-                        Dings = Karte_X.Kombi
-                        Dings.remove(Kombi_X)
-                        Fertig = True
+    Keine_LW_Kombis.append(Karte.Name)
+for Karte in ExtraLRs:
+    Keine_LW_Kombis.append(Karte.Name)
+for Karte in Alle_Karten:
+    Remove_Liste = []
+    for Kombi_ in Karte.Kombi:
+        Karten = Kombi_.split("+")
+        if Karten[0] in Keine_LW_Kombis or Karten[1] in Keine_LW_Kombis:
+            if Karten[0] in Keine_LW_Kombis:
+                Andere_Karte = Karten[1]
+            else:
+                Andere_Karte = Karten[0]
+            for LW_Karte in Alle_Lebewesen:
+                if Andere_Karte == LW_Karte.Name:
+                    if not Kombi_ in Remove_Liste:
+                        Remove_Liste.append(Kombi_)
                         break
-                if Fertig == True:
-                    break
-                
+    for Remove_Karte in Remove_Liste:
+        Karte.Kombi.remove(Remove_Karte)
+                    
 #######################################################################################################################################################################################################################
 
 ##Spielprinzip##
