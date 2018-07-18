@@ -1,6 +1,6 @@
 import random
 
-Änderung
+print("Lädt...")
 
 ##Klassen und Karten##
 Start_Lebewesen = []
