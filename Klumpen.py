@@ -195,10 +195,11 @@ Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss daz
 # -> Stufe 2 -> +3 #Wölkchen, Beere#
 Parasit = Lebewesen("Parasit", "Kann einmal pro Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
-# -> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Sternenstaub, Kristall#
+# -> Stufe 3 -> +5 #Pusteblume#
 Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; Extrafunktion", 6, 5, 7, ["See"], ["Klumpi+Perle"])
 Dunkler_Magier = Lebewesen("Dunkler Magier", "Stellt aus Elementen Gifte her, die du auf andere Spieler anwenden kannst (muss dazu auf dem Feld platziert sein)", 6, 6, 6, ["Alle"], ["Klumpi+Dunkle Macht"])
 Marienkäfer = Lebewesen("Marienkäfer", "Bei der Zugreihenfolge des Auswahlstapels bist du vor den anderen Spielern an der Reihe, solange der Käfer auf dem Feld platziert ist", 6, 1, 11, ["Alle"], ["Klumpi+Pfingstrose"])
+Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei der du entscheidest ob sie ein Element, Lebewesen oder Lebensraum sein soll, wenn er auf dem Feld platziert ist (dazu: Joker + gewünschte Kartenart)", 6, 6, 6, ["Alle"], ["Klumpi+Sternenstaub", "Klumpi+Kristall"])
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
 #Drachen
@@ -382,10 +383,10 @@ Origami = Lebewesen("Origami", "Ein Vogel aus Papier, der seinen Erschaffer mit 
 Bernsteineule = Lebewesen("Bernsteineule", "Eine fast unbewegliche Eule mit klugen Augen; gibt dir pro Runde zwei Extrazüge, wenn sie auf dem Feld platziert ist", 11, 5, 17, ["Alle"], ["Rätselhafter Vogel+Zeit"])
 Rabenschaar = Lebewesen("Rabenschaar", "Kündigen den Tod eines Mühlknappen an", 11, 15, 7, ["Alle"], ["Rätselhafter Vogel+Asche"])
 Wolkenvogel = Lebewesen("Wolkenvogel", "Erschaffen von einem Mädchen, dessen Haare alle Farben des Lichts brachen", 11, 8, 14, ["Alle"], ["Rätselhafter Vogel+Wölkchen"])
-# -> Stufe 3 -> +5 #Pusteblume, Perle, Sternenstaub, Kristall#
+# -> Stufe 3 -> +5 #Pusteblume, Perle, Sternenstaub, Kristall, Dunkle Macht#
 Phönix = Lebewesen("Phönix", "Ein riesiger Vogel mit brennendem Gefieder", 13, 13, 13, ["Alle"], ["Rätselhafter Vogel+Pfingstrose"])
-Diebische_Elster = Lebewesen("Diebische Elster", "Kann alle fünf Runden das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Dunkle Macht"])
-# -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
+# -> Stufe 4 -> +7 #Eis, Blut, Regenbogen, Engelshaar, Stein von Elyaris#
+Diebische_Elster = Lebewesen("Diebische Elster", "Kann alle fünf Runden das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
 
 #Weltenwandler -> Gummikrieger + Fee
 Weltenwandler = Lebewesen("Weltenwandler", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
@@ -397,7 +398,8 @@ Weltenwandler = Lebewesen("Weltenwandler", "Eine gesichtslose Gestalt, die hin u
 #Werwolf -> Zottel + Gummikrieger
 Werwolf = Lebewesen("Werwolf", "Ein bei Tag unscheinbares Wesen, das sich erst bei Nacht in eine wolfsähnliche Kreatur verwandelt", 9, 10, 8, ["Wald"], ["Zottel+Gummikrieger"])
 # -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
-# -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
+# -> Stufe 2 -> +3 #Wölkchen, Beere, Zeit#
+Urwolf = Lebewesen("Urwolf", "Ein alter grauer Werwolf, der einmal im Spiel eines deiner Lebewesen in einen Werwolf verwandeln kann (dazu: Urwolf + gewähltes Lebewesen)", 12, 14, 10, ["Wald"], ["Werwolf+Staub", "Werwolf+Asche"])
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
