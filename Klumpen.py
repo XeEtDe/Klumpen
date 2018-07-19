@@ -1152,6 +1152,7 @@ def Add(Karten):
     global Spieler_Zug
     global Spieler
     Ablage_Spieler = Ablage[Spieler]
+    Feld_Spieler = Feld[Spieler]
     Neue_Karte = False
     EDS = Einmal_Dict[Spieler]
     for Karte in EDS:
@@ -2067,7 +2068,7 @@ for Spieler in Alle_Spieler:
     Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0]}})
     for Karte in Werteverbesserung_Übersicht:
         Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
-    
+
 #Spielkern
 #Runden
 Runden_Counter = 0
@@ -2192,6 +2193,7 @@ while Runden_Counter < Runden:
         #Spieler Züge
         for Spieler in Alle_Spieler:
             Zug(Spieler)
+    print(Feld)
     #Extrazüge
     Extraprint = False
     for Spieler in Alle_Spieler:
