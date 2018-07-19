@@ -131,7 +131,7 @@ class Lebewesen(Karten):
         return "{} (Lebewesen):\n{} - Angriff: {} - Verteidigung: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Angriff, Mod_Verteidigung, Mod_Lebensraum)
 
 #Vordruck
-# = Lebewesen("", "", P, A, V, ["L"], ["K"])
+#
 
 #Gummikrieger
 Gummikrieger = Lebewesen("Gummikrieger", "Einst zum Schutz der königlichen Familie erschaffen, lebt nun aber frei in den Wäldern von Klumpiland", 5, 5, 5, ["Wald"], [], True)
@@ -378,6 +378,7 @@ Friedensengel = Lebewesen("Friedensengel", "Wacht über den Frieden im Himmelsre
 #Rätselhafter Vogel -> Fee + Zottel ###
 Rätselhafter_Vogel = Lebewesen("Rätselhafter Vogel", "In seine Augen scheinen alle Geheinmisse dieser Welt zu schimmern", 8, 6, 10, ["Alle"], ["Fee+Zottel"])
 # -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Magie#
+Glühwürmchen = Lebewesen("Glühwürmchen", "Owl City - Fireflies", 9, 5, 13, ["Alle"], ["Rätselhafter Vogel+Feuer"])
 Origami = Lebewesen("Origami", "Ein Vogel aus Papier, der seinen Erschaffer mit Informationen versorgt; gibt dir pro Runde einen Extrazug, wenn er auf dem Feld platziert ist", 9, 3, 15, ["Alle"], ["Rätselhafter Vogel+Luft"])
 # -> Stufe 2 -> +3 #Staub, Beere#
 Bernsteineule = Lebewesen("Bernsteineule", "Eine fast unbewegliche Eule mit klugen Augen; gibt dir pro Runde zwei Extrazüge, wenn sie auf dem Feld platziert ist", 11, 5, 17, ["Alle"], ["Rätselhafter Vogel+Zeit"])
