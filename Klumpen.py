@@ -192,7 +192,8 @@ Klumpi = Lebewesen("Klumpi", "Ein sehr anpassungsfähiges Lebewesen mit viel Pot
 Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unterirdisch weit verzweigte Tunnelsysteme gräbt; gibt dir eine weitere Elementkarte pro Runde, wenn er auf dem Feld platziert ist", 2, 2, 2, ["Wald"], ["Klumpi+Erde"])
 
 Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
-# -> Stufe 2 -> +3 #Wölkchen, Beere#
+# -> Stufe 2 -> +3
+Koi = ("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; produziert jede Runde (?) ein Element, das LRs vergrößert oder LW Werte verbessert", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
 Parasit = Lebewesen("Parasit", "Kann einmal pro Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
 # -> Stufe 3 -> +5 #Pusteblume#
@@ -204,7 +205,7 @@ Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei
 
 #Drachen
 Drachenei = Lebewesen("Drachenei", "Benötigt einen Zug zum Schlüpfen, nachdem es im Lebensraum platziert wurde", 0, 0, 0, ["Berge"], [], True)
-Drache = Lebewesen("Drache", "Ein starkes, geschupptes und flugfähiges Lebewesen", 8, 8, 8, ["Berge"])
+Drache = Lebewesen("Drache", "Ein starkes, geschupptes und flugfähiges Lebewesen", 8, 8, 8, ["Berge"], ["Koi+Koi"])
 # -> Stufe 1 -> +1
 Feuerdrache = Lebewesen("Feuerdrache", "Liebt Hitze über alles und bekämpft seine Feinde mit Feueratem", 9, 11, 7, ["Berge", "Wüste"], ["Drache+Feuer"])
 Wasserdrache = Lebewesen("Wasserdrache", "Fühlt sich in feuchten Gebieten wohl, kann durch Kiemen sogar unter Wasser leben", 9, 9, 9, ["Berge", "See"], ["Drache+Wasser"])
