@@ -1,6 +1,6 @@
 import random
 
-print("Lädt...")
+print("Lädt...\n")
 
 ##Klassen und Karten##
 Start_Lebewesen = []
@@ -131,7 +131,7 @@ class Lebewesen(Karten):
         return "{} (Lebewesen):\n{} - Angriff: {} - Verteidigung: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Angriff, Mod_Verteidigung, Mod_Lebensraum)
 
 #Vordruck
-#
+# = ("", "", P, A, V, ["L"], ["K"])
 
 #Gummikrieger
 Gummikrieger = Lebewesen("Gummikrieger", "Einst zum Schutz der königlichen Familie erschaffen, lebt nun aber frei in den Wäldern von Klumpiland", 5, 5, 5, ["Wald"], [], True)
@@ -188,10 +188,10 @@ Starker_Gütiger_Krieger = Lebewesen("Starker Gütiger Krieger", "Ermöglicht di
 #Klumpi ###
 Klumpi = Lebewesen("Klumpi", "Ein sehr anpassungsfähiges Lebewesen mit viel Potential zur Weiterentwicklung", 1, 1, 1, ["Alle"], [], True)
 # -> Doppel ###
-# -> Stufe 1 -> +2 #Feuer, Wasser, Luft#
-Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unterirdisch weit verzweigte Tunnelsysteme gräbt; gibt dir eine weitere Elementkarte pro Runde, wenn er auf dem Feld platziert ist", 3, 3, 3, ["Wald"], ["Klumpi+Erde"])
+# -> Stufe 1 -> +1 #Feuer, Wasser, Luft#
+Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unterirdisch weit verzweigte Tunnelsysteme gräbt; gibt dir eine weitere Elementkarte pro Runde, wenn er auf dem Feld platziert ist", 2, 2, 2, ["Wald"], ["Klumpi+Erde"])
 
-Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 3, 3, 3, ["Alle"], ["Klumpi+Magie"])
+Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
 # -> Stufe 2 -> +3 #Wölkchen, Beere#
 Parasit = Lebewesen("Parasit", "Kann einmal pro Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
@@ -389,18 +389,25 @@ Phönix = Lebewesen("Phönix", "Ein riesiger Vogel mit brennendem Gefieder", 13,
 # -> Stufe 4 -> +7 #Eis, Blut, Regenbogen, Engelshaar, Stein von Elyaris#
 Diebische_Elster = Lebewesen("Diebische Elster", "Kann alle fünf Runden das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
 
-#Weltenwandler -> Gummikrieger + Fee
+#Weltenwandler -> Gummikrieger + Fee ###
 Weltenwandler = Lebewesen("Weltenwandler", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
 # -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
 # -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
-#Werwolf -> Zottel + Gummikrieger
+#Werwolf -> Zottel + Gummikrieger ###
 Werwolf = Lebewesen("Werwolf", "Ein bei Tag unscheinbares Wesen, das sich erst bei Nacht in eine wolfsähnliche Kreatur verwandelt", 9, 10, 8, ["Wald"], ["Zottel+Gummikrieger"])
 # -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
 # -> Stufe 2 -> +3 #Wölkchen, Beere, Zeit#
 Urwolf = Lebewesen("Urwolf", "Ein alter grauer Werwolf, der einmal im Spiel eines deiner Lebewesen in einen Werwolf verwandeln kann (dazu: Urwolf + gewähltes Lebewesen)", 12, 14, 10, ["Wald"], ["Werwolf+Staub", "Werwolf+Asche"])
+#-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
+# -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
+
+#Troll -> Drache + Fee ###
+Troll = ("Troll", "Trolle bitte nicht füttern", 13, 16, 12, ["Wald", "Berge"], ["Drache+Fee"])
+# -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
+# -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
