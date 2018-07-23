@@ -131,7 +131,7 @@ class Lebewesen(Karten):
         return "{} (Lebewesen):\n{} - Angriff: {} - Verteidigung: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Angriff, Mod_Verteidigung, Mod_Lebensraum)
 
 #Vordruck
-# = ("", "", P, A, V, ["L"], ["K"])
+# = Lebewesen("", "", P, A, V, ["L"], ["K"])
 
 #Gummikrieger
 Gummikrieger = Lebewesen("Gummikrieger", "Einst zum Schutz der königlichen Familie erschaffen, lebt nun aber frei in den Wäldern von Klumpiland", 5, 5, 5, ["Wald"], [], True)
@@ -193,7 +193,7 @@ Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unte
 
 Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
 # -> Stufe 2 -> +3
-Koi = ("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; produziert jede Runde (?) ein Element, das LRs vergrößert oder LW Werte verbessert", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
+Koi = Lebewesen("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; produziert jede Runde ein Element, das Lebensräume vergrößern oder Lebewesen verbessern kann", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
 Parasit = Lebewesen("Parasit", "Kann einmal pro Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
 # -> Stufe 3 -> +5 #Pusteblume#
@@ -229,7 +229,7 @@ Furchtdrache = Lebewesen("Furchtdrache", "Sein eisiges Feuer versteinert seine G
 Glibberdrache = Lebewesen("Glibberdrache", "Verändert ständig seine Form und kann auch durch kleinste Öffnungen gelangen", 15, 12, 18, ["See", "Berge", "Wald"], ["Drache+Schleim", "Drache+Blut"])
 
 #Starker Drache -> Drache + Drache
-Starker_Drache = Lebewesen("Starker Drache", "Eines der stärksten Lebewesen in Klumpiland", 16, 16, 16, ["Berge"])
+Starker_Drache = Lebewesen("Starker Drache", "Eines der stärksten Lebewesen in Klumpiland", 16, 16, 16, ["Berge"], ["Drache+Drache"])
 # -> Stufe 1 -> +1
 Starker_Feuerdrache = Lebewesen("Starker Feuerdrache", "Liebt Hitze über alles und bekämpft seine Feinde mit Feueratem", 17, 20, 14, ["Berge", "Wüste"], ["Starker Drache+Feuer"])
 Starker_Wasserdrache = Lebewesen("Starker Wasserdrache", "Fühlt sich in feuchten Gebieten wohl, kann durch Kiemen sogar unter Wasser leben", 17, 17, 17, ["Berge", "See"], ["Starker Drache+Wasser"])
@@ -318,7 +318,7 @@ Glitzerfee = Lebewesen("Glitzerfee", "Versorgt die Sterne mit Feenstaub; stärke
 Dunkelfee = Lebewesen("Dunkelfee", "Wächterin der Nacht; kann pro Runde die Werte eines Lebewesens um 3 erhöhen (muss dazu auf dem Feld platziert sein)", 9, 9, 9, ["Alle"], ["Fee+Dunkle Macht"])
 Babyfee = Lebewesen("Babyfee", "Gerade aus einer Blume geboren; ihr helles Lachen lässt jede Runde ein weiteres Lebewesen entstehen, wenn sie auf dem Feld platziert ist", 9, 2, 3, ["Alle"], ["Fee+Pusteblume", "Fee+Pfingstrose"])
 # -> Stufe 4 -> +7
-Unwetterfee = Lebewesen("Unwetterfee", "Kann pro Zug eine deiner Karten gegen eine zufällige Startkarte tauschen (dazu: Unwetterfee + gewählte Karte)", 11, 15, 7, ["Alle"], ["Fee+Blitz", "Fee+Eis", "Fee+Schleim"])
+Unwetterfee = Lebewesen("Unwetterfee", "Extrafunktion", 11, 15, 7, ["Alle"], ["Fee+Blitz", "Fee+Eis", "Fee+Schleim"])
 Lebensfee = Lebewesen("Lebensfee", "Gibt dir pro Runde eine zufällige Karte, die keine Startkarte sein muss, wenn sie auf dem Feld platziert ist", 11, 11, 11, ["Alle"], ["Fee+Blut", "Fee+Stein von Elyaris", "Fee+Regenbogen", "Fee+Engelshaar"])
 
 #Feenkönigin -> Fee + Fee
@@ -341,7 +341,7 @@ Glitzer_Feenkönigin = Lebewesen("Glitzer-Feenkönigin", "Versorgt die Sterne mi
 Dunkel_Feenkönigin = Lebewesen("Dunkel-Feenkönigin", "Wächterin der Nacht; kann pro Runde die Werte eines Lebewesens um 5 erhöhen (muss dazu auf dem Feld platziert sein)", 13, 13, 13, ["Alle"], ["Feenkönigin+Dunkle Macht"])
 Baby_Feenkönigin = Lebewesen("Baby_Feenkönigin", "Gerade aus einer Blume geboren und als Königin bestimmt; ihr helles Lachen lässt jede Runde ein weiteres Lebewesen, das keine Startkarte sein muss, entstehen, wenn sie auf dem Feld platziert ist", 13, 4, 5, ["Alle"], ["Feenkönigin+Pusteblume", "Feenkönigin+Pfingstrose"])
 # -> Stufe 4 -> +7
-Unwetter_Feenkönigin = Lebewesen("Unwetter-Feenkönigin", "Kann pro Zug eine deiner Karten gegen eine zufällige Karte, die keine Startkarte sein muss, tauschen (dazu: Unwetter-Feenkönigin + gewählte Karte)", 15, 20, 10, ["Alle"], ["Feenkönigin+Blitz", "Feenkönigin+Eis", "Feenkönigin+Schleim"])
+Unwetter_Feenkönigin = Lebewesen("Unwetter-Feenkönigin", "Extrafunktion", 15, 20, 10, ["Alle"], ["Feenkönigin+Blitz", "Feenkönigin+Eis", "Feenkönigin+Schleim"])
 Lebens_Feenkönigin = Lebewesen("Lebens-Feenkönigin", "Extrafunktion", 15, 15, 15, ["Alle"], ["Feenkönigin+Blut", "Feenkönigin+Stein von Elyaris", "Feenkönigin+Regenbogen", "Feenkönigin+Engelshaar"])
 
 #Zeppelindrache -> Drache + Zottel ###
@@ -374,7 +374,7 @@ Gefallener_Engel = Lebewesen("Gefallener Engel", "Wandte sich gegen die Himmelsw
 # -> Stufe 4 -> +7 #Blut, Stein von Elyaris#
 Racheengel = Lebewesen("Racheengel", "Kämpft gegen die Himmelswesen um die Gerechtigkeit wieder herzustellen", 13, 13, 13, ["Alle"], ["Engel+Schleim", "Engel+Blitz", "Engel+Eis"])
 Erzengel = Lebewesen("Erzengel", "Wacht über das gesamte Reich der Himmelswesen; gibt dir pro Runde eine zufällige Zusatzkarte, die keine Startkarte sein muss, wenn er auf dem Feld platziert ist", 13, 13, 13, ["Alle"], ["Engel+Engelshaar"])
-Friedensengel = Lebewesen("Friedensengel", "Wacht über den Frieden im Himmelsreich und in Klumpiland; der erste Lebensraum in dem er platziert wird, wird zu einem Wonderland, in dem alle Lebewesen leben können", 13, 13, 13, ["Alle"], ["Engel+Regenbogen"])
+Friedensengel = Lebewesen("Friedensengel", "Wacht über den Frieden im Himmelsreich und in Klumpiland; kann insgesamt 3 Lebensräume zu Wonderlands machen, in denen alle Lebewesen leben können", 13, 5, 21, ["Alle"], ["Engel+Regenbogen"])
 
 #Rätselhafter Vogel -> Fee + Zottel ###
 Rätselhafter_Vogel = Lebewesen("Rätselhafter Vogel", "In seine Augen scheinen alle Geheinmisse dieser Welt zu schimmern", 8, 6, 10, ["Alle"], ["Fee+Zottel"])
@@ -483,10 +483,10 @@ Magische_Große_Berge = Lebensraum("Magische Große Berge", "Verbessert alle Wer
 
 #Wonderland
 Kleines_Wonderland = Lebensraum("Kleines Wonderland", "Hier können alle Lebewesen leben", "Wonderland", 6, 1)
-Wonderland = Lebensraum("Wonderland", "Hier können alle Lebewesen leben", "Wonderand", 7, 3, ["Kleines Wonderland+Kleines Wonderland"])
+Wonderland = Lebensraum("Wonderland", "Hier können alle Lebewesen leben", "Wonderland", 7, 3, ["Kleines Wonderland+Kleines Wonderland"])
 Großes_Wonderland = Lebensraum("Großes Wonderland", "Hier können alle Lebewesen leben", "Wonderland", 9, 8, ["Wonderland+Wonderland"])
 Magisches_Kleines_Wonderland = Lebensraum("Magisches Kleines Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderland", 7, 1, ["Kleines Wonderland+Magie"])
-Magisches_Wonderland = Lebensraum("Magisches Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderand", 8, 3, ["Wonderland+Magie", "Magisches Kleines Wonderland+Magisches Kleines Wonderland", "Magisches Kleines Wonderland+Kleines Wonderland"])
+Magisches_Wonderland = Lebensraum("Magisches Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderland", 8, 3, ["Wonderland+Magie", "Magisches Kleines Wonderland+Magisches Kleines Wonderland", "Magisches Kleines Wonderland+Kleines Wonderland"])
 Magisches_Großes_Wonderland = Lebensraum("Großes Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderland", 10, 8, ["Großes Wonderland+Magie", "Magisches Wonderland+Magisches Wonderland", "Magisches Wonderland+Wonderland"])
 for LW in Alle_Lebewesen:
     LW.Lebensraum.append("Wonderland")
@@ -721,7 +721,7 @@ for Grund_Karte in Mehr_Kombi_Liste:
     Mehr_Kombi(Grund_Karte)
 
 #LW stärker in LR
-Stärker_LR = {"Wald":[], "See":[], "Wüste":[], "Berge":[]}
+Stärker_LR = {"Wald":[], "See":[], "Wüste":[], "Berge":[], "Wonderland":[]}
 for Karte in Alle_Lebewesen:
     if "tärker im Lebensraum Wald" in Karte.Beschreibung:
         Stärker_LR["Wald"].append(Karte)
@@ -764,29 +764,6 @@ Werteverbesserung_Übersicht = {Feenkönigin:1,
                                Himmelszottel:3,
                                Dunkel_Feenkönigin:5,
                                Himmels_Doppelzottel:5}
-
-#Karten mit Extrafunktion, die auf LW angewandt werden: Keine Kombis mit LWs
-Keine_LW_Kombis = ["Parasit"]
-for Karte in Werteverbesserung_Übersicht:
-    Keine_LW_Kombis.append(Karte.Name)
-for Karte in ExtraLRs:
-    Keine_LW_Kombis.append(Karte.Name)
-for Karte in Alle_Karten:
-    Remove_Liste = []
-    for Kombi_ in Karte.Kombi:
-        Karten = Kombi_.split("+")
-        if Karten[0] in Keine_LW_Kombis or Karten[1] in Keine_LW_Kombis:
-            if Karten[0] in Keine_LW_Kombis:
-                Andere_Karte = Karten[1]
-            else:
-                Andere_Karte = Karten[0]
-            for LW_Karte in Alle_Lebewesen:
-                if Andere_Karte == LW_Karte.Name:
-                    if not Kombi_ in Remove_Liste:
-                        Remove_Liste.append(Kombi_)
-                        break
-    for Remove_Karte in Remove_Liste:
-        Karte.Kombi.remove(Remove_Karte)
                     
 #######################################################################################################################################################################################################################
 
@@ -822,7 +799,12 @@ def Stat_LR(): #Wie viele LW können in LR-Arten leben?
         
 #Regeln
 def Regeln():
-    print("Blablabla")
+    print("Jeder Spieler erhält jede Runde einige Karten folgender Arten: Lebensräume, Lebewesen und Elemente. Die erhaltenen Karten befinden sich nun in deiner Ablage.")
+    print("Lebensräume werden auf dem Feld platziert. Danach kannst du Lebewesen in ihnen leben lassen. Nur diese Lebewesen werden am Ende gewertet.")
+    print("Um Lebewesen zu verbessern, kannst du sie mit Elementen oder mit anderen Lebewesen kombinieren. Lebensräume kannst du unter anderem durch das Element Magie verbessern.")
+    print("Lebewesen kannst du nur innerhalb des Feldes oder innerhalb der Ablage kombinieren. Lebensräume kannst du auch zwischen Ablage und Feld kombinieren, darfst dafür aber nicht zwei genau gleiche Lebensräume auf dem Feld haben.")
+    print("Einige Lebewesen haben Extrafunktionen. Platziere diese Lebewesen zuerst in Lebensräumen auf dem Feld, um diese zu nutzen.")
+    print("Allerdings kannst du nur eine dieser Aktionen pro Zug ausführen. Davor kannst du beliebig viele Lebewesen auf dem Feld bewegen.")
 
 #Ausgabe
 def Ausgabe(Ort):
@@ -1149,7 +1131,10 @@ def Zug(Spieler):
         for LR in Feld[Spieler]:
             for LW in Feld_Spieler[LR]:
                 if LW == WV_Karte:
-                    Jetzt_Anzahl += 1
+                    if LW == Friedensengel:
+                        Jetzt_Anzahl += 3
+                    else:
+                        Jetzt_Anzahl += 1
         WASK = WAS[WV_Karte] #Werteverbesserung_Anzahl[Spieler[Karte]] -> [0] = Unverbrauchte/Mögliche, [1] = letzte Anzahl
         WASK[0] += (Jetzt_Anzahl - WASK[1])
         WASK[1] = Jetzt_Anzahl
@@ -1168,8 +1153,13 @@ def Add(Karten):
         EDS[Karte] = True
     WAS = Werteverbesserung_Anzahl[Spieler]
     Verbesserung_Spieler = Verbesserung[Spieler]
+    Extra = False
     #Karten und Namen
     Karten_Liste = Karten.split("+")
+    if len(Karten_Liste) == 3:
+        if Karten_Liste[2] == "":
+            Extra = True
+            Karten_Liste.remove(Karten_Liste[2])
     Name_Karte_1 = Karten_Liste[0].strip()
     Name_Karte_2 = Karten_Liste[1].strip()
     Karte_1 = False
@@ -1259,9 +1249,160 @@ def Add(Karten):
         elif Karte_1 == False or Karte_2 == False:
             print("Diese Karten existieren nicht.")
         elif Ort_1 == False or Ort_2 == False:
-            print(Ort_1)
-            print(Ort_2)
             print("Du besitzt eine oder beide Karten nicht.")
+        #Extrafunktionen
+        elif Extra == True:
+            #Parasit
+            if Karte_1.Name == "Parasit" or Karte_2.Name == "Parasit":
+                WASP = WAS[Parasit]
+                if Karte_1.Name == "Parasit":
+                    P_Karte = Karte_1
+                    Andere_Karte = Karte_2
+                else:
+                    P_Karte = Karte_2
+                    Andere_Karte = Karte_1
+                if Andere_Karte in Alle_Lebewesen:
+                    if WASP[0] > 0:
+                        if not P_Karte in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({P_Karte:False})
+                            Einmal_Dict[Spieler].update({P_Karte:False})
+                            Verbesserung_Spieler.update({P_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VSK = Verbesserung_Spieler[P_Karte]
+                        VSK["Punkte"] += Andere_Karte.Punkte
+                        VSK["Angriff"] += Andere_Karte.Angriff
+                        VSK["Verteidigung"] += Andere_Karte.Verteidigung
+                        if not Andere_Karte in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({Andere_Karte:False})
+                            Einmal_Dict[Spieler].update({Andere_Karte:False})
+                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VSK = Verbesserung_Spieler[Andere_Karte]
+                        VSK["Punkte"] -= 4
+                        VSK["Angriff"] -= 4
+                        VSK["Verteidigung"] -= 4
+                        WASP[0] -= 1
+                        Spieler_Zug = True
+                    else:
+                        print("Fähigkeit kann nur einmal angewandt werden, Parasit muss auf dem Feld platziert sein.")
+                else:
+                    print("Kann nur die Werte von Lebewesen aufnehmen.")
+            #Werteverbesserungskarte
+            elif Karte_1 in Werteverbesserung_Übersicht or Karte_2 in Werteverbesserung_Übersicht:
+                if Karte_1 in Werteverbesserung_Übersicht:
+                    V_Karte = Karte_1
+                    Andere_Karte = Karte_2
+                else:
+                    V_Karte = Karte_2
+                    Andere_Karte = Karte_1
+                if Andere_Karte in Alle_Lebewesen:
+                    WASK = WAS[V_Karte]
+                    if WASK[0] > 0:
+                        if not Andere_Karte in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({Andere_Karte:False})
+                            Einmal_Dict[Spieler].update({Andere_Karte:False})
+                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VSK = Verbesserung_Spieler[Andere_Karte]
+                        VSK["Punkte"] += Werteverbesserung_Übersicht[V_Karte]
+                        VSK["Angriff"] += Werteverbesserung_Übersicht[V_Karte]
+                        VSK["Verteidigung"] += Werteverbesserung_Übersicht[V_Karte]
+                        WASK[0] -= 1
+                        Spieler_Zug = True
+                    else:
+                        print("Fähigkeit kann nur einmal angewandt werden, Karte muss auf dem Feld platziert sein.")
+                else:
+                    print("Kann nur die Werte von Lebewesen verbessern.")
+            #Mehr Lebensräume
+            elif Karte_1 in ExtraLRs or Karte_2 in ExtraLRs:
+                if Karte_1 in ExtraLRs:
+                    Extra_Karte = Karte_1
+                    Andere_Karte = Karte_2
+                    Ort = Ort_1
+                else:
+                    Extra_Karte = Karte_2
+                    Andere_Karte = Karte_1
+                    Ort = Ort_2
+                if Andere_Karte in Alle_Lebewesen:
+                    if not Ort == Ablage[Spieler]:
+                        #Alle?
+                        Gesamt_LRs = []
+                        for LR in Andere_Karte.Lebensraum:
+                            Gesamt_LRs.append(LR)
+                        if Andere_Karte in Verbesserung_Spieler:
+                            VSK = Verbesserung_Spieler[Andere_Karte]
+                            for LR in VSK["Lebensräume"]:
+                                Gesamt_LRs.append(LR)
+                        if "Alle" in Gesamt_LRs:
+                            print("Dieses Lebewesen kann bereits in allen Lebensräumen leben.")
+                        else:
+                            #Zufall
+                            if ExtraLRs[Extra_Karte] == "Zufall":
+                                LRs_Kopie = LRs.copy()
+                                for LR in Gesamt_LRs:
+                                    if not LR == "Wonderland":
+                                        LRs_Kopie.remove(LR)
+                                Neu = random.choice(LRs_Kopie)
+                            else:
+                                Neu = ExtraLRs[Extra_Karte]
+                            if not Andere_Karte in Verbesserung_Spieler:
+                                Counter_Dict[Spieler].update({Andere_Karte:False})
+                                Einmal_Dict[Spieler].update({Andere_Karte:False})
+                                Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                            VSK = Verbesserung_Spieler[Andere_Karte]
+                            VSK["Lebensräume"].append(Neu)
+                            Test_Liste = []
+                            for LR in Andere_Karte.Lebensraum:
+                                if not LR == "Wonderland":
+                                    Test_Liste.append(LR)
+                            for LR in VSK["Lebensräume"]:
+                                Test_Liste.append(LR)
+                            if len(Test_Liste) >= 4:
+                                VSK["Lebensräume"] = ["Alle"]
+                    else:
+                        print("Platziere Lebewesen auf dem Feld, um ihre Extrafunktion zu nutzen.")
+                else:
+                    print("Kann nur auf Lebewesen angewandt werden.")
+            #Friedensengel
+            elif Karte_1 == Friedensengel or Karte_2 == Friedensengel:
+                if Karte_1 == Friedensengel:
+                    E_Karte = Karte_1
+                    Andere_Karte = Karte_2
+                    Ort = Ort_1
+                else:
+                    E_Karte = Karte_2
+                    Andere_Karte = Karte_1
+                    Ort = Ort_2
+                if Andere_Karte in Alle_Lebensraum:
+                    WASE = WAS[E_Karte]
+                    if WASE[0] > 0:
+                        if "Klein" in Andere_Karte.Name:
+                            if "Magisch" in Andere_Karte.Name:
+                                Neue_Karte = Magisches_Kleines_Wonderland
+                            else:
+                                Neue_Karte = Kleines_Wonderland
+                        elif "Groß" in Andere_Karte.Name:
+                            if "Magisch" in Andere_Karte.Name:
+                                Neue_Karte = Magisches_Großes_Wonderland
+                            else:
+                                Neue_Karte = Großes_Wonderland
+                        else:
+                            if "Magisch" in Andere_Karte.Name:
+                                Neue_Karte = Magisches_Wonderland
+                            else:
+                                Neue_Karte = Wonderland
+                        if Andere_Karte in Feld[Spieler]:
+                            Feld_Spieler.update({Neue_Karte:[]})
+                            for LW in Feld_Spieler[Andere_Karte]:
+                                Feld_Spieler[Neue_Karte].append(LW)
+                            del Feld_Spieler[Andere_Karte]
+                        elif Andere_Karte in Ablage[Spieler]:
+                            Ablage[Spieler].append(Neue_Karte)
+                            Ablage[Spieler].remove(Andere_Karte)
+                        Spieler_Zug = True
+                        WASE[0] -= 1
+                    else:
+                        print("Muss auf dem Feld platziert sein und kann nur 3 Mal angewandt werden.")
+                else:
+                    print("Extrafunktion kann nur auf Lebensräume angewandt werden.")
+                
         #LW bewegen
         elif (Karte_1 in Alle_Lebensraum and Karte_2 in Alle_Lebewesen) or (Karte_2 in Alle_Lebensraum and Karte_1 in Alle_Lebewesen):
             if Karte_1 in Alle_Lebensraum:
@@ -1325,231 +1466,115 @@ def Add(Karten):
                     Ablage[Spieler].remove(A)
                 else:
                     Ort.remove(A)
+        #Tränke
+        elif "Trank" in Karte_1.Name or "Trank" in Karte_2.Name:
+            if "Trank" in Karte_1.Name:
+                Trank_Karte = Karte_1
+                Andere_Karte = Karte_2
+            else:
+                Trank_Karte = Karte_2
+                Andere_Karte = Karte_1
+            #Lebensraum-Tränke
+            if "Lebensraum" in Trank_Karte.Beschreibung or "Duftender Trank" == Trank_Karte.Name:
+                if Andere_Karte in Alle_Lebensraum:
+                    #Vergrößerungs-Trank
+                    if Trank_Karte.Name == "Vergrößerungs-Trank":
+                        if not Andere_Karte in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({Andere_Karte:False})
+                            Einmal_Dict[Spieler].update({Andere_Karte:False})
+                            Verbesserung_Spieler.update({Andere_Karte:0})
+                        Verbesserung_Spieler[Andere_Karte] += 1
+                        Spieler_Zug = True
+                        Ablage[Spieler].remove(Trank_Karte)
+                    #Duftender Trank
+                    elif Trank_Karte.Name == "Duftender Trank":
+                        if "Klein" in Andere_Karte.Name:
+                            if "Magisch" in Andere_Karte.Name:
+                                Neue_Karte = Magisches_Kleines_Wonderland
+                            else:
+                                Neue_Karte = Kleines_Wonderland
+                        elif "Groß" in Andere_Karte.Name:
+                            if "Magisch" in Andere_Karte.Name:
+                                Neue_Karte = Magisches_Großes_Wonderland
+                            else:
+                                Neue_Karte = Großes_Wonderland
+                        else:
+                            if "Magisch" in Andere_Karte.Name:
+                                Neue_Karte = Magisches_Wonderland
+                            else:
+                                Neue_Karte = Wonderland
+                        if Andere_Karte in Feld[Spieler]:
+                            Feld_Spieler.update({Neue_Karte:[]})
+                            for LW in Feld_Spieler[Andere_Karte]:
+                                Feld_Spieler[Neue_Karte].append(LW)
+                            del Feld_Spieler[Andere_Karte]
+                        elif Andere_Karte in Ablage[Spieler]:
+                            Ablage[Spieler].append(Neue_Karte)
+                            Ablage[Spieler].remove(Andere_Karte)
+                        Spieler_Zug = True
+                        Ablage[Spieler].remove(Trank_Karte)
+                else:
+                    print("Du kannst diesen Trank nur auf Lebensräume anwenden.")
+            #Lebewesen-Tränke     
+            elif "Lebewesen" in Trank_Karte.Beschreibung:
+                if Andere_Karte in Alle_Lebewesen:
+                    Mehr_LRs_Tränke = ["Heißer Trank", "Wässriger Trank", "Matschiger Trank", "Blubbernder Trank", "Verkohlter Trank"]
+                    Werte_Tränke = ["Güldener Trank", "Level-Up Trank", "Glitzernder Trank", "Himmlischer Trank"]
+                    #Mehr LR Tränke
+                    if Trank_Karte.Name in Mehr_LRs_Tränke:
+                        if Trank_Karte.Name == "Heißer Trank":
+                            LR = "Wüste"
+                        elif Trank_Karte.Name == "Wässriger Trank":
+                            LR = "See"
+                        elif Trank_Karte.Name == "Matschiger Trank":
+                            LR = "Wald"
+                        elif Trank_Karte.Name == "Blubbernder Trank":
+                            LR = "Berge"
+                        elif Trank_Karte.Name == "Verkohlter Trank":
+                            LR = "Alle"
+                        if not Andere_Karte in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({Andere_Karte:False})
+                            Einmal_Dict[Spieler].update({Andere_Karte:False})
+                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VSK = Verbesserung_Spieler[Andere_Karte]
+                        if not LR in VSK["Lebensräume"]:
+                            VSK["Lebensräume"].append(LR)
+                        Spieler_Zug = True
+                        Ablage[Spieler].remove(Trank_Karte)
+                    #Werte Tränke
+                    elif Trank_Karte.Name in Werte_Tränke:
+                        if Trank_Karte.Name == "Güldener Trank":
+                            Wert = 3
+                        elif Trank_Karte.Name == "Level-Up Trank":
+                            Wert = 5
+                        elif Trank_Karte.Name == "Glitzernder Trank":
+                            Wert = 7
+                        elif Trank_Karte.Name == "Himmlischer Trank":
+                            Wert = 10
+                        if not Andere_Karte in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({Andere_Karte:False})
+                            Einmal_Dict[Spieler].update({Andere_Karte:False})
+                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VSK = Verbesserung_Spieler[Andere_Karte]
+                        VSK["Punkte"] += Wert
+                        VSK["Angriff"] += Wert
+                        VSK["Verteidigung"] += Wert
+                        Spieler_Zug = True
+                        Ablage[Spieler].remove(Trank_Karte)
+                    #Dolly Trank
+                    elif Trank_Karte.Name == "Dolly Trank":
+                        Ablage[Spieler].append(Andere_Karte)
+                        Spieler_Zug = True
+                        Ablage[Spieler].remove(Trank_Karte)
+                else:
+                    print("Du kannst diesen Trank nur auf Lebenwesen anwenden.")
         #Schleifen-Start/Kombi oder nicht        
         else:
             Counter_Add = 0
             for Karte in Alle_Karten:
                 Counter_Add += 1
-                #Extrafunktionen
-                #Tränke
-                if "Trank" in Karte_1.Name or "Trank" in Karte_2.Name:
-                    if "Trank" in Karte_1.Name:
-                        Trank_Karte = Karte_1
-                        Andere_Karte = Karte_2
-                    else:
-                        Trank_Karte = Karte_2
-                        Andere_Karte = Karte_1
-                    #Lebensraum-Tränke
-                    if "Lebensraum" in Trank_Karte.Beschreibung or "Duftender Trank" == Trank_Karte.Name:
-                        if Andere_Karte in Alle_Lebensraum:
-                            #Vergrößerungs-Trank
-                            if Trank_Karte.Name == "Vergrößerungs-Trank":
-                                if not Andere_Karte in Verbesserung_Spieler:
-                                    Counter_Dict[Spieler].update({Andere_Karte:False})
-                                    Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                    Verbesserung_Spieler.update({Andere_Karte:0})
-                                Verbesserung_Spieler[Andere_Karte] += 1
-                                Spieler_Zug = True
-                                Ablage[Spieler].remove(Trank_Karte)
-                                break
-                            #Duftender Trank
-                            elif Trank_Karte.Name == "Duftender Trank":
-                                if "Klein" in Andere_Karte.Name:
-                                    if "Magisch" in Andere_Karte.Name:
-                                        Neue_Karte = Magisches_Kleines_Wonderland
-                                    else:
-                                        Neue_Karte = Kleines_Wonderland
-                                elif "Groß" in Andere_Karte.Name:
-                                    if "Magisch" in Andere_Karte.Name:
-                                        Neue_Karte = Magisches_Großes_Wonderland
-                                    else:
-                                        Neue_Karte = Großes_Wonderland
-                                else:
-                                    if "Magisch" in Andere_Karte.Name:
-                                        Neue_Karte = Magisches_Wonderland
-                                    else:
-                                        Neue_Karte = Wonderland
-                                if Andere_Karte in Ablage[Spieler]:
-                                    Ablage[Spieler].append(Neue_Karte)
-                                    Ablage[Spieler].remove(Andere_Karte)
-                                elif Andere_Karte in Feld[Spieler]:
-                                    Feld_Spieler.append(Neue_Karte)
-                                    for LW in Feld_Spieler[Andere_Karte]:
-                                        Feld_Spieler[Neue_Karte].append(LW)
-                                    del Feld_Spieler[Andere_Karte]
-                                Spieler_Zug = True
-                                Ablage[Spieler].remove(Trank_Karte)
-                                break
-                        else:
-                            print("Du kannst diesen Trank nur auf Lebensräume anwenden.")
-                            break
-                    #Lebewesen-Tränke     
-                    elif "Lebewesen" in Trank_Karte.Beschreibung:
-                        if Andere_Karte in Alle_Lebewesen:
-                            Mehr_LRs_Tränke = ["Heißer Trank", "Wässriger Trank", "Matschiger Trank", "Blubbernder Trank", "Verkohlter Trank"]
-                            Werte_Tränke = ["Güldener Trank", "Level-Up Trank", "Glitzernder Trank", "Himmlischer Trank"]
-                            #Mehr LR Tränke
-                            if Trank_Karte.Name in Mehr_LRs_Tränke:
-                                if Trank_Karte.Name == "Heißer Trank":
-                                    LR = "Wüste"
-                                elif Trank_Karte.Name == "Wässriger Trank":
-                                    LR = "See"
-                                elif Trank_Karte.Name == "Matschiger Trank":
-                                    LR = "Wald"
-                                elif Trank_Karte.Name == "Blubbernder Trank":
-                                    LR = "Berge"
-                                elif Trank_Karte.Name == "Verkohlter Trank":
-                                    LR = "Alle"
-                                if not Andere_Karte in Verbesserung_Spieler:
-                                    Counter_Dict[Spieler].update({Andere_Karte:False})
-                                    Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                    Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                                VSK = Verbesserung_Spieler[Andere_Karte]
-                                if not LR in VSK["Lebensräume"]:
-                                    VSK["Lebensräume"].append(LR)
-                                Spieler_Zug = True
-                                Ablage[Spieler].remove(Trank_Karte)
-                                break
-                            #Werte Tränke
-                            elif Trank_Karte.Name in Werte_Tränke:
-                                if Trank_Karte.Name == "Güldener Trank":
-                                    Wert = 3
-                                elif Trank_Karte.Name == "Level-Up Trank":
-                                    Wert = 5
-                                elif Trank_Karte.Name == "Glitzernder Trank":
-                                    Wert = 7
-                                elif Trank_Karte.Name == "Himmlischer Trank":
-                                    Wert = 10
-                                if not Andere_Karte in Verbesserung_Spieler:
-                                    Counter_Dict[Spieler].update({Andere_Karte:False})
-                                    Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                    Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                                VSK = Verbesserung_Spieler[Andere_Karte]
-                                VSK["Punkte"] += Wert
-                                VSK["Angriff"] += Wert
-                                VSK["Verteidigung"] += Wert
-                                Spieler_Zug = True
-                                Ablage[Spieler].remove(Trank_Karte)
-                                break
-                            #Dolly Trank
-                            elif Trank_Karte.Name == "Dolly Trank":
-                                Ablage[Spieler].append(Andere_Karte)
-                                Spieler_Zug = True
-                                Ablage[Spieler].remove(Trank_Karte)
-                                break
-                        else:
-                            print("Du kannst diesen Trank nur auf Lebenwesen anwenden.")
-                            break
-                #Parasit
-                elif Karte_1.Name == "Parasit" or Karte_2.Name == "Parasit":
-                    WASP = WAS[Parasit]
-                    if Karte_1.Name == "Parasit":
-                        P_Karte = Karte_1
-                        Andere_Karte = Karte_2
-                    else:
-                        P_Karte = Karte_2
-                        Andere_Karte = Karte_1
-                    if Andere_Karte in Alle_Lebewesen:
-                        if WASP[0] > 0:
-                            if not P_Karte in Verbesserung_Spieler:
-                                Counter_Dict[Spieler].update({P_Karte:False})
-                                Einmal_Dict[Spieler].update({P_Karte:False})
-                                Verbesserung_Spieler.update({P_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                            VSK = Verbesserung_Spieler[P_Karte]
-                            VSK["Punkte"] += Andere_Karte.Punkte
-                            VSK["Angriff"] += Andere_Karte.Angriff
-                            VSK["Verteidigung"] += Andere_Karte.Verteidigung
-                            if not Andere_Karte in Verbesserung_Spieler:
-                                Counter_Dict[Spieler].update({Andere_Karte:False})
-                                Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                            VSK = Verbesserung_Spieler[Andere_Karte]
-                            VSK["Punkte"] -= 4
-                            VSK["Angriff"] -= 4
-                            VSK["Verteidigung"] -= 4
-                            WASP[0] -= 1
-                            Spieler_Zug = True
-                            break
-                        else:
-                            print("Fähigkeit kann nur einmal angewandt werden, Parasit muss auf dem Feld platziert sein.")
-                            break
-                #Werteverbesserungskarte
-                elif Karte_1 in Werteverbesserung_Übersicht or Karte_2 in Werteverbesserung_Übersicht:
-                    if Karte_1 in Werteverbesserung_Übersicht:
-                        V_Karte = Karte_1
-                        Andere_Karte = Karte_2
-                    else:
-                        V_Karte = Karte_2
-                        Andere_Karte = Karte_1
-                    if Andere_Karte in Alle_Lebewesen:
-                        WASK = WAS[V_Karte]
-                        if WASK[0] > 0:
-                            if not Andere_Karte in Verbesserung_Spieler:
-                                Counter_Dict[Spieler].update({Andere_Karte:False})
-                                Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                            VSK = Verbesserung_Spieler[Andere_Karte]
-                            VSK["Punkte"] += Werteverbesserung_Übersicht[V_Karte]
-                            VSK["Angriff"] += Werteverbesserung_Übersicht[V_Karte]
-                            VSK["Verteidigung"] += Werteverbesserung_Übersicht[V_Karte]
-                            WASK[0] -= 1
-                            Spieler_Zug = True
-                            break
-                        else:
-                            print("Fähigkeit kann nur einmal angewandt werden, Karte muss auf dem Feld platziert sein.")
-                            break
-                #Mehr Lebensräume
-                elif Karte_1 in ExtraLRs or Karte_2 in ExtraLRs:
-                    if Karte_1 in ExtraLRs:
-                        Extra_Karte = Karte_1
-                        Andere_Karte = Karte_2
-                        Ort = Ort_1
-                    else:
-                        Extra_Karte = Karte_2
-                        Andere_Karte = Karte_1
-                        Ort = Ort_2
-                    if Andere_Karte in Alle_Lebewesen:
-                        if not Ort == Ablage[Spieler]:
-                            #Alle?
-                            Gesamt_LRs = []
-                            for LR in Andere_Karte.Lebensraum:
-                                Gesamt_LRs.append(LR)
-                            if Andere_Karte in Verbesserung_Spieler:
-                                VSK = Verbesserung_Spieler[Andere_Karte]
-                                for LR in VSK["Lebensräume"]:
-                                    Gesamt_LRs.append(LR)
-                            if "Alle" in Gesamt_LRs:
-                                print("Dieses Lebewesen kann bereits in allen Lebensräumen leben.")
-                                break
-                            #Zufall
-                            if ExtraLRs[Extra_Karte] == "Zufall":
-                                LRs_Kopie = LRs.copy()
-                                for LR in Gesamt_LRs:
-                                    if not LR == "Wonderland":
-                                        LRs_Kopie.remove(LR)
-                                Neu = random.choice(LRs_Kopie)
-                            else:
-                                Neu = ExtraLRs[Extra_Karte]
-                            if not Andere_Karte in Verbesserung_Spieler:
-                                Counter_Dict[Spieler].update({Andere_Karte:False})
-                                Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                            VSK = Verbesserung_Spieler[Andere_Karte]
-                            VSK["Lebensräume"].append(Neu)
-                            Test_Liste = []
-                            for LR in Andere_Karte.Lebensraum:
-                                if not LR == "Wonderland":
-                                    Test_Liste.append(LR)
-                            for LR in VSK["Lebensräume"]:
-                                Test_Liste.append(LR)
-                            if len(Test_Liste) >= 4:
-                                VSK["Lebensräume"] = ["Alle"]
-                            break
-                        else:
-                            print("Platziere Lebewesen auf dem Feld, um ihre Extrafunktion zu nutzen.")
-                            break
                 #Kombi
-                elif Gesuchte_Kombi_1 in Karte.Kombi or Gesuchte_Kombi_2 in Karte.Kombi:
+                if Gesuchte_Kombi_1 in Karte.Kombi or Gesuchte_Kombi_2 in Karte.Kombi:
                     Neue_Karte = Karte
                     #Zauberer
                     if (Karte_1.Name == "Zauberer" and Karte_2 in Alle_Elemente) or (Karte_2.Name == "Zauberer" and Karte_1 in Alle_Elemente):
@@ -2058,7 +2083,7 @@ Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
 
 for Spieler in Alle_Spieler:
     #1. Ausgabe
-    Ablage.update({Spieler:[]})
+    Ablage.update({Spieler:[Engel, Regenbogen]})
     Ablage[Spieler].append(random.choice(Start_Lebewesen))
     Ablage[Spieler].append(random.choice(Start_Lebensraum))
     Ablage[Spieler].append(random.choice(Start_Elemente))
@@ -2074,7 +2099,7 @@ for Spieler in Alle_Spieler:
     Magisch_Dict.update({Spieler:{}})
     Stärker_Dict.update({Spieler:{}})
     Frost_Dict.update({Spieler:0})
-    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0]}})
+    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0]}})
     for Karte in Werteverbesserung_Übersicht:
         Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
 
@@ -2192,6 +2217,7 @@ while Runden_Counter < Runden:
     print("\nTippe \"Karten Name 1 + Karten Name 2\" um zwei Karten zu kombinieren. Damit kannst du auch Lebewesen in Lebensräumen auf dem Feld platzieren.")
     print("Tippe den Namen eines Lebensraums in deiner Ablage, um diesen im Feld zu platzieren.")
     print("Vor diesen Aktionen kannst du beliebig viele Lebewesen innerhalb des Feldes bewegen (ebenfalls mit \"+\").")
+    print("Um Extrafunktionen zu nutzen, tippe ein \"+\" hinter deine Eingabe. Wenn beide Karten Extrafunktionen haben, tippe zuerst die, die du nutzen willst.")
     print("Um weitere Regeln zu sehen, tippe \"Regeln\". Um den Zug zu übersprigen, drücke Enter.")
     while Züge_Counter < Züge:
         Züge_Counter += 1
@@ -2202,7 +2228,6 @@ while Runden_Counter < Runden:
         #Spieler Züge
         for Spieler in Alle_Spieler:
             Zug(Spieler)
-    print(Feld)
     #Extrazüge
     Extraprint = False
     for Spieler in Alle_Spieler:
@@ -2231,7 +2256,7 @@ while Runden_Counter < Runden:
         #Werteverbesserungskarten pro Runde
         WAS = Werteverbesserung_Anzahl[Spieler]
         for WV_Karte in WAS:
-            if not WV_Karte == Parasit:
+            if (not WV_Karte == Parasit) and (not WV_Karte == Friedensengel):
                 WASK = WAS[WV_Karte]
                 WASK[0] = WASK[1]
 #Auswertung
