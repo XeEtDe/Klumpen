@@ -194,7 +194,7 @@ Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unte
 Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
 # -> Stufe 2 -> +3
 Koi = Lebewesen("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; produziert jede Runde ein Element, das Lebensräume vergrößern oder Lebewesen verbessern kann", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
-Parasit = Lebewesen("Parasit", "Kann einmal pro Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
+Parasit = Lebewesen("Parasit", "Kann einmal im Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
 # -> Stufe 3 -> +5 #Pusteblume#
 Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; Extrafunktion", 6, 5, 7, ["See"], ["Klumpi+Perle"])
@@ -388,7 +388,7 @@ Wolkenvogel = Lebewesen("Wolkenvogel", "Erschaffen von einem Mädchen, dessen Ha
 # -> Stufe 3 -> +5 #Pusteblume, Perle, Sternenstaub, Kristall, Dunkle Macht#
 Phönix = Lebewesen("Phönix", "Ein riesiger Vogel mit brennendem Gefieder", 13, 13, 13, ["Alle"], ["Rätselhafter Vogel+Pfingstrose"])
 # -> Stufe 4 -> +7 #Eis, Blut, Regenbogen, Engelshaar, Stein von Elyaris#
-Diebische_Elster = Lebewesen("Diebische Elster", "Kann alle fünf Runden das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
+Diebische_Elster = Lebewesen("Diebische Elster", "Kann 3 Mal das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
 
 #Weltenwandler -> Gummikrieger + Fee ###
 Weltenwandler = Lebewesen("Weltenwandler", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
@@ -1145,14 +1145,11 @@ def Zug(Spieler):
         for LR in Feld[Spieler]:
             for LW in Feld_Spieler[LR]:
                 if LW == WV_Karte:
-                    if LW == Friedensengel:
+                    if (LW == Friedensengel) or (LW == Diebische_Elster):
                         Jetzt_Anzahl += 3
                     else:
                         Jetzt_Anzahl += 1   
-        WASK = WAS[WV_Karte] #Werteverbesserung_Anzahl[Spieler[Karte]] -> [0] = Unverbrauchte/Mögliche, [1] = letzte Anzahl, außer Elster
-        if WV_Karte == Diebische_Elster:
-            if len(WASK) > Jetzt_Anzahl:
-                
+        WASK = WAS[WV_Karte] #Werteverbesserung_Anzahl[Spieler[Karte]] -> [0] = Unverbrauchte/Mögliche, [1] = letzte Anzahl
         WASK[0] += (Jetzt_Anzahl - WASK[1])
         WASK[1] = Jetzt_Anzahl
         if WASK[0] < 0 or WASK[1] < 0:
@@ -1815,185 +1812,258 @@ def Add(Karten):
                         VSK["Punkte"] += Counter_P
                         VSK["Angriff"] += Counter_A
                         VSK["Verteidigung"] += Counter_V
-    #Gifte und Gefrorener Trank
-    elif "Gift" in Name_Karte_1 or "Gift" in Name_Karte_2 or Name_Karte_1 == "Gefrorener Trank" or Name_Karte_2 == "Gefrorener Trank":
+    #Extra: Aktion mit anderem Spieler
+    elif (not Karte_1 == False) or (not Karte_2 == False):
         global Aus
-        if "Gift" in Name_Karte_1 or Name_Karte_1 == "Gefrorener Trank":
-            Trank_Karte_Name = Name_Karte_1
+        if not Karte_1 == False:
+            E_Karte = Karte_1
             Gegner_Name = Name_Karte_2
         else:
-            Trank_Karte_Name = Name_Karte_2
+            E_Karte = Karte_2
             Gegner_Name = Name_Karte_1
-        Trank_Karte = None
-        for K_1 in Ablage[Spieler]:
-            if K_1.Name == Trank_Karte_Name:
-                Trank_Karte = K_1
-        if Trank_Karte == None:
-            print("Eine oder beide Karten existieren nicht.")
         Gegner = None
         for SP in Alle_Spieler:
             if SP == Gegner_Name:
                 Gegner = SP
+        VG = Verbesserung[Gegner]
         if Gegner == None:
-            if not Trank_Karte == None:
-                print("Ungültiger Spielername")
-        if (not Gegner == None) and (not Trank_Karte == None):
-            Werte_Gifte = [Elementares_Gift, Pampiges_Gift, Trügerisches_Gift, Blutiges_Gift]
-            Aussetzen_Gifte = [Magisches_Gift, Lähmendes_Gift, Gefrorener_Trank, Eisiges_Gift]
-            Zerstörungs_Gifte = [Reines_Gift, Gift_des_Vergessens]
-            VG = Verbesserung[Gegner]
-            #Werte Gifte
-            if Trank_Karte in Werte_Gifte:
-                if Trank_Karte == Werte_Gifte[0]:
-                    Wert = 3
-                elif Trank_Karte == Werte_Gifte[1]:
-                    Wert = 5
-                elif Trank_Karte == Werte_Gifte[2]:
-                    Wert = 7
-                elif Trank_Karte == Werte_Gifte[3]:
-                    Wert = 10
-                Gegner_LW = []
-                for LW in Ablage[Gegner]:
-                    if LW in Alle_Lebewesen:
-                        Gegner_LW.append(LW)
-                Feld_Gegner = Feld[Gegner]
-                for LR in Feld_Gegner:
-                    for LW in Feld_Gegner[LR]:
-                        Gegner_LW.append(LW)
-                LW = random.choice(Gegner_LW)
-                print("Spieler: " + Gegner)
-                print("Ausgewähltes Lebewesen:\n")
-                if LW in Verbesserung[Gegner]:
+            print("Eine oder beide Karten existieren nicht.")
+        else:
+            #Gifte und Gefrorener Trank
+            if "Gift" in E_Karte.Name or E_Karte.Name == "Gefrorener Trank":
+                Werte_Gifte = [Elementares_Gift, Pampiges_Gift, Trügerisches_Gift, Blutiges_Gift]
+                Aussetzen_Gifte = [Magisches_Gift, Lähmendes_Gift, Gefrorener_Trank, Eisiges_Gift]
+                Zerstörungs_Gifte = [Reines_Gift, Gift_des_Vergessens]
+                VG = Verbesserung[Gegner]
+                #Werte Gifte
+                if E_Karte in Werte_Gifte:
+                    if E_Karte == Werte_Gifte[0]:
+                        Wert = 3
+                    elif E_Karte == Werte_Gifte[1]:
+                        Wert = 5
+                    elif E_Karte == Werte_Gifte[2]:
+                        Wert = 7
+                    elif E_Karte == Werte_Gifte[3]:
+                        Wert = 10
+                    Gegner_LW = []
+                    for LW in Ablage[Gegner]:
+                        if LW in Alle_Lebewesen:
+                            Gegner_LW.append(LW)
+                    Feld_Gegner = Feld[Gegner]
+                    for LR in Feld_Gegner:
+                        for LW in Feld_Gegner[LR]:
+                            Gegner_LW.append(LW)
+                    LW = random.choice(Gegner_LW)
+                    print("Spieler: " + Gegner)
+                    print("Ausgewähltes Lebewesen:\n")
+                    if LW in Verbesserung[Gegner]:
+                        VGK = VG[LW]
+                        LW.Punkte += VGK["Punkte"]
+                        LW.Angriff += VGK["Angriff"]
+                        LW.Verteidigung += VGK["Verteidigung"]
+                        for LR in VGK["Lebensräume"]:
+                            LWLR = LW.Lebensraum
+                            LWLR.append(LR)
+                    print(LW)
+                    if LW in Verbesserung[Gegner]:
+                        VGK = VG[LW]
+                        LW.Punkte -= VGK["Punkte"]
+                        LW.Angriff -= VGK["Angriff"]
+                        LW.Verteidigung -= VGK["Verteidigung"]
+                        for LR in VGK["Lebensräume"]:
+                            LWLR = LW.Lebensraum
+                            LWLR.remove(LR)
+                    print("\n------->\n")
+                    if not LW in Verbesserung_Spieler:
+                        Counter_Dict[Gegner].update({LW:False})
+                        Einmal_Dict[Gegner].update({LW:False})
+                        Verbesserung[Gegner].update({LW:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
                     VGK = VG[LW]
+                    VGK["Punkte"] -= Wert
+                    VGK["Angriff"] -= Wert
+                    VGK["Verteidigung"] -= Wert
+                    if (LW.Punkte + VGK["Punkte"]) < 0:
+                        VGK["Punkte"] = 0 - LW.Punkte
+                    if (LW.Angriff + VGK["Angriff"]) < 0:
+                        VGK["Angriff"] = 0 - LW.Angriff
+                    if (LW.Verteidigung + VGK["Verteidigung"]) < 0:
+                        VGK["Verteidigung"] = 0 - LW.Verteidigung
                     LW.Punkte += VGK["Punkte"]
                     LW.Angriff += VGK["Angriff"]
                     LW.Verteidigung += VGK["Verteidigung"]
                     for LR in VGK["Lebensräume"]:
                         LWLR = LW.Lebensraum
                         LWLR.append(LR)
-                print(LW)
-                if LW in Verbesserung[Gegner]:
-                    VGK = VG[LW]
+                    print(LW)
                     LW.Punkte -= VGK["Punkte"]
                     LW.Angriff -= VGK["Angriff"]
                     LW.Verteidigung -= VGK["Verteidigung"]
                     for LR in VGK["Lebensräume"]:
                         LWLR = LW.Lebensraum
                         LWLR.remove(LR)
-                print("\n------->\n")
-                if not LW in Verbesserung_Spieler:
-                    Counter_Dict[Gegner].update({LW:False})
-                    Einmal_Dict[Gegner].update({LW:False})
-                    Verbesserung[Gegner].update({LW:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                VGK = VG[LW]
-                VGK["Punkte"] -= Wert
-                VGK["Angriff"] -= Wert
-                VGK["Verteidigung"] -= Wert
-                if (LW.Punkte + VGK["Punkte"]) < 0:
-                    VGK["Punkte"] = 0 - LW.Punkte
-                if (LW.Angriff + VGK["Angriff"]) < 0:
-                    VGK["Angriff"] = 0 - LW.Angriff
-                if (LW.Verteidigung + VGK["Verteidigung"]) < 0:
-                    VGK["Verteidigung"] = 0 - LW.Verteidigung
-                LW.Punkte += VGK["Punkte"]
-                LW.Angriff += VGK["Angriff"]
-                LW.Verteidigung += VGK["Verteidigung"]
-                for LR in VGK["Lebensräume"]:
-                    LWLR = LW.Lebensraum
-                    LWLR.append(LR)
-                print(LW)
-                LW.Punkte -= VGK["Punkte"]
-                LW.Angriff -= VGK["Angriff"]
-                LW.Verteidigung -= VGK["Verteidigung"]
-                for LR in VGK["Lebensräume"]:
-                    LWLR = LW.Lebensraum
-                    LWLR.remove(LR)
-                Spieler_Zug = True
-                Ablage[Spieler].remove(Trank_Karte)
-                Aus = False
-            #Aussetzen Gifte
-            elif Trank_Karte in Aussetzen_Gifte:
-                if Trank_Karte == Aussetzen_Gifte[0]:
-                    Wert = 1
-                elif Trank_Karte == Aussetzen_Gifte[1] or Trank_Karte == Aussetzen_Gifte[2]:
-                    Wert = 3
-                elif Trank_Karte == Aussetzen_Gifte[3]:
-                    Wert = 5
-                Frost_Dict[Gegner] += Wert
-                if Wert == 1:
-                    Druck = "einen Zug"
-                else:
-                    Druck = str(Wert) + " Züge"
-                print("\n" + Gegner + " setzt " + Druck + " aus.\n")
-                Spieler_Zug = True
-                Ablage[Spieler].remove(Trank_Karte)
-                Aus = False
-            #Zerstörungs Gifte
-            elif Trank_Karte in Zerstörungs_Gifte:
-                Gegner_LW = []
-                for LW in Ablage[Gegner]:
-                    if (LW in Alle_Lebewesen) and (LW not in Gegner_LW):
-                        Gegner_LW.append(LW)
-                Feld_Gegner = Feld[Gegner]
-                for LR in Feld_Gegner:
-                    for LW in Feld_Gegner[LR]:
-                        if LW not in Gegner_LW:
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+                    Aus = False
+                #Aussetzen Gifte
+                elif E_Karte in Aussetzen_Gifte:
+                    if E_Karte == Aussetzen_Gifte[0]:
+                        Wert = 1
+                    elif E_Karte == Aussetzen_Gifte[1] or E_Karte == Aussetzen_Gifte[2]:
+                        Wert = 3
+                    elif E_Karte == Aussetzen_Gifte[3]:
+                        Wert = 5
+                    Frost_Dict[Gegner] += Wert
+                    if Wert == 1:
+                        Druck = "einen Zug"
+                    else:
+                        Druck = str(Wert) + " Züge"
+                    print("\n" + Gegner + " setzt " + Druck + " aus.\n")
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+                    Aus = False
+                #Zerstörungs Gifte
+                elif E_Karte in Zerstörungs_Gifte:
+                    Gegner_LW = []
+                    for LW in Ablage[Gegner]:
+                        if (LW in Alle_Lebewesen) and (LW not in Gegner_LW):
                             Gegner_LW.append(LW)
-                LW_Dict = {}
-                for LW in Gegner_LW:
-                    LW_Dict.update({LW:LW.Punkte})
-                    if LW in Verbesserung[Gegner]:
-                        VGK = VG[LW]
-                        LW_Dict[LW] += VGK["Punkte"]
-                Werte_Liste = []
-                for LW in LW_Dict:
-                    Werte_Liste.append(LW_Dict[LW])
-                Werte_Liste.sort()
-                if Trank_Karte == Zerstörungs_Gifte[0]:
-                    for Karte in LW_Dict:
-                        if Werte_Liste[0] == LW_Dict[Karte]:
-                            Z_Karte = Karte
-                            break
-                elif Trank_Karte == Zerstörungs_Gifte[1]:
-                    for Karte in LW_Dict:
-                        if Werte_Liste[-1] == LW_Dict[Karte]:
-                            Z_Karte = Karte
-                            break
-                Test = False
-                for Karte in Ablage[Gegner]:
-                    if Karte == Z_Karte:
-                        Ablage[Gegner].remove(Z_Karte)
-                        Test = True
-                        break
-                if Test == False:
-                    for LR in Feld[Gegner]:
+                    Feld_Gegner = Feld[Gegner]
+                    for LR in Feld_Gegner:
                         for LW in Feld_Gegner[LR]:
-                            if LW == Z_Karte:
-                                Feld_Gegner[LR].remove(Z_Karte)
+                            if LW not in Gegner_LW:
+                                Gegner_LW.append(LW)
+                    if Gegner_LW == []:
+                        print("Dieser Spieler besitzt keine Lebewesen.")
+                    else:
+                        LW_Dict = {}
+                        for LW in Gegner_LW:
+                            LW_Dict.update({LW:LW.Punkte})
+                            if LW in Verbesserung[Gegner]:
+                                VGK = VG[LW]
+                                LW_Dict[LW] += VGK["Punkte"]
+                        Werte_Liste = []
+                        for LW in LW_Dict:
+                            Werte_Liste.append(LW_Dict[LW])
+                        Werte_Liste.sort()
+                        if E_Karte == Zerstörungs_Gifte[0]:
+                            for Karte in LW_Dict:
+                                if Werte_Liste[0] == LW_Dict[Karte]:
+                                    Z_Karte = Karte
+                                    break
+                        elif E_Karte == Zerstörungs_Gifte[1]:
+                            for Karte in LW_Dict:
+                                if Werte_Liste[-1] == LW_Dict[Karte]:
+                                    Z_Karte = Karte
+                                    break
+                        Test = False
+                        for Karte in Ablage[Gegner]:
+                            if Karte == Z_Karte:
+                                Ablage[Gegner].remove(Z_Karte)
+                                Test = True
                                 break
-                print("Spieler: " + Gegner)
-                print("Ausgewähltes Lebewesen:\n")
-                if Z_Karte in Verbesserung[Gegner]:
-                    VGK = VG[Z_Karte]
-                    Z_Karte.Punkte += VGK["Punkte"]
-                    Z_Karte.Angriff += VGK["Angriff"]
-                    Z_Karte.Verteidigung += VGK["Verteidigung"]
-                    for LR in VGK["Lebensräume"]:
-                        LWLR = Z_Karte.Lebensraum
-                        LWLR.append(LR)
-                print(Z_Karte)
-                if LW in Verbesserung[Gegner]:
-                    VGK = VG[Z_Karte]
-                    Z_Karte.Punkte -= VGK["Punkte"]
-                    Z_Karte.Angriff -= VGK["Angriff"]
-                    Z_Karte.Verteidigung -= VGK["Verteidigung"]
-                    for LR in VGK["Lebensräume"]:
-                        LWLR = Z_Karte.Lebensraum
-                        LWLR.remove(LR)
-                print("\nWurde entfernt.")
-                Spieler_Zug = True
-                Ablage[Spieler].remove(Trank_Karte)
-                Aus = False                    
+                        if Test == False:
+                            for LR in Feld[Gegner]:
+                                for LW in Feld_Gegner[LR]:
+                                    if LW == Z_Karte:
+                                        Feld_Gegner[LR].remove(Z_Karte)
+                                        Test = True
+                                        break
+                                if Test == True:
+                                    break
+                        print("Spieler: " + Gegner)
+                        print("Ausgewähltes Lebewesen:\n")
+                        if Z_Karte in Verbesserung[Gegner]:
+                            VGK = VG[Z_Karte]
+                            Z_Karte.Punkte += VGK["Punkte"]
+                            Z_Karte.Angriff += VGK["Angriff"]
+                            Z_Karte.Verteidigung += VGK["Verteidigung"]
+                            for LR in VGK["Lebensräume"]:
+                                LWLR = Z_Karte.Lebensraum
+                                LWLR.append(LR)
+                        print(Z_Karte)
+                        if LW in Verbesserung[Gegner]:
+                            VGK = VG[Z_Karte]
+                            Z_Karte.Punkte -= VGK["Punkte"]
+                            Z_Karte.Angriff -= VGK["Angriff"]
+                            Z_Karte.Verteidigung -= VGK["Verteidigung"]
+                            for LR in VGK["Lebensräume"]:
+                                LWLR = Z_Karte.Lebensraum
+                                LWLR.remove(LR)
+                        print("\nWurde entfernt.")
+                        Spieler_Zug = True
+                        Ablage[Spieler].remove(E_Karte)
+                        Aus = False
+            #Diebische Elster
+            elif E_Karte == Diebische_Elster:
+                WASK = WAS[Diebische_Elster]
+                if WASK[0] > 0:
+                    Gegner_LW = []
+                    for LW in Ablage[Gegner]:
+                        if (LW in Alle_Lebewesen) and (LW not in Gegner_LW):
+                            Gegner_LW.append(LW)
+                    Feld_Gegner = Feld[Gegner]
+                    for LR in Feld_Gegner:
+                        for LW in Feld_Gegner[LR]:
+                            if LW not in Gegner_LW:
+                                Gegner_LW.append(LW)
+                    if Gegner_LW == []:
+                        print("Dieser Spieler besitzt keine Lebewesen.")
+                    else:
+                        LW_Dict = {}
+                        for LW in Gegner_LW:
+                            LW_Dict.update({LW:LW.Punkte})
+                            if LW in Verbesserung[Gegner]:
+                                VGK = VG[LW]
+                                LW_Dict[LW] += VGK["Punkte"]
+                        Werte_Liste = []
+                        for LW in LW_Dict:
+                            Werte_Liste.append(LW_Dict[LW])
+                        Werte_Liste.sort()
+                        for Karte in LW_Dict:
+                            if Werte_Liste[0] == LW_Dict[Karte]:
+                                Z_Karte = Karte
+                                break
+                        Test = False
+                        for Karte in Ablage[Gegner]:
+                            if Karte == Z_Karte:
+                                Ablage[Gegner].remove(Z_Karte)
+                                Test = True
+                                break
+                        if Test == False:
+                            for LR in Feld[Gegner]:
+                                for LW in Feld_Gegner[LR]:
+                                    if LW == Z_Karte:
+                                        Feld_Gegner[LR].remove(Z_Karte)
+                                        Test = True
+                                        break
+                                if Test == True:
+                                    break
+                        print("Spieler: " + Gegner)
+                        print("Ausgewähltes Lebewesen:\n")
+                        if Z_Karte in Verbesserung[Gegner]:
+                            VGK = VG[Z_Karte]
+                            Z_Karte.Punkte += VGK["Punkte"]
+                            Z_Karte.Angriff += VGK["Angriff"]
+                            Z_Karte.Verteidigung += VGK["Verteidigung"]
+                            for LR in VGK["Lebensräume"]:
+                                LWLR = Z_Karte.Lebensraum
+                                LWLR.append(LR)
+                        print(Z_Karte)
+                        if LW in Verbesserung[Gegner]:
+                            VGK = VG[Z_Karte]
+                            Z_Karte.Punkte -= VGK["Punkte"]
+                            Z_Karte.Angriff -= VGK["Angriff"]
+                            Z_Karte.Verteidigung -= VGK["Verteidigung"]
+                            for LR in VGK["Lebensräume"]:
+                                LWLR = Z_Karte.Lebensraum
+                                LWLR.remove(LR)
+                        print("\nWurde " + Gegner + " geklaut und " + Spieler + " gegeben.")
+                        Ablage[Spieler].append(Z_Karte)
+                        WASK[0] -= 1
+                        Spieler_Zug = True
+                        Aus = False
+                else:
+                    print("Fähigkeit kann nur 3 Mal angewandt werden, Diebische Elster muss auf dem Feld platziert sein.")
     #Karten existieren nicht
     else:
         print("Eine oder beide Karten existieren nicht.")
@@ -2080,7 +2150,7 @@ Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
 
 for Spieler in Alle_Spieler:
     #1. Ausgabe
-    Ablage.update({Spieler:[]})
+    Ablage.update({Spieler:[Diebische_Elster, Diebische_Elster]})
     Ablage[Spieler].append(random.choice(Start_Lebewesen))
     Ablage[Spieler].append(random.choice(Start_Lebensraum))
     Ablage[Spieler].append(random.choice(Start_Elemente))
@@ -2096,7 +2166,7 @@ for Spieler in Alle_Spieler:
     Magisch_Dict.update({Spieler:{}})
     Stärker_Dict.update({Spieler:{}})
     Frost_Dict.update({Spieler:0})
-    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0], Diebische_Elster:[0]}}) #bei Elster: Runden in denen verwendet wurde
+    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0], Diebische_Elster:[0, 0]}})
     for Karte in Werteverbesserung_Übersicht:
         Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
         
@@ -2214,7 +2284,7 @@ while Runden_Counter < Runden:
     print("\nTippe \"Karten Name 1 + Karten Name 2\" um zwei Karten zu kombinieren. Damit kannst du auch Lebewesen in Lebensräumen auf dem Feld platzieren.")
     print("Tippe den Namen eines Lebensraums in deiner Ablage, um diesen im Feld zu platzieren.")
     print("Vor diesen Aktionen kannst du beliebig viele Lebewesen innerhalb des Feldes bewegen (ebenfalls mit \"+\").")
-    print("Um Extrafunktionen zu nutzen, tippe ein \"+\" hinter deine Eingabe. Wenn beide Karten Extrafunktionen haben, tippe zuerst die, die du nutzen willst.")
+    print("Für Extrafunktionen, die mit anderen Karten (nicht mit Spielern) interagieren: Um  die Extrafunktion zu nutzen, tippe ein \"+\" hinter deine Eingabe. Wenn beide Karten Extrafunktionen haben, tippe zuerst die, die du nutzen willst.")
     print("Um weitere Regeln zu sehen, tippe \"Regeln\". Um den Zug zu übersprigen, drücke Enter.")
     while Züge_Counter < Züge:
         Züge_Counter += 1
