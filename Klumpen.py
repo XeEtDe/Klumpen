@@ -1148,8 +1148,11 @@ def Zug(Spieler):
                     if LW == Friedensengel:
                         Jetzt_Anzahl += 3
                     else:
-                        Jetzt_Anzahl += 1
-        WASK = WAS[WV_Karte] #Werteverbesserung_Anzahl[Spieler[Karte]] -> [0] = Unverbrauchte/Mögliche, [1] = letzte Anzahl
+                        Jetzt_Anzahl += 1   
+        WASK = WAS[WV_Karte] #Werteverbesserung_Anzahl[Spieler[Karte]] -> [0] = Unverbrauchte/Mögliche, [1] = letzte Anzahl, außer Elster
+        if WV_Karte == Diebische_Elster:
+            if len(WASK) > Jetzt_Anzahl:
+                
         WASK[0] += (Jetzt_Anzahl - WASK[1])
         WASK[1] = Jetzt_Anzahl
         if WASK[0] < 0 or WASK[1] < 0:
@@ -2093,10 +2096,10 @@ for Spieler in Alle_Spieler:
     Magisch_Dict.update({Spieler:{}})
     Stärker_Dict.update({Spieler:{}})
     Frost_Dict.update({Spieler:0})
-    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0], Diebische_Elster:[0, 0]}})
+    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0], Diebische_Elster:[0]}}) #bei Elster: Runden in denen verwendet wurde
     for Karte in Werteverbesserung_Übersicht:
         Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
-
+        
 #Spielkern
 #Runden
 Runden_Counter = 0
@@ -2253,8 +2256,7 @@ while Runden_Counter < Runden:
             if (not WV_Karte == Parasit) and (not WV_Karte == Friedensengel) and (not WV_Karte == Diebische_Elster):
                 WASK = WAS[WV_Karte]
                 WASK[0] = WASK[1]
-        if (Runden_Counter % 5) == 0:
-            #################################
+            
 #Auswertung
 #Punkte
 if Modus == "1":
