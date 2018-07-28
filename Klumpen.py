@@ -352,9 +352,17 @@ Triefender_Zeppelindrache = Lebewesen("Triefender Zeppelindrache", "Kann aufgrun
 Matschiger_Zeppelindrache = Lebewesen("Matschiger Zeppelindrache", "Wälzt sich im Matsch, um sein Fell zu schützen", 13, 5, 21, ["Wald", "Berge"], ["Zeppelindrache+Erde"])
 Aufgeblähter_Zeppelindrache = Lebewesen("Aufgeblähter Zeppelindrache", "Fliegt höher als alle anderen Drachen", 13, 4, 22, ["Berge"], ["Zeppelindrache+Luft"])
 Goldener_Zeppelindrache = Lebewesen("Goldener Zeppelindrache", "Hat vergoldetes Fell", 13, 5, 21, ["Berge"], ["Zeppelindrache+Magie"])
-# -> Stufe 2 -> +3 #Staub, Beere, Asche, Zeit#
+# -> Stufe 2 -> +3
 Flauschiger_Zeppelindrache = Lebewesen("Flauschiger Zeppelindrache", "Kaum von einer echten Wolke zu unterscheiden", 15, 6, 24, ["Berge"], ["Zeppelindrache+Wölkchen"])
-# -> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
+Alter_Zeppelindrache = Lebewesen("Alter Zeppelindrache", "Ein Kindheitsfreund der Prinzessin von Klumpiland", 15, 6, 24, ["Berge", "Wald"], ["Zeppelindrache+Zeit", "Zeppelindrache+Staub"])
+Symbiotischer_Zeppelindrache = Lebewesen("Symbiotischer Zeppelindrache", "In seinem Fell nisten Vögel, die ihn im Gegenzug sauber halten und zu geeigneten Landeplätzen führen", 15, 8, 22, ["Berge", "Wald"], ["Zeppelindrache+Beere"])
+Nacht_Zeppelindrache = Lebewesen("Nacht-Zeppelindrache", "Ist bestens an ein Leben in Dunkelheit angepasst und lebt am liebsten in tiefen Höhlen", 15, 6, 24, ["Berge"], ["Zeppelindrache+Asche"])
+# -> Stufe 3 -> +5
+Blühender_Zeppelindrache = Lebewesen("Blühender Zeppelindrache", "Verschiede Pflanzenarten leben in seinem Fell, sodass er vor allem im Frühling ein wunderschöner Anblick ist, wenn dieser Drache am Himmel schwebt", 17, 9, 25, ["Berge", "Wald"], ["Zeppelindrache+Pusteblume", "Zeppelindrache+Pfingstrose"])
+Unsichtbarer_Zeppelindrache = Lebewesen("Unsichtbarer Zeppelindrache", "Jedes Haar seines Fells kann eine andere Farbe annehmen, wodurch er nicht von seiner Umgebung zu unterscheiden ist und kaum jemand von seiner Existenz weiß", 17, 9, 25, ["Alle"], ["Zeppelindrache+Perle"])
+Toter_Zeppelindrache = Lebewesen("Toter Zeppelindrache", "Seine Augen sind leer, sein Inneres tot und er wird nur noch von der dunklen Macht bewegt", 17, 10, 24, ["Alle"], ["Zeppelindrache+Dunkle Macht"])
+Kosmischer_Zeppelindrache = Lebewesen("Kosmischer Zeppelindrache", "Kann große Mengen an Sauerstoff in seinem Inneren speichern und so für eine Weile durch das Weltall schweben", 17, 8, 26, ["Alle"], ["Zeppelindrache+Sternenstaub"])
+Durchsichtiger_Zeppelindrache = Lebewesen("Durchsichtiger Zeppelindrache", "Jede Zelle seines Körpers ist durchsichtig und bricht das Licht, wodurch er ein wunderschönes Farbenspiel am Himmel hinterlässt", 17, 8, 26, ["Alle"], ["Zeppelindrache+Kristall"])
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
 #Echsenmensch -> Drache + Klumpi ###
