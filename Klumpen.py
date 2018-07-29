@@ -363,7 +363,9 @@ Unsichtbarer_Zeppelindrache = Lebewesen("Unsichtbarer Zeppelindrache", "Jedes Ha
 Toter_Zeppelindrache = Lebewesen("Toter Zeppelindrache", "Seine Augen sind leer, sein Inneres tot und er wird nur noch von der dunklen Macht bewegt", 17, 10, 24, ["Alle"], ["Zeppelindrache+Dunkle Macht"])
 Kosmischer_Zeppelindrache = Lebewesen("Kosmischer Zeppelindrache", "Kann große Mengen an Sauerstoff in seinem Inneren speichern und so für eine Weile durch das Weltall schweben", 17, 8, 26, ["Alle"], ["Zeppelindrache+Sternenstaub"])
 Durchsichtiger_Zeppelindrache = Lebewesen("Durchsichtiger Zeppelindrache", "Jede Zelle seines Körpers ist durchsichtig und bricht das Licht, wodurch er ein wunderschönes Farbenspiel am Himmel hinterlässt", 17, 8, 26, ["Alle"], ["Zeppelindrache+Kristall"])
-# -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
+# -> Stufe 4 -> +7 #Schleim, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
+Frost_Zeppelindrache = Lebewesen("Frost-Zeppelindrache", "Lebt im ewigen Eis des hohen Nordens", 19, 12, 26, ["Berge"], ["Zeppelindrache+Eis"])
+
 
 #Echsenmensch -> Drache + Klumpi ###
 Echsenmensch = Lebewesen("Echsenmensch", "Die Gesellschaft der Echsenmenschen plant Klumpiland zu übernehmen", 10, 10, 10, ["Wüste"], ["Klumpi+Drache"])
@@ -372,14 +374,15 @@ Echsenmensch = Lebewesen("Echsenmensch", "Die Gesellschaft der Echsenmenschen pl
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
-#Engel -> Klumpi + Fee ###
-Engel = Lebewesen("Engel", "Ein reines und gutes Himmelswesen", 6, 6, 6, ["Alle"], ["Klumpi+Fee"])
+#Engel -> Klumpi + Fee ### -> Extrafunktionen
+Engel = Lebewesen("Engel", "Ein geflügeltes Himmelswesen", 6, 6, 6, ["Alle"], ["Klumpi+Fee"])
 # -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
 # -> Stufe 2 -> +3 #Wölkchen, Beere, Zeit#
 Todesengel = Lebewesen("Todesengel", "Wacht über das Reich der Toten; stärker im Lebensraum See", 9, 10, 8, ["Alle"], ["Engel+Staub", "Engel+Asche"])
 # -> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall#
 Gefallener_Engel = Lebewesen("Gefallener Engel", "Wandte sich gegen die Himmelswesen und lebt nun unter den Menschen", 11, 11, 11, ["Alle"], ["Engel+Dunkle Macht"])
-# -> Stufe 4 -> +7 #Blut, Stein von Elyaris#
+# -> Stufe 4 -> +7 #Blut#
+Reiner_Engel = Lebewesen("Reiner Engel", "Bleibt für ewig jung und weiß nichts vom Leid der Welt", 13, 2, 24, ["Alle"], ["Engel+Stein von Elyaris"])
 Racheengel = Lebewesen("Racheengel", "Kämpft gegen die Himmelswesen um die Gerechtigkeit wieder herzustellen", 13, 13, 13, ["Alle"], ["Engel+Schleim", "Engel+Blitz", "Engel+Eis"])
 Erzengel = Lebewesen("Erzengel", "Wacht über das gesamte Reich der Himmelswesen; gibt dir pro Runde eine zufällige Zusatzkarte, die keine Startkarte sein muss, wenn er auf dem Feld platziert ist", 13, 13, 13, ["Alle"], ["Engel+Engelshaar"])
 Friedensengel = Lebewesen("Friedensengel", "Wacht über den Frieden im Himmelsreich und in Klumpiland; kann insgesamt 3 Lebensräume zu Wonderlands machen, in denen alle Lebewesen leben können", 13, 5, 21, ["Alle"], ["Engel+Regenbogen"])
@@ -398,9 +401,12 @@ Phönix = Lebewesen("Phönix", "Ein riesiger Vogel mit brennendem Gefieder", 13,
 # -> Stufe 4 -> +7 #Eis, Blut, Regenbogen, Engelshaar, Stein von Elyaris#
 Diebische_Elster = Lebewesen("Diebische Elster", "Kann 3 Mal das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
 
-#Weltenwandler -> Gummikrieger + Fee ###
-Weltenwandler = Lebewesen("Weltenwandler", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
-# -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
+#Weltenwanderer -> Gummikrieger + Fee ###
+Weltenwanderer = Lebewesen("Weltenwanderer", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
+# -> Stufe 1 -> +1 #Erde, Luft, Magie#
+Wüstenwanderer = Lebewesen("Wüstenwanderer", "Taucht bevorzugt in endlosen heißen Wüsten oder Vulkanen auf; stärker im Lebensraum Wüste", 11, 12, 10, ["Alle"], ["Weltenwanderer+Feuer"])
+Wasserwanderer = Lebewesen("Wasserwanderer", "Ein kleiner Junge der in einer fernen Welt in einem winzigen magischen Bergsee ertrank und seitdem zwischen den Welten festhängt; stärker im Lebensraum See", 11, 11, 11, ["Alle"], ["Weltenwanderer+Wasser"])
+
 # -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
@@ -738,7 +744,7 @@ Mehr_Kombi_Liste = ["Gummikrieger", "Starker Krieger",
                     "Drache", "Starker Drache",
                     "Zottel", "Doppelzottel",
                     "Fee", "Feenkönigin",
-                    "Zeppelindrache", "Echsenmensch", "Engel", "Rätselhafter Vogel", "Weltenwandler", "Werwolf"]        
+                    "Zeppelindrache", "Echsenmensch", "Engel", "Rätselhafter Vogel", "Weltenwanderer", "Werwolf"]        
 for Grund_Karte in Mehr_Kombi_Liste:
     Mehr_Kombi(Grund_Karte)
 
