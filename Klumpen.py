@@ -403,9 +403,10 @@ Diebische_Elster = Lebewesen("Diebische Elster", "Kann 3 Mal das schlechteste Le
 
 #Weltenwanderer -> Gummikrieger + Fee ###
 Weltenwanderer = Lebewesen("Weltenwanderer", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
-# -> Stufe 1 -> +1 #Erde, Luft, Magie#
+# -> Stufe 1 -> +1 #Erde, Magie#
 Wüstenwanderer = Lebewesen("Wüstenwanderer", "Taucht bevorzugt in endlosen heißen Wüsten oder Vulkanen auf; stärker im Lebensraum Wüste", 11, 12, 10, ["Alle"], ["Weltenwanderer+Feuer"])
-Wasserwanderer = Lebewesen("Wasserwanderer", "Ein kleiner Junge der in einer fernen Welt in einem winzigen magischen Bergsee ertrank und seitdem zwischen den Welten festhängt; stärker im Lebensraum See", 11, 11, 11, ["Alle"], ["Weltenwanderer+Wasser"])
+Wasserwanderer = Lebewesen("Wasserwanderer", "Ein kleiner Junge der in einer fernen Welt in einem winzigen Bergsee ertrank und seitdem zwischen den Welten festhängt; stärker im Lebensraum See", 11, 11, 11, ["Alle"], ["Weltenwanderer+Wasser"])
+Höhenwanderer = Lebewesen("Höhenwanderer", "Manchmal wirkt es so, als würde er ein Stückchen neben dem Berg in der Luft hängen; stärker im Lebensraum Berge", 11, 11, 11, ["Alle"], ["Weltenwanderer+Luft"])
 
 # -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
