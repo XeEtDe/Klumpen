@@ -193,15 +193,18 @@ Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unte
 
 Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
 # -> Stufe 2 -> +3
-Koi = Lebewesen("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; produziert jede Runde ein Element, das Lebensräume vergrößern oder Lebewesen verbessern kann", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
+Koi = Lebewesen("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; kann Lebensräume um einen Platz vergrößern", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
 Parasit = Lebewesen("Parasit", "Kann einmal im Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
-# -> Stufe 3 -> +5 #Pusteblume#
+# -> Stufe 3 -> +5
+Verrückter_Gnom = Lebewesen("Verrückter Gnom", "An manchen Tagen hallt das Lachen diesen kleinen Männchens durch den Wald; gibt dir pro Runde ein Goldstück, wenn er auf dem Feld platziert ist", 6, 7, 5, ["Wald"], ["Klumpi+Pusteblume"])
 Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; können pro Runde die Werte eines Lebewesens um 3 erhöhen (müssen dazu auf dem Feld platziert sein)", 6, 5, 7, ["See"], ["Klumpi+Perle"])
 Dunkler_Magier = Lebewesen("Dunkler Magier", "Stellt aus Elementen Gifte her, die du auf andere Spieler anwenden kannst (muss dazu auf dem Feld platziert sein)", 6, 6, 6, ["Alle"], ["Klumpi+Dunkle Macht"])
 Marienkäfer = Lebewesen("Marienkäfer", "Bei der Zugreihenfolge des Auswahlstapels bist du vor den anderen Spielern an der Reihe, solange der Käfer auf dem Feld platziert ist", 6, 1, 11, ["Alle"], ["Klumpi+Pfingstrose"])
 Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei der du entscheidest ob sie ein Element, Lebewesen oder Lebensraum sein soll, wenn er auf dem Feld platziert ist (dazu: Joker + gewünschte Kartenart)", 6, 6, 6, ["Alle"], ["Klumpi+Sternenstaub", "Klumpi+Kristall"])
-# -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
+# -> Stufe 4 -> +7 #Schleim, Blut, Engelshaar, Stein von Elyaris#
+Kobold = Lebewesen("Kobold", "Gibt dir pro Runde einen Kessel voller Gold, wenn er auf dem Feld platziert ist", 8, 8, 8, ["Alle"], ["Klumpi+Regenbogen"])
+Schreier = Lebewesen("Schreier", "Sein greller Schrei hallt noch Tage in den Ohren derer, die ihn höhren; kann drei Mal im Spiel einen Spieler drei Züge aussetzen lassen", 8, 10, 6, ["Alle"], ["Klumpi+Eis", "Klumpi+Blitz"])
 
 #Drachen
 Drachenei = Lebewesen("Drachenei", "Benötigt einen Zug zum Schlüpfen, nachdem es im Lebensraum platziert wurde", 0, 0, 0, ["Berge"], [], True)
@@ -344,7 +347,7 @@ Baby_Feenkönigin = Lebewesen("Baby_Feenkönigin", "Gerade aus einer Blume gebor
 Unwetter_Feenkönigin = Lebewesen("Unwetter-Feenkönigin", "Extrafunktion", 15, 20, 10, ["Alle"], ["Feenkönigin+Blitz", "Feenkönigin+Eis", "Feenkönigin+Schleim"])
 Lebens_Feenkönigin = Lebewesen("Lebens-Feenkönigin", "Extrafunktion", 15, 15, 15, ["Alle"], ["Feenkönigin+Blut", "Feenkönigin+Stein von Elyaris", "Feenkönigin+Regenbogen", "Feenkönigin+Engelshaar"])
 
-#Zeppelindrache -> Drache + Zottel ###
+#Zeppelindrache -> Drache + Zottel
 Zeppelindrache = Lebewesen("Zeppelindrache", "Riesiger Drache, der trotz fehlender Flügel schweben kann", 12, 4, 20, ["Berge"], ["Drache+Zottel"])
 # -> Stufe 1 -> +1
 Brennender_Zeppelindrache = Lebewesen("Brennender Zeppelindrache", "Das Feuer macht ihm nichts aus", 13, 6, 20, ["Berge", "Wüste"], ["Zeppelindrache+Feuer"])
@@ -363,9 +366,12 @@ Unsichtbarer_Zeppelindrache = Lebewesen("Unsichtbarer Zeppelindrache", "Jedes Ha
 Toter_Zeppelindrache = Lebewesen("Toter Zeppelindrache", "Seine Augen sind leer, sein Inneres tot und er wird nur noch von der dunklen Macht bewegt", 17, 10, 24, ["Alle"], ["Zeppelindrache+Dunkle Macht"])
 Kosmischer_Zeppelindrache = Lebewesen("Kosmischer Zeppelindrache", "Kann große Mengen an Sauerstoff in seinem Inneren speichern und so für eine Weile durch das Weltall schweben", 17, 8, 26, ["Alle"], ["Zeppelindrache+Sternenstaub"])
 Durchsichtiger_Zeppelindrache = Lebewesen("Durchsichtiger Zeppelindrache", "Jede Zelle seines Körpers ist durchsichtig und bricht das Licht, wodurch er ein wunderschönes Farbenspiel am Himmel hinterlässt", 17, 8, 26, ["Alle"], ["Zeppelindrache+Kristall"])
-# -> Stufe 4 -> +7 #Schleim, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
+# -> Stufe 4 -> +7
 Frost_Zeppelindrache = Lebewesen("Frost-Zeppelindrache", "Lebt im ewigen Eis des hohen Nordens", 19, 12, 26, ["Berge"], ["Zeppelindrache+Eis"])
-
+Rubin_Zeppelindrache = Lebewesen("Rubin-Zeppelindrache", "Sein Fell glänzt blutrot während er am Himmel vorbei schwebt; stärker im Lebensraum Wüste", 19, 11, 27, ["Alle"], ["Zeppelindrache+Blut"])
+Gewitter_Zeppelindrache = Lebewesen("Gewitter-Zeppelindrache", "Sein Fell speichert Elektrizität und kann bei Gefahr Gewitter aus grellen Blitzen entfachen", 19, 12, 26, ["Alle"], ["Zeppelindrache+Blitz"])
+Sumpfiger_Zeppelindrache = Lebewesen("Sumpfiger Zeppelindrache", "Eine Jahre alte Schicht aus Schlamm, Blättern und Bakterien umhüllt ihn zu seinem Schutz; stärker im Lebensraum See", 19, 10, 28, ["Alle"], ["Zeppelindrache+Schleim"])
+Himmlischer_Zeppelindrache = Lebewesen("Himmlischer Zeppelindrache", "Wurde von den Himmelswesen erschaffen und dient diesen", 19, 10, 28, ["Berge"], ["Zeppelindrache+Engelshaar", "Zeppelindrache+Regenbogen", "Zeppelindrache+Stein von Elyaris"])
 
 #Echsenmensch -> Drache + Klumpi ###
 Echsenmensch = Lebewesen("Echsenmensch", "Die Gesellschaft der Echsenmenschen plant Klumpiland zu übernehmen", 10, 10, 10, ["Wüste"], ["Klumpi+Drache"])
@@ -376,7 +382,8 @@ Echsenmensch = Lebewesen("Echsenmensch", "Die Gesellschaft der Echsenmenschen pl
 
 #Engel -> Klumpi + Fee ### -> Extrafunktionen
 Engel = Lebewesen("Engel", "Ein geflügeltes Himmelswesen", 6, 6, 6, ["Alle"], ["Klumpi+Fee"])
-# -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
+# -> Stufe 1 -> +1 #Wasser, Erde, Luft, Magie#
+Brennender_Engel = Lebewesen("Brennender Engel", "In seinem Ehrgeiz kam er der Sonne etwas zu nahe", 7, 8, 6, ["Alle"], ["Engel+Feuer"])
 # -> Stufe 2 -> +3 #Wölkchen, Beere, Zeit#
 Todesengel = Lebewesen("Todesengel", "Wacht über das Reich der Toten; stärker im Lebensraum See", 9, 10, 8, ["Alle"], ["Engel+Staub", "Engel+Asche"])
 # -> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall#
@@ -389,7 +396,7 @@ Friedensengel = Lebewesen("Friedensengel", "Wacht über den Frieden im Himmelsre
 
 #Rätselhafter Vogel -> Fee + Zottel ###
 Rätselhafter_Vogel = Lebewesen("Rätselhafter Vogel", "In seine Augen scheinen alle Geheinmisse dieser Welt zu schimmern", 8, 6, 10, ["Alle"], ["Fee+Zottel"])
-# -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Magie#
+# -> Stufe 1 -> +1 #Wasser, Erde, Magie#
 Glühwürmchen = Lebewesen("Glühwürmchen", "Owl City - Fireflies", 9, 5, 13, ["Alle"], ["Rätselhafter Vogel+Feuer"])
 Origami = Lebewesen("Origami", "Ein Vogel aus Papier, der seinen Erschaffer mit Informationen versorgt; gibt dir pro Runde einen Extrazug, wenn er auf dem Feld platziert ist", 9, 3, 15, ["Alle"], ["Rätselhafter Vogel+Luft"])
 # -> Stufe 2 -> +3 #Staub, Beere#
@@ -397,7 +404,7 @@ Bernsteineule = Lebewesen("Bernsteineule", "Eine fast unbewegliche Eule mit klug
 Rabenschaar = Lebewesen("Rabenschaar", "Kündigen den Tod eines Mühlknappen an", 11, 15, 7, ["Alle"], ["Rätselhafter Vogel+Asche"])
 Wolkenvogel = Lebewesen("Wolkenvogel", "Erschaffen von einem Mädchen, dessen Haare alle Farben des Lichts brachen", 11, 8, 14, ["Alle"], ["Rätselhafter Vogel+Wölkchen"])
 # -> Stufe 3 -> +5 #Pusteblume, Perle, Sternenstaub, Kristall, Dunkle Macht#
-Phönix = Lebewesen("Phönix", "Ein riesiger Vogel mit brennendem Gefieder", 13, 13, 13, ["Alle"], ["Rätselhafter Vogel+Pfingstrose"])
+Phönix = Lebewesen("Phönix", "Am Ende seines Lebenszyklus verbrennt er, um aus der Asche neu geboren zu werden", 13, 13, 13, ["Alle"], ["Rätselhafter Vogel+Pfingstrose"])
 # -> Stufe 4 -> +7 #Eis, Blut, Regenbogen, Engelshaar, Stein von Elyaris#
 Diebische_Elster = Lebewesen("Diebische Elster", "Kann 3 Mal das schlechteste Lebewesen eines gewählten Spielers für dich stehlen (dazu: Diebische Elster + gewählter Spieler)", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
 
@@ -407,7 +414,6 @@ Weltenwanderer = Lebewesen("Weltenwanderer", "Eine gesichtslose Gestalt, die hin
 Wüstenwanderer = Lebewesen("Wüstenwanderer", "Taucht bevorzugt in endlosen heißen Wüsten oder Vulkanen auf; stärker im Lebensraum Wüste", 11, 12, 10, ["Alle"], ["Weltenwanderer+Feuer"])
 Wasserwanderer = Lebewesen("Wasserwanderer", "Ein kleiner Junge der in einer fernen Welt in einem winzigen Bergsee ertrank und seitdem zwischen den Welten festhängt; stärker im Lebensraum See", 11, 11, 11, ["Alle"], ["Weltenwanderer+Wasser"])
 Höhenwanderer = Lebewesen("Höhenwanderer", "Manchmal wirkt es so, als würde er ein Stückchen neben dem Berg in der Luft hängen; stärker im Lebensraum Berge", 11, 11, 11, ["Alle"], ["Weltenwanderer+Luft"])
-
 # -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
@@ -420,12 +426,6 @@ Urwolf = Lebewesen("Urwolf", "Ein alter grauer Werwolf, der einmal im Spiel eine
 #-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
 # -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
-#Troll -> Drache + Fee ###
-Troll = ("Troll", "Trolle bitte nicht füttern", 13, 16, 12, ["Wald", "Berge"], ["Drache+Fee"])
-# -> Stufe 1 -> +1 #Wasser, Feuer, Erde, Luft, Magie#
-# -> Stufe 2 -> +3 #Wölkchen, Staub, Beere, Asche, Zeit#
-#-> Stufe 3 -> +5 #Pusteblume, Pfingstrose, Perle, Sternenstaub, Kristall, Dunkle Macht#
-# -> Stufe 4 -> +7 #Schleim, Eis, Blut, Blitz, Regenbogen, Engelshaar, Stein von Elyaris#
 
 #Lebensraum
 class Lebensraum(Karten):
