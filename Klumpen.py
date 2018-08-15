@@ -561,7 +561,7 @@ Vergrößerungs_Trank = Elemente("Vergrößerungs-Trank", "Vergrößert einen Le
 Verkohlter_Trank = Elemente("Verkohlter Trank", "Härtet ein Lebewesen ab, sodass es in allen Lebensräumen leben kann")
 #Tränke -> Stufe 3
 Schwarzer_Trank = Elemente("Schwarzer Trank", "Verringert die Werte eines zufälligen gegnerischen Lebewesens um 5 (zum Anwenden den Tranknamen tippen)")
-Glitzernder_Trank = Elemente("Glitzernder Trank", "Erhöht die Werte eines Lebewesens um 7", ["Zauberer+Perle", "Zauberer+Sternenstaub")
+Glitzernder_Trank = Elemente("Glitzernder Trank", "Erhöht die Werte eines Lebewesens um 7")
 Duftender_Trank = Elemente("Duftender Trank", "Verwandelt einen Lebensraum in ein Wonderland, in dem alle Lebewesen leben können")
 #Tränke -> Stufe 4
 Himmlischer_Trank = Elemente("Himmlischer Trank", "Erhöht die Werte eines Lebewesens um 10")

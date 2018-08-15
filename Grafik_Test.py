@@ -1,12 +1,16 @@
-import pygame
+import pygame as pg
 
-pygame.init()
-sreen = pygame.display.set_mode((1000, 900))
+pg.init()
+sreen = pg.display.set_mode((300, 200))
+pg.display.set_caption("Klumpen")
+clock = pg.time.Clock()
+
+
 done = False
-
 while done == False:
-        for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+        for event in pg.event.get():
+                if event.type == pg.QUIT:
                         done = True
 
-        pygame.display.flip()
+        pg.display.flip()
+        clock.tick(60)
