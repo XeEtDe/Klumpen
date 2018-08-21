@@ -8,20 +8,33 @@ import Karten
 #Buttons
 Buttons = []
 class Button:
-	def __init__(self, Rect, Funktion, Bild = None, Text = None, Oberfläche = None, Maus_Pos = False):
+	def __init__(self, Rect, Funktion, Bild = None, Bild_2 = None, Text = None, Maus_Pos = False):
 		self.Rect = Rect
 		self.Funktion = Funktion
 		self.Maus_Pos = Maus_Pos
-		self.Bild = None
-		self.Text = None
-		self.Oberfläche = pg.Surface((Rect[2], Rect[3]), pg.SRCALPHA)
-        screen.blit(Oberfläche, (Rect[0], Rect[1]))
+		self.Bild = Bild
+		self.Bild_2 = Bild_2
+		self.Text = Text
+		Oberfläche = pg.Surface((Rect[2], Rect[3]))
+		Oberfläche.fill((255, 0, 255))
+		Oberfläche.set_colorkey((255, 0, 255))
         #Bild und Text in die Mitte des Buttons
 		if not Bild == None:
-			screen.blit(Bild, (Oberfläche.get_width() / 2 - Bild.get_width() / 2, Oberfläche.get_height() / 2 - Bild.get_height() / 2))
+			Oberfläche.blit(Bild, (Oberfläche.get_width() / 2 - Bild.get_width() / 2, Oberfläche.get_height() / 2 - Bild.get_height() / 2))
 		if not Text == None:
-			screen.blit(Text, (Oberfläche.get_width() / 2 - Text.get_width() / 2, Oberfläche.get_height() / 2 - Text.get_height() / 2))
+			Oberfläche.blit(Text, (Oberfläche.get_width() / 2 - Text.get_width() / 2, Oberfläche.get_height() / 2 - Text.get_height() / 2))
+		screen.blit(Oberfläche, (Rect[0], Rect[1]))
 		Buttons.append(self)
+
+		def Change(self):
+			Oberfläche = pg.Surface((Rect[2], Rect[3]))
+		    Oberfläche.fill((255, 0, 255))
+		    Oberfläche.set_colorkey((255, 0, 255))
+            #anderes Bild und Text in die Mitte des Buttons
+			Oberfläche.blit(Bild_2, (Oberfläche.get_width() / 2 - Bild_2.get_width() / 2, Oberfläche.get_height() / 2 - Bild_2.get_height() / 2))
+		    if not Text == None:
+			    Oberfläche.blit(Text, (Oberfläche.get_width() / 2 - Text.get_width() / 2, Oberfläche.get_height() / 2 - Text.get_height() / 2))
+		    screen.blit(Oberfläche, (Rect[0], Rect[1]))
 
 #Bilder laden
 Bilder = {}
@@ -35,12 +48,14 @@ def get_image(path):
 
 #Funktionen
 def Regeln():
-	print("Regeln")
+	pass
 
 def Start():
 	global Buttons
 	Buttons = []
 	screen.fill((255, 255, 210))
+	#Modus
+
 
 #Startbildschirm
 screen = pg.display.set_mode((800, 600))
@@ -54,16 +69,13 @@ screen.blit(Text_K, (screen.get_width() / 2 - Text_K.get_width() / 2, screen.get
 #Regeln
 Regeln_Bild = get_image("regeln.png")
 Text_R = (pg.font.Font(None, 50)).render("Regeln", True, (0, 0, 0)) #"Regeln" in Standartschrift, Größe 50, Farbe schwarz
-Regeln_Rect = Rect(screen.get_width() * 1/4 - Regeln_Bild.get_width() / 2, screen.get_height() / 2 - Regeln_Bild.get_height() / 2 + 150, Regeln_Bild.get_width(), Regeln_Bild.get_height())
+Regeln_Rect = pg.Rect(screen.get_width() * 1/4 - Regeln_Bild.get_width() / 2, screen.get_height() / 2 - Regeln_Bild.get_height() / 2 + 150, Regeln_Bild.get_width(), Regeln_Bild.get_height())
 Regeln_Button = Button(Regeln_Rect, Regeln, Regeln_Bild, Text_R)
 #Start
 Start_Bild = get_image("start.png")
-screen.blit(Start_Bild, (screen.get_width() * 3/4 - Start_Bild.get_width() / 2, screen.get_height() / 2 - Start_Bild.get_height() / 2 + 150))
 Text_S = (pg.font.Font(None, 50)).render("Start", True, (0, 0, 0)) #"Start" in Standartschrift, Größe 50, Farbe schwarz
-screen.blit(Text_S, (screen.get_width() * 3/4 - Text_S.get_width() / 2, screen.get_height() / 2 - Text_S.get_height() / 2 + 150))
-
-#Start_Rect = pg.Rect(screen.get_width() * 3/4 - Start_Bild.get_width() / 2, screen.get_height() / 2 - Start_Bild.get_height() / 2 + 150, Start_Bild.get_width(), Start_Bild.get_height())
-#Start_Button = Button(Start_Rect, Start)
+Start_Rect = pg.Rect(screen.get_width() * 3/4 - Start_Bild.get_width() / 2, screen.get_height() / 2 - Start_Bild.get_height() / 2 + 150, Start_Bild.get_width(), Start_Bild.get_height())
+Start_Button = Button(Start_Rect, Start, Start_Bild, Text_S)
 
 #Events
 done = False
