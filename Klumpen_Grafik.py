@@ -2,7 +2,7 @@ import random
 import pygame as pg
 pg.init()
 import Karten
-import pygame_textinput as textinput
+import textbox
 
 #Startbildschirm
 screen = pg.display.set_mode((1600, 900), pg.FULLSCREEN)
@@ -71,7 +71,7 @@ class Button:
 		screen.blit(Oberfläche, (self.Rect[0], self.Rect[1]))
 
 #Buttons und Funktionen
-Einstellungen = [None, None, None, None] #[Modus, Spieler, Runden, Züge]
+Einstellungen = [None, [], None, None] #[Modus, Spieler, Runden, Züge]
 #Modus
 Kreis_Bild = get_image("kreisbild.png")
 Kreis_Bild_2 = get_image("kreisbild2.png")
@@ -95,15 +95,13 @@ Kampf_Button = Button(Kampf_Rect, Kampf_Funk, Kreis_Bild, None, Kreis_Bild_2)
 #Spieler
 Kleiner_Haken = get_image("hakenklein.png")
 Kleiner_Haken_Blass = get_image("hakenkleinblass.png")
-def Input_Box():
-	In_Feld = textinput.TextInput()
-	while True:
-		In_Feld.update(pg.event.get())
-		screen.blit(In_Feld.get_surface(), (900, 350))
-Input_Button = Button(pg.Rect(900, 350, 420, 50), Input_Box, None, None, None, (255, 255, 255))
-def Spieler_Hinzu():
+Input_Box = textbox.TextBox((900, 350, 420, 50))
+def Spieler_Hinzu(Name = None):
 	if Spieler_Hinzu_Button.Switch == True:
-		pass
+		if Name == None:
+			Name = Input_Box.final
+		if Name in Einstellungen[1]:
+			Text = get_Text("Wähle unterschiedliche Spielernamen", 30)
 Spieler_Hinzu_Button = Button(pg.Rect(1400, 350, Kleiner_Haken.get_width(), Kleiner_Haken.get_height()), Spieler_Hinzu, Kleiner_Haken_Blass, None, Kleiner_Haken)
 
 #Regeln
@@ -140,7 +138,11 @@ def Start():
 	Text = get_Text("Spieler?", 50)
 	screen.blit(Text, (screen.get_width() / 2 - Text.get_width() / 2, 280))
 	Spieler_Hinzu_Button.create_button()
-	Input_Button.create_button()
+	Input_Box.process_kwarks("command":Spieler_Hinzu)
+	Input_Box.update()
+	Input_Box.draw(screen)
+	global Input
+	Input = True
 Start_Bild = get_image("start.png")
 Text_S = get_Text("Start", 50)
 Start_Rect = pg.Rect(1000, 500, Start_Bild.get_width(), Start_Bild.get_height())
@@ -179,5 +181,8 @@ while done == False:
 	    	for Button in Buttons:
 	    		if Button.Maus_Pos == True:
 	    			Button.Funktion()
-
+	    if Input == True:
+	        Input_Box.get_event(event)
+	        Input_Box.update()
+	        Input_Box.draw(screen)
     pg.display.flip()
