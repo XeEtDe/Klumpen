@@ -95,14 +95,28 @@ Kampf_Button = Button(Kampf_Rect, Kampf_Funk, Kreis_Bild, None, Kreis_Bild_2)
 #Spieler
 Kleiner_Haken = get_image("hakenklein.png")
 Kleiner_Haken_Blass = get_image("hakenkleinblass.png")
-Input_Box = textbox.TextBox((900, 350, 420, 50))
+Kreuz = get_image("kreuz.png")
+Kreuz_Blass = get_image("kreuzblass.png")
+Input_Box = textbox.TextBox((850, 320, 420, 50))
+def Print_Spieler():
+	pass
+def Spieler_Entf():
+	pass
+Spieler_Hintergrund = {}
+for Num in range(1, 6):
+	Spieler_Hintergrund.update({Num:[Button(pg.Rect(400, 300 + 20*Num + 50*(Num-1) + 5, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)]})
 def Spieler_Hinzu(Name = None):
 	if Spieler_Hinzu_Button.Switch == True:
 		if Name == None:
 			Name = Input_Box.final
 		if Name in Einstellungen[1]:
-			Text = get_Text("Wähle unterschiedliche Spielernamen", 30)
-Spieler_Hinzu_Button = Button(pg.Rect(1400, 350, Kleiner_Haken.get_width(), Kleiner_Haken.get_height()), Spieler_Hinzu, Kleiner_Haken_Blass, None, Kleiner_Haken)
+			Text = get_Text("Wähle unterschiedliche Spielernamen", 30, pg.Color("red"))
+			screen.blit(Text, (1380, 300))
+		else:
+			Einstellungen[1].append(Name)
+			Print_Spieler()
+		Spieler_Hinzu_Button.Change()
+Spieler_Hinzu_Button = Button(pg.Rect(1400, 320, Kleiner_Haken.get_width(), Kleiner_Haken.get_height()), Spieler_Hinzu, Kleiner_Haken_Blass, None, Kleiner_Haken)
 
 #Regeln
 def Regeln():
@@ -136,13 +150,24 @@ def Start():
 	Kampf_Button.create_button()
 	#Spieler
 	Text = get_Text("Spieler?", 50)
+	screen.blit(Text, (screen.get_width() / 2 - Text.get_width() / 2, 240))
+	Text = get_Text("1 bis 5", 35)
 	screen.blit(Text, (screen.get_width() / 2 - Text.get_width() / 2, 280))
 	Spieler_Hinzu_Button.create_button()
-	Input_Box.process_kwarks("command":Spieler_Hinzu)
+	Input_Box.process_kwargs({"command":Spieler_Hinzu})
 	Input_Box.update()
 	Input_Box.draw(screen)
 	global Input
 	Input = True
+	for Num in Spieler_Hintergrund:
+		Dings = Spieler_Hintergrund[Num]
+		Dings[0].create_button()
+		Surf = pg.Surface((420, 50))
+		Surf.fill((255, 255, 255))
+		x = 200
+		y = 300 + 20*Num + 50*(Num-1)
+		screen.blit(Surf, (x, y))
+		Spieler_Hintergrund[Num].append((x,y))
 Start_Bild = get_image("start.png")
 Text_S = get_Text("Start", 50)
 Start_Rect = pg.Rect(1000, 500, Start_Bild.get_width(), Start_Bild.get_height())
