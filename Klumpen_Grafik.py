@@ -2,6 +2,7 @@ import random
 import pygame as pg
 pg.init()
 import Karten
+import string
 import textbox
 
 #Startbildschirm
@@ -71,7 +72,7 @@ class Button:
 		screen.blit(Oberfläche, (self.Rect[0], self.Rect[1]))
 
 #Buttons und Funktionen
-Einstellungen = [None, [], None, None] #[Modus, Spieler, Runden, Züge]
+Einstellungen = [None, [], 0, 0] #[Modus, Spieler, Runden, Züge]
 #Modus
 Kreis_Bild = get_image("kreisbild.png")
 Kreis_Bild_2 = get_image("kreisbild2.png")
@@ -102,6 +103,16 @@ def Print_Spieler():
 	Spieler_Liste = Einstellungen[1]
 	Counter = len(Spieler_Liste)
 	Fertig = 0
+	while Fertig < 5:
+		Dings = Spieler_Hintergrund[Fertig+1]
+		Fläche = Dings[1]
+		pg.draw.rect(screen, (255, 255, 255), Fläche)
+		pg.draw.rect(screen, (0, 0, 0), Fläche, 1)
+		Weg_Button = Dings[0]
+		if Weg_Button.Switch == True:
+			Weg_Button.Change()
+		Fertig += 1
+	Fertig = 0
 	while Counter > 0:
 		Spieler_Name = Spieler_Liste[Fertig]
 		Text = get_Text(Spieler_Name, 50)
@@ -112,27 +123,10 @@ def Print_Spieler():
 			Weg_Button.Change()
 		Counter -= 1
 		Fertig += 1
-	while Fertig < 5:
-		Dings = Spieler_Hintergrund[Fertig+1]
-		Fläche = Dings[1]
-		pg.draw.rect(screen, (255, 255, 255), Fläche)
-		pg.draw.rect(screen, (0, 0, 0), Fläche, 1)
-		Weg_Button = Dings[0]
-		if Weg_Button.Switch == True:
-			Weg_Button.Change()
-		Fertig += 1
-def Spieler_Entf():
-	for Num in Spieler_Hintergrund:
-		Dings = Spieler_Hintergrund[Num]
-		Weg_Button = Dings[0]
-		Test_Rect = pg.Rect(620, 300 + 20*Num + 50*(Num-1) + 5, Kreuz.get_width(), Kreuz.get_height())
-		if Weg_Button.Rect.contains(Test_Rect) == True:
-			if Weg_Button.Switch == True:
-				Index = Num - 1
-				Spieler_Liste = Einstellungen[1]
-				Spieler_Liste.remove(Spieler_Liste[Index])
-				Print_Spieler()
-				break
+	
+def Spieler_Entf(Index):
+	Dings_Dict = {Weg_Button_1:0, Weg_Button_2:1, Weg_Button_3:2, Weg_Button_4:3, Weg_Button_5:4}
+
 Spieler_Hintergrund = {}
 Weg_Button_1 = Button(pg.Rect(620, 325, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
 Weg_Button_2 = Button(pg.Rect(620, 395, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
@@ -152,11 +146,34 @@ def Spieler_Hinzu(Name = None):
 			Name = Input_Box.final
 		if Name in Einstellungen[1]:
 			Text = get_Text("Wähle unterschiedliche Spielernamen", 30, pg.Color("red"))
-			screen.blit(Text, (1380, 300))
+			screen.blit(Text, (900 + (210 - Text.get_width() / 2), 420))
 		else:
 			Einstellungen[1].append(Name)
 			Print_Spieler()
 Spieler_Hinzu_Button = Button(pg.Rect(1350, 320, Kleiner_Haken.get_width(), Kleiner_Haken.get_height()), Spieler_Hinzu, Kleiner_Haken_Blass, None, Kleiner_Haken)
+
+#Runden und Züge
+Runden_Box = textbox.TextBox((290, 800, 200, 50))
+Züge_Box = textbox.TextBox((801.5, 800, 200, 50))
+Boxen = [Input_Box, Runden_Box, Züge_Box]
+#Fertig Button
+Großer_Haken = get_image("hakengroß.png")
+Großer_Haken_Blass = get_image("hakengroßblass.png")
+def Fertig():
+	if Fertig_Button.Switch == True:
+		global Modus
+		global Alle_Spieler
+		global Runden
+		global Züge
+		Modus = Einstellungen[0]
+		Alle_Spieler = Einstellungen[1]
+		Runden = Einstellungen[2]
+		Züge = Einstellungen[3]
+		print(Einstellungen)
+		screen.fill((255, 255, 210))
+		global Input
+		Input = False
+Fertig_Button = Button(pg.Rect(1250, 680, Großer_Haken.get_width(), Großer_Haken.get_height()), Fertig, Großer_Haken_Blass, None, Großer_Haken)
 
 #Regeln
 def Regeln():
@@ -196,11 +213,9 @@ def Start():
 	Text = get_Text("Spielernamen eingeben", 35)
 	screen.blit(Text, (900 + (210 - Text.get_width() / 2), 380))
 	Spieler_Hinzu_Button.create_button()
-	Input_Box.process_kwargs({"command":Spieler_Hinzu})
+	Input_Box.process_kwargs({"command":Spieler_Hinzu, "clear_on_enter":True})
 	Input_Box.update()
 	Input_Box.draw(screen)
-	global Input
-	Input = True
 	for Num in Spieler_Hintergrund:
 		Dings = Spieler_Hintergrund[Num]
 		y = 300 + 20*Num + 50*(Num-1)
@@ -209,6 +224,29 @@ def Start():
 		pg.draw.rect(screen, (0, 0, 0), Fläche, 1)
 		Dings[0].create_button()
 		Spieler_Hintergrund[Num].append(Fläche)
+	#Runden und Züge
+	Text_1 = get_Text("Runden?", 50)
+	screen.blit(Text_1, (180 + (210 - Text_1.get_width() / 2), 680))
+	Text = get_Text("- 5 bis 20 Runden empfohlen", 30)
+	screen.blit(Text, ((180 + (210 - Text_1.get_width() / 2)) - (Text.get_width() / 2 - Text_1.get_width() / 2), 730))
+	Text = get_Text("- pro Runde werden neue Karten ausgegeben", 30)
+	screen.blit(Text, ((180 + (210 - Text_1.get_width() / 2)) - (Text.get_width() / 2 - Text_1.get_width() / 2), 760))
+	Text_2 = get_Text("Züge?", 50)
+	screen.blit(Text_2, (850, 680))
+	Text = get_Text("- 3 bis 10 Züge empfohlen", 30)
+	screen.blit(Text, (850 - (Text.get_width() / 2 - Text_2.get_width() / 2), 730))
+	Text = get_Text("- Aktionen pro Spieler pro Runde", 30)
+	screen.blit(Text, (850 - (Text.get_width() / 2 - Text_2.get_width() / 2), 760))
+	Runden_Box.process_kwargs({"ACCEPTED":string.digits})
+	Runden_Box.update()
+	Runden_Box.draw(screen)
+	Züge_Box.process_kwargs({"ACCEPTED":string.digits})
+	Züge_Box.update()
+	Züge_Box.draw(screen)
+	global Input
+	Input = True
+	#Fertig Button
+	Fertig_Button.create_button()
 Start_Bild = get_image("start.png")
 Text_S = get_Text("Start", 50)
 Start_Rect = pg.Rect(1000, 500, Start_Bild.get_width(), Start_Bild.get_height())
@@ -248,14 +286,30 @@ while done == False:
 	    		if Button.Maus_Pos == True:
 	    			Button.Funktion()
 	    if Input == True:
-	        Input_Box.get_event(event)
-	        Input_Box.update()
-	        Input_Box.draw(screen)
-	        if (not Input_Box.final == "") and (len(Einstellungen[1]) < 5):
-	        	if Spieler_Hinzu_Button.Switch == False:
+	    	for Box in Boxen:
+		        Box.get_event(event)
+		        Box.update()
+		        Box.draw(screen)
+	    	if (not Input_Box.final == "") and (len(Einstellungen[1]) < 5):
+	    		if Spieler_Hinzu_Button.Switch == False:
 	        		Spieler_Hinzu_Button.Change()
-	        else:
-	        	if Spieler_Hinzu_Button.Switch == True:
-	        		Spieler_Hinzu_Button.Change()
-    
+	    	else:
+	    		if Spieler_Hinzu_Button.Switch == True:
+	    			Spieler_Hinzu_Button.Change()
+	    	if (not Runden_Box.final == ""):
+	    		Einstellungen[2] = int(Runden_Box.final)
+	    	else:
+	    		Einstellungen[2] = 0
+	    	if (not Züge_Box.final == ""):
+	    		Einstellungen[3] = int(Züge_Box.final)
+	    	else:
+	    		Einstellungen[3] = 0
+	    	for Wert in Einstellungen:
+	        	if Wert == None or Wert == [] or Wert == 0:
+	        		if Fertig_Button.Switch == True:
+	        			Fertig_Button.Change()
+	        	else:
+	        		if Fertig_Button.Switch == False:
+	        			Fertig_Button.Change()
+
     pg.display.flip()

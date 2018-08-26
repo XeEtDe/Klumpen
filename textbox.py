@@ -1,10 +1,6 @@
 import string
 import pygame as pg
 
-
-ACCEPTED = string.ascii_letters+string.digits+string.punctuation+" "
-
-
 class TextBox(object):
     def __init__(self,rect,**kwargs):
         self.rect = pg.Rect(rect)
@@ -27,8 +23,9 @@ class TextBox(object):
                     "outline_width" : 2,
                     "active_color" : pg.Color("black"),
                     "font" : pg.font.Font(None, self.rect.height+4),
-                    "clear_on_enter" : True,
-                    "inactive_on_enter" : True}
+                    "clear_on_enter" : False,
+                    "inactive_on_enter" : False,
+                    "ACCEPTED":string.ascii_letters+string.digits+string.punctuation+" "}
         for kwarg in kwargs:
             if kwarg in defaults:
                 defaults[kwarg] = kwargs[kwarg]
@@ -43,7 +40,7 @@ class TextBox(object):
             elif event.key == pg.K_BACKSPACE:
                 if self.buffer:
                     self.buffer.pop()
-            elif event.unicode in ACCEPTED:
+            elif event.unicode in self.ACCEPTED:
                 self.buffer.append(event.unicode)
         elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
             self.active = self.rect.collidepoint(event.pos)
