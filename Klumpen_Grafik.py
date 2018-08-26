@@ -123,16 +123,17 @@ def Print_Spieler():
 			Weg_Button.Change()
 		Counter -= 1
 		Fertig += 1
-	
 def Spieler_Entf(Index):
-	Dings_Dict = {Weg_Button_1:0, Weg_Button_2:1, Weg_Button_3:2, Weg_Button_4:3, Weg_Button_5:4}
-
+	Spieler_Liste = Einstellungen[1]
+	if (Index + 1) <= len(Spieler_Liste):
+		Spieler_Liste.remove(Spieler_Liste[Index])
+		Print_Spieler()
 Spieler_Hintergrund = {}
-Weg_Button_1 = Button(pg.Rect(620, 325, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
-Weg_Button_2 = Button(pg.Rect(620, 395, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
-Weg_Button_3 = Button(pg.Rect(620, 465, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
-Weg_Button_4 = Button(pg.Rect(620, 535, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
-Weg_Button_5 = Button(pg.Rect(620, 605, Kreuz.get_width(), Kreuz.get_height()), Spieler_Entf, Kreuz_Blass, None, Kreuz)
+Weg_Button_1 = Button(pg.Rect(620, 325, Kreuz.get_width(), Kreuz.get_height()), lambda: Spieler_Entf(0), Kreuz_Blass, None, Kreuz)
+Weg_Button_2 = Button(pg.Rect(620, 395, Kreuz.get_width(), Kreuz.get_height()), lambda: Spieler_Entf(1), Kreuz_Blass, None, Kreuz)
+Weg_Button_3 = Button(pg.Rect(620, 465, Kreuz.get_width(), Kreuz.get_height()), lambda: Spieler_Entf(2), Kreuz_Blass, None, Kreuz)
+Weg_Button_4 = Button(pg.Rect(620, 535, Kreuz.get_width(), Kreuz.get_height()), lambda: Spieler_Entf(3), Kreuz_Blass, None, Kreuz)
+Weg_Button_5 = Button(pg.Rect(620, 605, Kreuz.get_width(), Kreuz.get_height()), lambda: Spieler_Entf(4), Kreuz_Blass, None, Kreuz)
 Weg_Buttons = [Weg_Button_1, Weg_Button_2, Weg_Button_3, Weg_Button_4, Weg_Button_5]
 Counter = 1
 while Counter <= 5:
@@ -285,17 +286,21 @@ while done == False:
 	    	for Button in Buttons:
 	    		if Button.Maus_Pos == True:
 	    			Button.Funktion()
+	    #Einstellungen
 	    if Input == True:
+	    	#Inputboxen
 	    	for Box in Boxen:
 		        Box.get_event(event)
 		        Box.update()
 		        Box.draw(screen)
+		    #Spieler
 	    	if (not Input_Box.final == "") and (len(Einstellungen[1]) < 5):
 	    		if Spieler_Hinzu_Button.Switch == False:
 	        		Spieler_Hinzu_Button.Change()
 	    	else:
 	    		if Spieler_Hinzu_Button.Switch == True:
 	    			Spieler_Hinzu_Button.Change()
+	        #Runden und Züge
 	    	if (not Runden_Box.final == ""):
 	    		Einstellungen[2] = int(Runden_Box.final)
 	    	else:
@@ -304,12 +309,12 @@ while done == False:
 	    		Einstellungen[3] = int(Züge_Box.final)
 	    	else:
 	    		Einstellungen[3] = 0
-	    	for Wert in Einstellungen:
-	        	if Wert == None or Wert == [] or Wert == 0:
-	        		if Fertig_Button.Switch == True:
-	        			Fertig_Button.Change()
-	        	else:
-	        		if Fertig_Button.Switch == False:
-	        			Fertig_Button.Change()
+	        #Fertig Button
+	    	if None in Einstellungen or [] in Einstellungen or 0 in Einstellungen:
+	    		if Fertig_Button.Switch == True:
+        			Fertig_Button.Change()
+	    	else:
+        		if Fertig_Button.Switch == False:
+        			Fertig_Button.Change()
 
     pg.display.flip()
