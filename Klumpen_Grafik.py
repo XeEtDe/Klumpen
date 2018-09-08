@@ -8,16 +8,17 @@ import textbox
 #Startbildschirm
 screen = pg.display.set_mode((1600, 900), pg.FULLSCREEN)
 pg.display.set_caption("Klumpen")
-screen.fill((255, 255, 210)) #hellgelbe Füllung
 
 #Bilder laden
 Bilder = {}
 def get_image(path):
 	global Bilder
+	path = "Bilder/" + path
 	Bild = Bilder.get(path)
 	if Bild == None:
 		Bild = pg.image.load(path).convert()
 		Bilder.update({Bild:path})
+	Bild.set_colorkey((255, 0, 255))
 	return Bild
 
 #Text erstellen
@@ -170,17 +171,18 @@ def Fertig():
 		Alle_Spieler = Einstellungen[1]
 		Runden = Einstellungen[2]
 		Züge = Einstellungen[3]
-		print(Einstellungen)
-		screen.fill((255, 255, 210))
 		global Input
 		Input = False
-Fertig_Button = Button(pg.Rect(1250, 680, Großer_Haken.get_width(), Großer_Haken.get_height()), Fertig, Großer_Haken_Blass, None, Großer_Haken)
+		global Buttons
+		Buttons = []
+		Spiel()
+Fertig_Button = Button(pg.Rect(1250, 660, Großer_Haken.get_width(), Großer_Haken.get_height()), Fertig, Großer_Haken_Blass, None, Großer_Haken)
 
 #Regeln
 def Regeln():
 	pass
 Regeln_Bild = get_image("regeln.png")
-Text_R = get_Text("Regeln", 50)
+Text_R = get_Text("Regeln", 70)
 Regeln_Rect = pg.Rect(600 - Regeln_Bild.get_width(), 500, Regeln_Bild.get_width(), Regeln_Bild.get_height())
 Regeln_Button = Button(Regeln_Rect, Regeln, Regeln_Bild, Text_R)
 
@@ -249,16 +251,57 @@ def Start():
 	#Fertig Button
 	Fertig_Button.create_button()
 Start_Bild = get_image("start.png")
-Text_S = get_Text("Start", 50)
+Text_S = get_Text("Start", 70)
 Start_Rect = pg.Rect(1000, 500, Start_Bild.get_width(), Start_Bild.get_height())
 Start_Button = Button(Start_Rect, Start, Start_Bild, Text_S)
 
+##############################################################################################################################################################################
+###############################################################################################################################################################################
+#Spiel
+Feld = {}
+Ablage = {}
+Ende_LW = {} #Kampf für Ende
+Drachenei_Dict = {} #Drachenei brüten
+#Werte Verbesserungs-Dict
+Counter_Dict = {} #Einmal-Sicherung für Ausgabe
+Einmal_Dict = {} #Einmal-Sicherung für Add
+Verbesserung = {} #{Spieler:{LW_Karte:{"Punkte":xy, "Angriff":xy, "Verteidigung":xy, "Lebensräume":xy}, LR_Karte:{Größe}}
+Magisch_Dict = {} #Verbesserung durch magischer LR
+Stärker_Dict = {} #Verbesserung durch LR
+Frost_Dict = {} #Aussetzen
+Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
+def Spiel():
+	screen.fill((255, 255, 210))
+	for Spieler in Alle_Spieler:
+		#1. Ausgabe
+		Ablage.update({Spieler:[]})
+		Ablage[Spieler].append(random.choice(Karten.Start_Lebewesen))
+		Ablage[Spieler].append(random.choice(Karten.Start_Lebensraum))
+		Ablage[Spieler].append(random.choice(Karten.Start_Elemente))
+		Ablage[Spieler].append(random.choice(random.choice(Karten.Nur)))
+		Ablage[Spieler].append(random.choice(random.choice(Karten.Alle_Start_Karten)))
+		#andere Dicts
+		Feld.update({Spieler:{}})
+		Ende_LW.update({Spieler:[]})
+		Drachenei_Dict.update({Spieler:[]})
+		Counter_Dict.update({Spieler:{}})
+		Einmal_Dict.update({Spieler:{}})
+		Verbesserung.update({Spieler:{}})
+		Magisch_Dict.update({Spieler:{}})
+		Stärker_Dict.update({Spieler:{}})
+		Frost_Dict.update({Spieler:0})
+		Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0], Diebische_Elster:[0, 0], Furchtdrache:[0, 0], Starker_Furchtdrache:[0, 0], Joker:[0, 0], Urwolf:[0, 0]}})
+		for Karte in Werteverbesserung_Übersicht:
+		    Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
+
+
 #Startbildschirm
+screen.blit(get_image("hintergrundblass.png"), (0, 0))
 #Klumpen
-Klecks_Blau = get_image("klecksblau.png")
-screen.blit(Klecks_Blau, (screen.get_width() / 2 - Klecks_Blau.get_width() / 2, screen.get_height() / 2 - Klecks_Blau.get_height() / 2 - 100)) #mittig von Schrift
-Text_K = get_Text("Klumpen", 70)
-screen.blit(Text_K, (screen.get_width() / 2 - Text_K.get_width() / 2, screen.get_height() / 2 - Text_K.get_height() / 2 - 100)) #mittig, etwas nach oben verschoben
+Klecks_Blau = get_image("klecks.png")
+screen.blit(Klecks_Blau, (screen.get_width() / 2 - Klecks_Blau.get_width() / 2, screen.get_height() / 2 - Klecks_Blau.get_height() / 2 - 200)) #mittig von Schrift
+Text_K = get_Text("Klumpen", 90)
+screen.blit(Text_K, (screen.get_width() / 2 - Text_K.get_width() / 2, screen.get_height() / 2 - Text_K.get_height() / 2 - 200)) #mittig, etwas nach oben verschoben
 #Regeln
 Regeln_Button.create_button()
 #Start
@@ -286,7 +329,7 @@ while done == False:
 	    	for Button in Buttons:
 	    		if Button.Maus_Pos == True:
 	    			Button.Funktion()
-	    #Einstellungen
+	    #Einstellungen Anfang
 	    if Input == True:
 	    	#Inputboxen
 	    	for Box in Boxen:

@@ -1,5 +1,4 @@
 import random
-
 ##Klassen und Karten##
 Start_Lebewesen = []
 Start_Lebensraum = []
@@ -34,99 +33,6 @@ class Lebewesen(Karten):
         if self.Start == True:
             Start_Lebewesen.append(self)
         Alle_Lebewesen.append(self)
-        
-    #für Punkte
-    def __repr__(self):
-        CDS = Counter_Dict[Spieler]
-        MDS = Magisch_Dict[Spieler]
-        SDS = Stärker_Dict[Spieler]
-        Mod_Punkte = self.Punkte
-        Mod_Lebensraum_ = []
-        for LR in self.Lebensraum:
-            if not LR == "Wonderland":
-                Mod_Lebensraum_.append(LR)
-        Mod_Lebensraum = ""
-        for LR in Mod_Lebensraum_:
-            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Punkte = Verbesserung_Karte["Punkte"]
-                Mod_Punkte = self.Punkte + Add_Punkte
-                if Mod_Punkte < 0:
-                    Mod_Punkte = 0
-                for LR in Verbesserung_Karte["Lebensräume"]:
-                    if not LR in Mod_Lebensraum_:
-                        Mod_Lebensraum_.append(LR)
-                if "Alle" in Mod_Lebensraum_:
-                    Mod_Lebensraum = "Alle"
-                else:
-                    Mod_Lebensraum = ""
-                    for LR in Mod_Lebensraum_:
-                        Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-                    Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-                CDS[self] = False
-        if self in Magisch_Dict[Spieler]:
-            if MDS[self] > 0:
-                Mod_Punkte += 1
-                MDS[self] -= 1
-        if self in Stärker_Dict[Spieler]:
-            if SDS[self] > 0:
-                Mod_Punkte += 2
-                SDS[self] -= 1
-        return "{} (Lebewesen):\n{} - Punkte: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Punkte, Mod_Lebensraum)
-
-    #für Kampf
-    def __str__(self):
-        CDS = Counter_Dict[Spieler]
-        MDS = Magisch_Dict[Spieler]
-        SDS = Stärker_Dict[Spieler]
-        Mod_Angriff = self.Angriff
-        Mod_Verteidigung = self.Verteidigung
-        Mod_Lebensraum_ = []
-        for LR in self.Lebensraum:
-            if not LR == "Wonderland":
-                Mod_Lebensraum_.append(LR)
-        Mod_Lebensraum = ""
-        for LR in Mod_Lebensraum_:
-            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Angriff = Verbesserung_Karte["Angriff"]
-                Mod_Angriff = self.Angriff + Add_Angriff
-                if Mod_Angriff < 0:
-                    Mod_Angriff = 0
-                Add_Verteidigung = Verbesserung_Karte["Verteidigung"]
-                Mod_Verteidigung = self.Verteidigung + Add_Verteidigung
-                if Mod_Verteidigung < 0:
-                    Mod_Verteidigung = 0
-                for LR in Verbesserung_Karte["Lebensräume"]:
-                    if not LR in Mod_Lebensraum_:
-                        Mod_Lebensraum_.append(LR)
-                if "Alle" in Mod_Lebensraum_:
-                    Mod_Lebensraum = "Alle"
-                else:
-                    Mod_Lebensraum = ""
-                    for LR in Mod_Lebensraum_:
-                        Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-                    Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-                CDS[self] = False
-        if self in Magisch_Dict[Spieler]:
-            if MDS[self] > 0:
-                Mod_Angriff += 1
-                Mod_Verteidigung += 1
-                MDS[self] -= 1
-        if self in Stärker_Dict[Spieler]:
-            if SDS[self] > 0:
-                Mod_Angriff += 2
-                Mod_Verteidigung += 2
-                SDS[self] -= 1
-        return "{} (Lebewesen):\n{} - Angriff: {} - Verteidigung: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Angriff, Mod_Verteidigung, Mod_Lebensraum)
 
 #Vordruck
 # = Lebewesen("", "", P, A, V, ["L"], ["K"])
@@ -436,32 +342,6 @@ class Lebensraum(Karten):
             Start_Lebensraum.append(self)
         Alle_Lebensraum.append(self)
 
-    #für Punkte
-    def __repr__(self):
-        CDS = Counter_Dict[Spieler]
-        Mod_Größe = self.Größe
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Größe = Verbesserung_Karte
-                Mod_Größe = self.Größe + Add_Größe
-                CDS[self] = False
-        return "{} (Lebensraum):\n{} - Punkte: {} - Größe: {}".format(self.Name, self.Beschreibung, self.Punkte, Mod_Größe)
-
-    #für Kampf
-    def __str__(self):
-        CDS = Counter_Dict[Spieler]
-        Mod_Größe = self.Größe
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Größe = Verbesserung_Karte
-                Mod_Größe = self.Größe + Add_Größe
-                CDS[self] = False
-        return "{} (Lebensraum):\n{} - Größe: {}".format(self.Name, self.Beschreibung, Mod_Größe)
-
 #Wald
 Kleiner_Wald = Lebensraum("Kleiner Wald", "Kleiner schattiger Lebensraum", "Wald", 1, 1, [], True)
 Wald = Lebensraum("Wald", "Mittelgroßer schattiger Lebensraum", "Wald", 2, 3, ["Kleiner Wald+Kleiner Wald"], True)
@@ -511,10 +391,6 @@ class Elemente(Karten):
         if self.Start == True:
             Start_Elemente.append(self)
         Alle_Elemente.append(self)
-
-    #für Punkte und Kampf
-    def __repr__(self):
-        return "{} (Elemente):\n{}".format(self.Name, self.Beschreibung)
 
 #Vordruck
 # = Elemente("", "", [""])
@@ -792,3 +668,31 @@ Werteverbesserung_Übersicht = {Feenkönigin:1,
                                Sea_People:3,
                                Dunkel_Feenkönigin:5,
                                Himmels_Doppelzottel:5}
+
+#Statistik
+def Möglich(Karte_1, Karte_2): #Kombi möglich (zwei Karten)?, wenn ja: welche Karte wird daraus
+    KM = []
+    Kombi_1 = Karte_1 + "+" + Karte_2
+    Kombi_2 = Karte_2 + "+" + Karte_1
+    for Karte in Alle_Karten:
+        if Kombi_1 in Karte.Kombi or Kombi_2 in Karte.Kombi:
+            KM.append(Karte.Name)
+    if len(KM) == 0:
+        print("Keine Karte durch diese Kombi (" + Kombi_1 + ")")
+    else:
+        print("Karten durch diese Kombi (" + Kombi_1 + "):")
+        for Karte in KM:
+            print(Karte)
+                    
+def Stat_LR(): #Wie viele LW können in LR-Arten leben?
+    LR_Arten = ["Wald", "See", "Wüste", "Berge"]
+    Kombi_Counter = 0
+    while Kombi_Counter <= (len(LR_Arten) - 1):
+        print("Anzahl Lebewesen in dieser Lebensraum-Art: " + LR_Arten[Kombi_Counter])
+        LWs_Counter = 0
+        for Karte in Alle_Lebewesen:
+            for LR in Karte.Lebensraum:
+                if LR == LR_Arten[Kombi_Counter] or LR == "Alle":
+                    LWs_Counter += 1
+        print(LWs_Counter)
+        Kombi_Counter += 1
