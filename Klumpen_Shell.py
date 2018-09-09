@@ -1,124 +1,19 @@
-import random
-
 #Lebewesen
     #für Punkte
     def __repr__(self):
-        CDS = Counter_Dict[Spieler]
-        MDS = Magisch_Dict[Spieler]
-        SDS = Stärker_Dict[Spieler]
-        Mod_Punkte = self.Punkte
-        Mod_Lebensraum_ = []
-        for LR in self.Lebensraum:
-            if not LR == "Wonderland":
-                Mod_Lebensraum_.append(LR)
-        Mod_Lebensraum = ""
-        for LR in Mod_Lebensraum_:
-            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Punkte = Verbesserung_Karte["Punkte"]
-                Mod_Punkte = self.Punkte + Add_Punkte
-                if Mod_Punkte < 0:
-                    Mod_Punkte = 0
-                for LR in Verbesserung_Karte["Lebensräume"]:
-                    if not LR in Mod_Lebensraum_:
-                        Mod_Lebensraum_.append(LR)
-                if "Alle" in Mod_Lebensraum_:
-                    Mod_Lebensraum = "Alle"
-                else:
-                    Mod_Lebensraum = ""
-                    for LR in Mod_Lebensraum_:
-                        Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-                    Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-                CDS[self] = False
-        if self in Magisch_Dict[Spieler]:
-            if MDS[self] > 0:
-                Mod_Punkte += 1
-                MDS[self] -= 1
-        if self in Stärker_Dict[Spieler]:
-            if SDS[self] > 0:
-                Mod_Punkte += 2
-                SDS[self] -= 1
         return "{} (Lebewesen):\n{} - Punkte: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Punkte, Mod_Lebensraum)
 
     #für Kampf
     def __str__(self):
-        CDS = Counter_Dict[Spieler]
-        MDS = Magisch_Dict[Spieler]
-        SDS = Stärker_Dict[Spieler]
-        Mod_Angriff = self.Angriff
-        Mod_Verteidigung = self.Verteidigung
-        Mod_Lebensraum_ = []
-        for LR in self.Lebensraum:
-            if not LR == "Wonderland":
-                Mod_Lebensraum_.append(LR)
-        Mod_Lebensraum = ""
-        for LR in Mod_Lebensraum_:
-            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Angriff = Verbesserung_Karte["Angriff"]
-                Mod_Angriff = self.Angriff + Add_Angriff
-                if Mod_Angriff < 0:
-                    Mod_Angriff = 0
-                Add_Verteidigung = Verbesserung_Karte["Verteidigung"]
-                Mod_Verteidigung = self.Verteidigung + Add_Verteidigung
-                if Mod_Verteidigung < 0:
-                    Mod_Verteidigung = 0
-                for LR in Verbesserung_Karte["Lebensräume"]:
-                    if not LR in Mod_Lebensraum_:
-                        Mod_Lebensraum_.append(LR)
-                if "Alle" in Mod_Lebensraum_:
-                    Mod_Lebensraum = "Alle"
-                else:
-                    Mod_Lebensraum = ""
-                    for LR in Mod_Lebensraum_:
-                        Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-                    Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-                CDS[self] = False
-        if self in Magisch_Dict[Spieler]:
-            if MDS[self] > 0:
-                Mod_Angriff += 1
-                Mod_Verteidigung += 1
-                MDS[self] -= 1
-        if self in Stärker_Dict[Spieler]:
-            if SDS[self] > 0:
-                Mod_Angriff += 2
-                Mod_Verteidigung += 2
-                SDS[self] -= 1
         return "{} (Lebewesen):\n{} - Angriff: {} - Verteidigung: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Angriff, Mod_Verteidigung, Mod_Lebensraum)
 
 #Lebensraum
     #für Punkte
     def __repr__(self):
-        CDS = Counter_Dict[Spieler]
-        Mod_Größe = self.Größe
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Größe = Verbesserung_Karte
-                Mod_Größe = self.Größe + Add_Größe
-                CDS[self] = False
         return "{} (Lebensraum):\n{} - Punkte: {} - Größe: {}".format(self.Name, self.Beschreibung, self.Punkte, Mod_Größe)
 
     #für Kampf
     def __str__(self):
-        CDS = Counter_Dict[Spieler]
-        Mod_Größe = self.Größe
-        if self in CDS:
-            if CDS[self] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[self]
-                Add_Größe = Verbesserung_Karte
-                Mod_Größe = self.Größe + Add_Größe
-                CDS[self] = False
         return "{} (Lebensraum):\n{} - Größe: {}".format(self.Name, self.Beschreibung, Mod_Größe)
 
 #Elemente
@@ -1528,55 +1423,6 @@ def Add(Karten):
     #Karten existieren nicht
     else:
         print("Eine oder beide Karten existieren nicht.")
-
-#Anfangssatz
-if Runden == 1:
-    Runden_ = "eine Runde"
-else:
-    Runden_ = str(Runden) + " Runden"
-
-if Züge == 1:
-    Züge_ = "einem Zug"
-else:
-    Züge_ = str(Züge) + " Zügen"
-
-Anfangssatz = "\nSpiel über {} mit je {} pro Spieler.".format(Runden_, Züge_)
-print(Anfangssatz)
-
-Ablage = {} #Ablage
-Feld = {} #Feld für später
-Ende_LW = {} #Kampf für Ende
-Drachenei_Dict = {} #Drachenei brüten
-#Werte Verbesserungs-Dict
-Counter_Dict = {} #Einmal-Sicherung für Ausgabe
-Einmal_Dict = {} #Einmal-Sicherung für Add
-Verbesserung = {} #{Spieler:{LW_Karte:{"Punkte":xy, "Angriff":xy, "Verteidigung":xy, "Lebensräume":xy}, LR_Karte:{Größe}}
-Magisch_Dict = {} #Verbesserung durch magischer LR
-Stärker_Dict = {} #Verbesserung durch LR
-Frost_Dict = {} #Aussetzen
-Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
-
-for Spieler in Alle_Spieler:
-    #1. Ausgabe
-    Ablage.update({Spieler:[]})
-    Ablage[Spieler].append(random.choice(Start_Lebewesen))
-    Ablage[Spieler].append(random.choice(Start_Lebensraum))
-    Ablage[Spieler].append(random.choice(Start_Elemente))
-    Ablage[Spieler].append(random.choice(random.choice(Nur)))
-    Ablage[Spieler].append(random.choice(random.choice(Alle_Start_Karten)))
-    #andere Dicts
-    Feld.update({Spieler:{}})
-    Ende_LW.update({Spieler:[]})
-    Drachenei_Dict.update({Spieler:[]})
-    Counter_Dict.update({Spieler:{}})
-    Einmal_Dict.update({Spieler:{}})
-    Verbesserung.update({Spieler:{}})
-    Magisch_Dict.update({Spieler:{}})
-    Stärker_Dict.update({Spieler:{}})
-    Frost_Dict.update({Spieler:0})
-    Werteverbesserung_Anzahl.update({Spieler:{Parasit:[0, 0], Friedensengel:[0, 0], Diebische_Elster:[0, 0], Furchtdrache:[0, 0], Starker_Furchtdrache:[0, 0], Joker:[0, 0], Urwolf:[0, 0]}})
-    for Karte in Werteverbesserung_Übersicht:
-        Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
         
 #Spielkern
 #Runden

@@ -18,7 +18,7 @@ def get_image(path):
 	if Bild == None:
 		Bild = pg.image.load(path).convert()
 		Bilder.update({Bild:path})
-	Bild.set_colorkey((255, 0, 255))
+	Bild.set_colorkey((255, 255, 255))
 	return Bild
 
 #Text erstellen
@@ -40,11 +40,8 @@ class Button:
 			self.Switch = False
 
 	def create_button(self):
-		Oberfläche = pg.Surface((self.Rect[2], self.Rect[3]))
-		if self.Füllung == None:
-		    Oberfläche.fill((255, 0, 255))
-		    Oberfläche.set_colorkey((255, 0, 255))
-		else:
+		Oberfläche = pg.Surface((self.Rect[2], self.Rect[3]), pg.SRCALPHA)
+		if not self.Füllung == None:
 			Oberfläche.fill(self.Füllung)
         #Bild und Text in die Mitte des Buttons
 		if not self.Bild == None:
@@ -63,9 +60,9 @@ class Button:
 		elif self.Switch == True:
 			Change_Bild = self.Bild
 			self.Switch = False
-		Oberfläche = pg.Surface((self.Rect[2], self.Rect[3]))
-		Oberfläche.fill((255, 0, 255))
-		Oberfläche.set_colorkey((255, 0, 255))
+		Oberfläche = pg.Surface((self.Rect[2], self.Rect[3]), pg.SRCALPHA)
+		if not self.Füllung == None:
+			Oberfläche.fill(self.Füllung)
         #anderes Bild und Text in die Mitte des Buttons
 		Oberfläche.blit(Change_Bild, (Oberfläche.get_width() / 2 - Change_Bild.get_width() / 2, Oberfläche.get_height() / 2 - Change_Bild.get_height() / 2))
 		if not self.Text == None:
@@ -190,7 +187,7 @@ Regeln_Button = Button(Regeln_Rect, Regeln, Regeln_Bild, Text_R)
 def Start():
 	global Buttons
 	Buttons = []
-	screen.fill((255, 255, 210))
+	screen.blit(get_image("hintergrundblass.png"), (0, 0))
 	#Modus
 	Text = get_Text("Modus?", 50)
 	screen.blit(Text, (screen.get_width() / 2 - Text.get_width() / 2, 30))
@@ -271,6 +268,8 @@ Stärker_Dict = {} #Verbesserung durch LR
 Frost_Dict = {} #Aussetzen
 Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
 def Spiel():
+	global Buttons
+	Buttons = []
 	screen.fill((255, 255, 210))
 	for Spieler in Alle_Spieler:
 		#1. Ausgabe
@@ -294,6 +293,162 @@ def Spiel():
 		for Karte in Werteverbesserung_Übersicht:
 		    Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
 
+def Print_Ablage(Spieler, Range = range(0, 6)):
+	global Ablage_Alt_Range
+	Ablage_Alt_Range = Range[0]
+	Liste = Ablage[Spieler].copy()
+	Ablage[Spieler].clear()
+	for Karte in Liste:
+		if Karte in Karten.Alle_Lebewesen:
+			Ablage[Spieler].append(Karte)
+	for Karte in Liste:
+		if Karte in Karten.Alle_Lebensraum:
+			Ablage[Spieler].append(Karte)
+	for Karte in Liste:
+		if Karte in Karten.Alle_Elemente:
+			Ablage[Spieler].append(Karte)
+	for Num in Range:
+		if len(Ablage[Spieler]) >= (Num + 1):
+			Height = 600
+			Width = 300 + 160 * (Num - Range[0])
+			screen.blit(Druck(Ablage[Spieler][Num]), (Width, Height))
+	if (len(Ablage[Spieler]) < Range[0]) and Ablage_Hoch_Button.Switch == False:
+		Ablage_Hoch_Button.Change()
+	if (len(Ablage[Spieler]) > (Range[-1] + 1)) and Ablage_Runter_Button.Switch == False:
+		Ablage_Runter_Button.Change()
+
+def Druck(Karte):
+	global Modus
+	CDS = Counter_Dict[Spieler]
+    MDS = Magisch_Dict[Spieler]
+    SDS = Stärker_Dict[Spieler]
+	Surf = pg.Surface((100, 250))
+	#Hintergrund und Art
+	if Karte in Karten.Alle_Lebewesen:
+		Hintergrund = get_image("lw_hintergrund.png")
+		Cap = get_Text("Lebewesen", 40)
+	elif Karte in Karten.Alle_Lebensraum:
+		Hintergrund = get_image("lr_hintergrund.png")
+		Cap = get_Text("Lebensraum", 40)
+	elif Karte in Karten.Alle_Elemente:
+		Hintergrund = get_image("e_hintergrund.png")
+		Cap = get_Text("Element", 40)
+	Surf.blit(Hintergrund, (0, 0))
+	Surf.blit(Cap, (50 - Cap.get_width() / 2, 15 - Cap.get_height() / 2))
+	#Name
+	Name = get_Text(Karte.Name, 50)
+	Surf.blit(Name, (50 - Name.get_width() / 2, 30 + (30 - Name.get_height() / 2)))
+	#Beschreibung
+	Beschreibung = Karte.Beschreibung.split(" ")
+	Lines = []
+	Line = ""
+	for Wort in Beschreibung:
+		Line = Line + Wort
+		Text = get_Text(Line, 40)
+		if Text.get_width() >= 90:
+			Line = Line[:-len(Wort)]
+			Lines.append(Line)
+			Line = Wort
+	y = 100
+	for Line in Lines:
+		Text = get_Text(Line, 40)
+		Surf.blit(Text, (50 - Text.get_width() / 2, y))
+		y += 15
+	#Lebewesen LRs, Punkte/Kampf, Verteidigung 
+	if Karte in Karten.Alle_Lebewesen:
+		#altes repr, dont touch
+		Mod_Punkte = Karte.Punkte
+		Mod_Angriff = Karte.Angriff
+        Mod_Verteidigung = Karte.Verteidigung
+		Mod_Lebensraum_ = []
+        for LR in Karte.Lebensraum:
+            if not LR == "Wonderland":
+                Mod_Lebensraum_.append(LR)
+        Mod_Lebensraum = ""
+        for LR in Mod_Lebensraum_:
+            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
+        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
+        if Karte in CDS:
+            if CDS[Karte] == True:
+                Verbesserung_Spieler = Verbesserung[Spieler]
+                Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                Add_Angriff = Verbesserung_Karte["Angriff"]
+                Mod_Angriff = Karte.Angriff + Add_Angriff
+                if Mod_Angriff < 0:
+                    Mod_Angriff = 0
+                Add_Verteidigung = Verbesserung_Karte["Verteidigung"]
+                Mod_Verteidigung = Karte.Verteidigung + Add_Verteidigung
+                if Mod_Verteidigung < 0:
+                    Mod_Verteidigung = 0
+                Add_Punkte = Verbesserung_Karte["Punkte"]
+                Mod_Punkte = Karte.Punkte + Add_Punkte
+                if Mod_Punkte < 0:
+                    Mod_Punkte = 0
+                for LR in Verbesserung_Karte["Lebensräume"]:
+                    if not LR in Mod_Lebensraum_:
+                        Mod_Lebensraum_.append(LR)
+                if "Alle" in Mod_Lebensraum_:
+                    Mod_Lebensraum = "Alle"
+                else:
+                    Mod_Lebensraum = ""
+                    for LR in Mod_Lebensraum_:
+                        Mod_Lebensraum = Mod_Lebensraum + LR + ", "
+                    Mod_Lebensraum = Mod_Lebensraum.strip(", ")
+                CDS[self] = False
+        if self in Magisch_Dict[Spieler]:
+            if MDS[self] > 0:
+            	Mod_Angriff += 1
+                Mod_Verteidigung += 1
+                Mod_Punkte += 1
+                MDS[self] -= 1
+        if self in Stärker_Dict[Spieler]:
+            if SDS[self] > 0:
+            	Mod_Angriff += 2
+                Mod_Verteidigung += 2
+                Mod_Punkte += 2
+                SDS[self] -= 1
+        #Lebensräume
+        LRs = get_Text("Lebensräume:", 40)
+		Surf.blit(LRs, (10, y + 10))
+		LR_Text = get_Text(Mod_Lebensraum, 40)
+		Surf.blit(LR_Text, ((100 - LRs.get_width()) / 2 - LR_Text.get_width() / 2, y + 10))
+		#Punkte
+		if Modus == "Punkte":
+			P_Text = get_Text("Punkte:", 40)
+			Surf.blit(P_Text, (10, y + LR_Text.get_height() + 10))
+			P_Num = get_Text(Mod_Punkte, 40)
+			Surf.blit(P_Num, ((100 - P_Text.get_width()) / 2 - P_Num.get_width() / 2, y + LR_Text.get_height() + 10))
+		#Angriff und Verteidungung
+	    elif Modus == "Kampf":
+	    	A_Text = get_Text("Angriff:", 40)
+	    	Surf.blit(A_Text, (10, y + LR_Text.get_height() + 10))
+			A_Num = get_Text(Mod_Angriff, 40)
+			Surf.blit(A_Num, ((100 - A_Text.get_width()) / 2 - A_Num.get_width() / 2, y + LR_Text.get_height() + 10))
+			V_Text = get_Text("Verteidungung:", 40)
+	    	Surf.blit(V_Text, (10, y + LR_Text.get_height() + A_Text.get_height() + 20))
+			V_Num = get_Text(Mod_Verteidigung, 40)
+			Surf.blit(V_Num, ((100 - V_Text.get_width()) / 2 - V_Num.get_width() / 2, y + LR_Text.get_height() + A_Text.get_height() + 20))
+	elif Karte in Karten.Alle_Lebensraum:
+		#altes repr, dont touch
+		Mod_Größe = Karte.Größe
+		if Karte in CDS:
+            if CDS[Karte] == True:
+                Verbesserung_Spieler = Verbesserung[Spieler]
+                Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                Add_Größe = Verbesserung_Karte
+                Mod_Größe = Karte.Größe + Add_Größe
+                CDS[Karte] = False
+        #Größe
+        G_Text = get_Text("Größe:", 40)
+        Surf.blit(G_Text, (10, y + 10))
+        G_Num = get_Text(Mod_Größe, 40)
+        Surf.blit(G_Num, ((100 - G_Text.get_width()) / 2 - G_Num.get_width() / 2, y + 10))
+        #Punkte
+        if Modus == "Punkte":
+        	P_Text = get_Text("Punkte:", 40)
+        	Surf.blit(P_Text, (10, y + G_Text.get_height() + 20))
+        	P_Num = get_Text(Karte.Punkte, 40)
+        	Surf.blit(P_Num, ((100 - P_Text.get_width()) / 2) - P_Num.get_width() / 2, y + G_Text.get_height() + 20)
 
 #Startbildschirm
 screen.blit(get_image("hintergrundblass.png"), (0, 0))
