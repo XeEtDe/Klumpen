@@ -1,26 +1,3 @@
-#Lebewesen
-    #für Punkte
-    def __repr__(self):
-        return "{} (Lebewesen):\n{} - Punkte: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Punkte, Mod_Lebensraum)
-
-    #für Kampf
-    def __str__(self):
-        return "{} (Lebewesen):\n{} - Angriff: {} - Verteidigung: {} - Lebensräume: {}".format(self.Name, self.Beschreibung, Mod_Angriff, Mod_Verteidigung, Mod_Lebensraum)
-
-#Lebensraum
-    #für Punkte
-    def __repr__(self):
-        return "{} (Lebensraum):\n{} - Punkte: {} - Größe: {}".format(self.Name, self.Beschreibung, self.Punkte, Mod_Größe)
-
-    #für Kampf
-    def __str__(self):
-        return "{} (Lebensraum):\n{} - Größe: {}".format(self.Name, self.Beschreibung, Mod_Größe)
-
-#Elemente
-    #für Punkte und Kampf
-    def __repr__(self):
-        return "{} (Elemente):\n{}".format(self.Name, self.Beschreibung)
-        
 #Regeln
 def Regeln():
     print("Jeder Spieler erhält jede Runde einige Karten folgender Arten: Lebensräume, Lebewesen und Elemente. Die erhaltenen Karten befinden sich nun in deiner Ablage.")
@@ -32,50 +9,12 @@ def Regeln():
 
 #Ausgabe
 def Ausgabe(Ort):
-    global Modus
     #Ausgabe von Verbesserungen
-    CDS = Counter_Dict[Spieler]
-    Feld_Spieler = Feld[Spieler]
-    if Ort == Ablage[Spieler]:
-        for Karte in CDS:
-            CDS[Karte] = False
-            Test = True
-            for LR in Feld[Spieler]:
-                if Karte == LR or Karte in Feld_Spieler[LR]:
-                    Test = False
-            if Test == True and Karte in Ablage[Spieler]:
-                CDS[Karte] = True
     elif Ort == Ende_LW[Spieler]:
         for Karte in CDS:
             CDS[Karte] = False
             if Karte in Ende_LW[Spieler]:
-                CDS[Karte] = True            
-    #Ausgabe        
-    if len(Ort) == 0:
-        print("/")
-    elif Modus == "1":
-        for Karte in Ort:
-            if Karte in Alle_Lebensraum:
-                print(repr(Karte) + "\n")
-        for Karte in Ort:
-            if Karte in Alle_Lebewesen:
-                print(repr(Karte) + "\n")
-        for Karte in Ort:
-            if Karte in Alle_Elemente:
-                print(repr(Karte) + "\n")
-    elif Modus == "2":
-        for Karte in Ort:
-            if Karte in Alle_Lebensraum:
-                print(Karte)
-                print("\n")
-        for Karte in Ort:
-            if Karte in Alle_Lebewesen:
-                print(Karte)
-                print("\n")
-        for Karte in Ort:
-            if Karte in Alle_Elemente:
-                print(Karte)
-                print("\n")
+                CDS[Karte] = True
 
 def Ausgabe_Feld():
     global Modus

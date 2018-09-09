@@ -28,14 +28,14 @@ def get_Text(Schrift, Größe, Farbe = (0, 0, 0)):
 #Buttons
 Buttons = []
 class Button:
-	def __init__(self, Rect, Funktion, Bild = None, Text = None, Bild_2 = None, Füllung = None, Maus_Pos = False):
+	def __init__(self, Rect, Funktion, Bild = None, Text = None, Bild_2 = None, Füllung = None):
 		self.Rect = Rect
 		self.Funktion = Funktion
 		self.Bild = Bild
 		self.Text = Text
 		self.Bild_2 = Bild_2
 		self.Füllung = Füllung
-		self.Maus_Pos = Maus_Pos
+		self.Maus_Pos = False
 		if not Bild_2 == None:
 			self.Switch = False
 
@@ -255,6 +255,7 @@ Start_Button = Button(Start_Rect, Start, Start_Bild, Text_S)
 ##############################################################################################################################################################################
 ###############################################################################################################################################################################
 #Spiel
+#Dicts, they work, dont touch
 Feld = {}
 Ablage = {}
 Ende_LW = {} #Kampf für Ende
@@ -267,10 +268,34 @@ Magisch_Dict = {} #Verbesserung durch magischer LR
 Stärker_Dict = {} #Verbesserung durch LR
 Frost_Dict = {} #Aussetzen
 Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
+
+#Buttons (self, Rect, Funktion, Bild = None, Text = None, Bild_2 = None, Füllung = None)
+#Ablage schieben
+Pfeil_Hoch_Blass = get_image("pfeilhochblass.png")
+Pfeil_Hoch = get_image("pfeilhoch.png")
+Hoch_Rect = pg.Rect(1560 - Pfeil_Hoch.get_width(), 600, Pfeil_Hoch.get_width(), Pfeil_Hoch.get_height())
+def Ablage_Hoch():
+	global Ablage_Alt_Range
+	if Ablage_Hoch_Button.Switch == True:
+		Print_Ablage(Spieler, range(Ablage_Alt_Range - 6, Ablage_Alt_Range - 1))
+		Ablage_Hoch_Button.Change()
+Ablage_Hoch_Button = Button(Hoch_Rect, Ablage_Hoch(), Pfeil_Hoch_Blass, None, Pfeil_Hoch)
+Pfeil_Runter_Blass = get_image("pfeilrunterblass.png")
+Pfeil_Runter = get_image("pfeilrunter.png")
+Runter_Rect = pg.Rect(1560 - Pfeil_Runter.get_width(), 850 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
+def Ablage_Runter():
+	global Ablage_Alt_Range
+	if Ablage_Runter_Button.Switch == True:
+		Print_Ablage(Spieler, range(Ablage_Alt_Range + 6, Ablage_Alt_Range + 12))
+		Ablage_Runter_Button.Change()
+Ablage_Runter_Button = Button(Runter_Rect, Ablage_Runter(), Pfeil_Runter_Blass, None, Pfeil_Runter)
+
 def Spiel():
+	screen.fill((255, 255, 255))
 	global Buttons
 	Buttons = []
-	screen.fill((255, 255, 210))
+	Ablage_Runter_Button.create_button()
+	Ablage_Hoch_Button.create_button()
 	for Spieler in Alle_Spieler:
 		#1. Ausgabe
 		Ablage.update({Spieler:[]})
@@ -294,8 +319,21 @@ def Spiel():
 		    Werteverbesserung_Anzahl[Spieler].update({Karte:[0, 0]})
 
 def Print_Ablage(Spieler, Range = range(0, 6)):
+	#Ausgabe von Verbesserungen, alt
+    CDS = Counter_Dict[Spieler]
+    Feld_Spieler = Feld[Spieler]
+    for Karte in CDS:
+        CDS[Karte] = False
+        Test = True
+        for LR in Feld[Spieler]:
+            if Karte == LR or Karte in Feld_Spieler[LR]:
+                Test = False
+        if Test == True and Karte in Ablage[Spieler]:
+            CDS[Karte] = True
+    #für Buttons
 	global Ablage_Alt_Range
 	Ablage_Alt_Range = Range[0]
+	#Sortieren
 	Liste = Ablage[Spieler].copy()
 	Ablage[Spieler].clear()
 	for Karte in Liste:
@@ -307,12 +345,14 @@ def Print_Ablage(Spieler, Range = range(0, 6)):
 	for Karte in Liste:
 		if Karte in Karten.Alle_Elemente:
 			Ablage[Spieler].append(Karte)
+	#Teile drucken
 	for Num in Range:
 		if len(Ablage[Spieler]) >= (Num + 1):
 			Height = 600
 			Width = 300 + 160 * (Num - Range[0])
 			screen.blit(Druck(Ablage[Spieler][Num]), (Width, Height))
-	if (len(Ablage[Spieler]) < Range[0]) and Ablage_Hoch_Button.Switch == False:
+	#Buttons wenn Ablage oben oder unten mehr Karten
+	if Range[0] > 0 and Ablage_Hoch_Button.Switch == False:
 		Ablage_Hoch_Button.Change()
 	if (len(Ablage[Spieler]) > (Range[-1] + 1)) and Ablage_Runter_Button.Switch == False:
 		Ablage_Runter_Button.Change()
@@ -394,19 +434,19 @@ def Druck(Karte):
                     for LR in Mod_Lebensraum_:
                         Mod_Lebensraum = Mod_Lebensraum + LR + ", "
                     Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-                CDS[self] = False
-        if self in Magisch_Dict[Spieler]:
-            if MDS[self] > 0:
+                CDS[Karte] = False
+        if Karte in Magisch_Dict[Spieler]:
+            if MDS[Karte] > 0:
             	Mod_Angriff += 1
                 Mod_Verteidigung += 1
                 Mod_Punkte += 1
-                MDS[self] -= 1
-        if self in Stärker_Dict[Spieler]:
-            if SDS[self] > 0:
+                MDS[Karte] -= 1
+        if Karte in Stärker_Dict[Spieler]:
+            if SDS[Karte] > 0:
             	Mod_Angriff += 2
                 Mod_Verteidigung += 2
                 Mod_Punkte += 2
-                SDS[self] -= 1
+                SDS[Karte] -= 1
         #Lebensräume
         LRs = get_Text("Lebensräume:", 40)
 		Surf.blit(LRs, (10, y + 10))
