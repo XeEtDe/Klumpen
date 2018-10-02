@@ -17,33 +17,6 @@ def Ausgabe(Ort):
                 CDS[Karte] = True
 
 def Ausgabe_Feld():
-    global Modus
-    #Ausgabe von Verbesserungen
-    CDS = Counter_Dict[Spieler]
-    Feld_Spieler = Feld[Spieler]
-    MDS = Magisch_Dict[Spieler]
-    SDS = Stärker_Dict[Spieler]
-    for Karte in CDS:
-        CDS[Karte] = False
-        for LR in Feld[Spieler]:
-            if Karte == LR or Karte in Feld_Spieler[LR]:
-                CDS[Karte] = True
-    for Karte in MDS:
-        MDS[Karte] = 0
-    for Karte in SDS:
-        SDS[Karte] = 0
-    for LR in Feld_Spieler:
-        for LW in Feld_Spieler[LR]:
-            if "Magisch" in LR.Name:
-                if LW in MDS:
-                    MDS[LW] += 1
-                else:
-                    MDS.update({LW:1})
-            if LW in Stärker_LR[LR.Art]:
-                if not LW in SDS:
-                    SDS.update({LW:1})
-                else:
-                    SDS[LW] += 1
     #Ausgabe
     if len(Feld[Spieler]) == 0:
         print("/")
