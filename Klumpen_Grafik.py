@@ -4,10 +4,14 @@ pg.init()
 import Karten
 import string
 import textbox
+import SchriftMaxgröße as SMaxG
 
 #Startbildschirm
 screen = pg.display.set_mode((1600, 900), pg.FULLSCREEN)
 pg.display.set_caption("Klumpen")
+Info_Surf = pg.Surface((450, 900))
+Feld_Surf = pg.Surface((1150, 350))
+Ablage_Surf = pg.Surface((1150, 300))
 
 #Bilder laden
 Bilder = {}
@@ -254,7 +258,7 @@ Start_Button = Button(Start_Rect, Start, Start_Bild, Text_S)
 ##############################################################################################################################################################################
 ###############################################################################################################################################################################
 #Spiel
-#Dicts, they work, dont touch
+#Dicts; they work, don't touch
 Feld = {}
 Ablage = {}
 Ende_LW = {} #Kampf für Ende
@@ -275,37 +279,56 @@ Pfeil_Hoch = get_image("pfeilhoch.png")
 def Ablage_Hoch():
     pass
 Hoch_Rect = pg.Rect(1560 - Pfeil_Hoch.get_width(), 600, Pfeil_Hoch.get_width(), Pfeil_Hoch.get_height())
-Ablage_Hoch_Button = Button(Hoch_Rect, Ablage_Hoch(), Pfeil_Hoch_Blass, None, Pfeil_Hoch)
+Ablage_Hoch_Button = Button(Hoch_Rect, Ablage_Hoch, Pfeil_Hoch_Blass, None, Pfeil_Hoch)
 def Ablage_Hoch():
     global Ablage_Alt_Range
     if Ablage_Hoch_Button.Switch == True:
         Print_Ablage(Spieler, range(Ablage_Alt_Range - 6, Ablage_Alt_Range - 1))
-        Ablage_Hoch_Button.Change()
 
 Pfeil_Runter_Blass = get_image("pfeilrunterblass.png")
 Pfeil_Runter = get_image("pfeilrunter.png")
 def Ablage_Runter():
     pass
 Runter_Rect = pg.Rect(1560 - Pfeil_Runter.get_width(), 850 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
-Ablage_Runter_Button = Button(Runter_Rect, Ablage_Runter(), Pfeil_Runter_Blass, None, Pfeil_Runter)
+Ablage_Runter_Button = Button(Runter_Rect, Ablage_Runter, Pfeil_Runter_Blass, None, Pfeil_Runter)
 def Ablage_Runter():
     global Ablage_Alt_Range
     if Ablage_Runter_Button.Switch == True:
         Print_Ablage(Spieler, range(Ablage_Alt_Range + 6, Ablage_Alt_Range + 12))
-        Ablage_Runter_Button.Change()
 
 #Feld Übersicht schieben
 Pfeil_Links_Blass = get_image("pfeillinksblass.png")
 Pfeil_Links = get_image("pfeillinks.png")
+def Feld_Übersicht_Links():
+    pass
+Links_Rect = pg.Rect(270, 100, Pfeil_Links.get_width(), Pfeil_Links.get_height())
+Feld_Übersicht_Links_Button = Button(Links_Rect, Feld_Übersicht_Links, Pfeil_Links_Blass, None, Pfeil_Links)
+def Feld_Übersicht_Links():
+    global Feld_Übersicht_Alt_Range
+    if Feld_Übersicht_Links_Button.Switch == True:
+        Print_Feld_Übersicht(Spieler, range(Feld_Übersicht_Alt_Range - 6, Feld_Übersicht_Alt_Range - 1))
+
+Pfeil_Rechts_Blass = get_image("pfeilrechtsblass.png")
+Pfeil_Rechts = get_image("pfeilrechts.png")
+def Feld_Übersicht_Rechts():
+    pass
+Rechts_Rect = pg.Rect(1590 - Pfeil_Rechts.get_width(), 100, Pfeil_Rechts.get_width(), Pfeil_Rechts.get_height())
+Feld_Übersicht_Rechts_Button = Button(Rechts_Rect, Feld_Übersicht_Rechts, Pfeil_Rechts_Blass, None, Pfeil_Rechts)
+def Feld_Übersicht_Rechts():
+    global Feld_Übersicht_Alt_Range
+    if Feld_Übersicht_Rechts_Button.Switch == True:
+        Print_Feld_Übersicht(Spieler, range(Feld_Übersicht_Alt_Range + 6, Feld_Übersicht_Alt_Range + 12))
 
 #Regeln
-R_Rect = pg.Rect(0, 0, 270, 50)
-Regel_Spiel_Button = Button(R_Rect, Regeln())
+R_Rect = pg.Rect(510, 10, 270, 50)
+Regel_Spiel_Button = Button(R_Rect, Regeln, None, get_Text("Regeln", 40))
 
 #Weiter
-Fertig_Image = get_image("fertig.png")
-Fertig_Rect = pg.Rect(1170, 5, 150, 90)
-Fertig_Button = Button(Fertig_Rect, lambda: Spieler_Zug = True)
+def Nächster():
+    pass
+Nächster_Image = get_image("fertig.png")
+Nächster_Rect = pg.Rect(1170, 5, 150, 90)
+Nächster_Button = Button(Nächster_Rect, Nächster)
 
 #Anfang vom Spiel
 Start = False
@@ -316,9 +339,11 @@ def Spiel():
     Buttons = []
     Ablage_Runter_Button.create_button()
     Ablage_Hoch_Button.create_button()
-    pg.draw.rect(screen, (0, 0, 0), pg.Rect(10, 10, 260, 40), 10)
+    Feld_Übersicht_Links_Button.create_button()
+    Feld_Übersicht_Rechts_Button.create_button()
+    pg.draw.rect(screen, (0, 0, 0), pg.Rect(510, 10, 270, 50), 3)
     Regel_Spiel_Button.create_button()
-    Fertig_Button.create_button()
+    Nächster_Button.create_button()
     for Spieler in Alle_Spieler:
         #1. Ausgabe
         Ablage.update({Spieler:[]})
@@ -377,16 +402,23 @@ def Print_Ablage(Spieler, Range = range(0, 6)):
         if Karte in Karten.Alle_Elemente:
             Ablage[Spieler].append(Karte)
     #Teile drucken
+    Height = 35
+    Width = 25
     for Num in Range:
         if len(Ablage[Spieler]) >= (Num + 1):
-            Height = 600
-            Width = 300 + 160 * (Num - Range[0])
-            screen.blit(Druck(Ablage[Spieler][Num]), (Width, Height))
+            Width += 170
+            Ablage_Surf.blit(Druck(Ablage[Spieler][Num], Spieler), (Width, Height))
     #Buttons wenn Ablage oben oder unten mehr Karten
     if Range[0] > 0 and Ablage_Hoch_Button.Switch == False:
         Ablage_Hoch_Button.Change()
+    else:
+        if Ablage_Hoch_Button.Switch == True:
+            Ablage_Hoch_Button.Change()
     if (len(Ablage[Spieler]) > (Range[-1] + 1)) and Ablage_Runter_Button.Switch == False:
         Ablage_Runter_Button.Change()
+    else:
+        if Ablage_Runter_Button.Switch == True:
+            Ablage_Runter_Button.Change()
 
 #Feld ausgeben
 def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
@@ -396,12 +428,12 @@ def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
     y = 100
     for Num in Range:
         for LR in Feld[Spieler][Num]:
-            Mod_Größe = Karte.Größe
-            if Karte in CDS:
+            Mod_Größe = LR.Größe
+            if LR in CDS:
                 Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                Verbesserung_Karte = Verbesserung_Spieler[LR]
                 Add_Größe = Verbesserung_Karte
-                Mod_Größe = Karte.Größe + Add_Größe
+                Mod_Größe = LR.Größe + Add_Größe
             Cap = get_Text(LR.Name, 40)
             if "Magisch" in LR.Name:
                 if LR.Art == "Wald":
@@ -432,6 +464,17 @@ def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
             Surf.blit(Hintergrund, (0, Cap.get_height() + 10)) ###Hintergrund pixel: 60, Cap.get_height()
             screen.blit(Surf, (x, y))
             x += 60
+    #Buttons wenn Übersicht links oder rechts
+    if Range[0] > 0 and Feld_Übersicht_Links_Button.Switch == False:
+        Feld_Übersicht_Links_Button.Change()
+    else:
+        if Feld_Übersicht_Links_Button.Switch == True:
+            Feld_Übersicht_Links_Button.Change()
+    if (len(Feld[Spieler]) > (Range[-1] + 1)) and Feld_Übersicht_Rechts_Button.Switch == False:
+        Feld_Übersicht_Rechts_Button.Change()
+    else:
+        if Feld_Übersicht_Rechts_Button.Switch == True:
+            Feld_Übersicht_Rechts_Button.Change()
 
 
     #Couter, Magisch, Stärker Dicts
@@ -464,7 +507,7 @@ def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
 
 
 #einzelne Karte ausgeben
-def Druck(Karte):
+def Druck(Karte, Spieler):
     global Modus
     CDS = Counter_Dict[Spieler]
     MDS = Magisch_Dict[Spieler]
@@ -473,35 +516,26 @@ def Druck(Karte):
     #Hintergrund und Art
     if Karte in Karten.Alle_Lebewesen:
         Hintergrund = get_image("lw_hintergrund.png")
-        Cap = get_Text("Lebewesen", 40)
+        Cap = SMaxG("Lebewesen", 150, 20)
     elif Karte in Karten.Alle_Lebensraum:
         Hintergrund = get_image("lr_hintergrund.png")
-        Cap = get_Text("Lebensraum", 40)
+        Cap = SMaxG("Lebensraum", 150, 20)
     elif Karte in Karten.Alle_Elemente:
         Hintergrund = get_image("e_hintergrund.png")
-        Cap = get_Text("Element", 40)
+        Cap = SMaxG("Element", 150, 20)
     Surf.blit(Hintergrund, (0, 0))
-    Surf.blit(Cap, (50 - Cap.get_width() / 2, 15 - Cap.get_height() / 2))
+    Surf.blit(Cap, (150 / 2 - Cap.get_width() / 2, 5))
     #Name
-    Name = get_Text(Karte.Name, 50)
-    Surf.blit(Name, (50 - Name.get_width() / 2, 30 + (30 - Name.get_height() / 2)))
-    #Beschreibung
-    Beschreibung = Karte.Beschreibung.split(" ")
-    Lines = []
-    Line = ""
-    for Wort in Beschreibung:
-        Line = Line + Wort
-        Text = get_Text(Line, 40)
-        if Text.get_width() >= 90:
-            Line = Line[:-len(Wort)]
-            Lines.append(Line)
-            Line = Wort
-    y = 100
-    for Line in Lines:
-        Text = get_Text(Line, 40)
-        Surf.blit(Text, (50 - Text.get_width() / 2, y))
-        y += 15
-    #Lebewesen LRs, Punkte/Kampf, Verteidigung 
+    if " " in Karte.Name:
+        Namen_Liste = Karte.Name.split()
+        Name_1 = SMaxG(Namen_Liste[0], 150, 40)
+        Name_2 = SMaxG(Namen_Liste[1], 150, 40)
+        Surf.blit(Name_1, (150 / 2 - Name_1.get_width() / 2, 35))
+        Surf.blit(Name_2, (150 / 2 - Name_2.get_width() / 2, 80))
+    else:
+        Name = SMaxG(Karte.Name, 150, 90)
+        Surf.blit(Name, (150 / 2 - Name.get_width() / 2, 35))
+    #Lebewesen: LRs, Punkte/Kampf, Verteidigung 
     if Karte in Karten.Alle_Lebewesen:
         #altes repr, dont touch
         Mod_Punkte = Karte.Punkte
@@ -555,26 +589,26 @@ def Druck(Karte):
                 Mod_Punkte += 2
                 SDS[Karte] -= 1
         #Lebensräume
-        LRs = get_Text("Lebensräume:", 40)
-        Surf.blit(LRs, (10, y + 10))
-        LR_Text = get_Text(Mod_Lebensraum, 40)
-        Surf.blit(LR_Text, ((100 - LRs.get_width()) / 2 - LR_Text.get_width() / 2, y + 10))
+        LRs = get_Text("Lebensräume:", 10)
+        Surf.blit(LRs, (5, 135))
+        LR_Text = get_Text(Mod_Lebensraum, 10)
+        Surf.blit(LR_Text, (50 + (50 - LR_Text.get_width() / 2), 135))
         #Punkte
         if Modus == "Punkte":
-            P_Text = get_Text("Punkte:", 40)
-            Surf.blit(P_Text, (10, y + LR_Text.get_height() + 10))
-            P_Num = get_Text(Mod_Punkte, 40)
-            Surf.blit(P_Num, ((100 - P_Text.get_width()) / 2 - P_Num.get_width() / 2, y + LR_Text.get_height() + 10))
+            P_Text = get_Text("Punkte:", 10)
+            Surf.blit(P_Text, (5, 175))
+            P_Num = get_Text(str(Mod_Punkte), 10)
+            Surf.blit(P_Num, (50 + (50 - P_Num.get_width() / 2), 175))
         #Angriff und Verteidungung
         elif Modus == "Kampf":
-            A_Text = get_Text("Angriff:", 40)
-            Surf.blit(A_Text, (10, y + LR_Text.get_height() + 10))
-            A_Num = get_Text(Mod_Angriff, 40)
-            Surf.blit(A_Num, ((100 - A_Text.get_width()) / 2 - A_Num.get_width() / 2, y + LR_Text.get_height() + 10))
-            V_Text = get_Text("Verteidungung:", 40)
-            Surf.blit(V_Text, (10, y + LR_Text.get_height() + A_Text.get_height() + 20))
-            V_Num = get_Text(Mod_Verteidigung, 40)
-            Surf.blit(V_Num, ((100 - V_Text.get_width()) / 2 - V_Num.get_width() / 2, y + LR_Text.get_height() + A_Text.get_height() + 20))
+            A_Text = get_Text("Angriff:", 10)
+            Surf.blit(A_Text, (5, 175))
+            A_Num = get_Text(str(Mod_Angriff), 10)
+            Surf.blit(A_Num, (50 + (50 - A_Num.get_width() / 2), 175))
+            V_Text = get_Text("Verteidungung:", 10)
+            Surf.blit(V_Text, (5, 215))
+            V_Num = get_Text(str(Mod_Verteidigung), 10)
+            Surf.blit(V_Num, (50 + (50 - V_Num.get_width() / 2), 215))
     elif Karte in Karten.Alle_Lebensraum:
         #altes repr, dont touch
         Mod_Größe = Karte.Größe
@@ -586,17 +620,34 @@ def Druck(Karte):
                 Mod_Größe = Karte.Größe + Add_Größe
                 CDS[Karte] = False
         #Größe
-        G_Text = get_Text("Größe:", 40)
-        Surf.blit(G_Text, (10, y + 10))
-        G_Num = get_Text(Mod_Größe, 40)
-        Surf.blit(G_Num, ((100 - G_Text.get_width()) / 2 - G_Num.get_width() / 2, y + 10))
+        G_Text = get_Text("Größe:", 10)
+        Surf.blit(G_Text, (5, 135))
+        G_Num = get_Text(str(Mod_Größe), 10)
+        Surf.blit(G_Num, (50 + (50 - G_Num.get_width() / 2), 135))
         #Punkte
         if Modus == "Punkte":
-            P_Text = get_Text("Punkte:", 40)
-            Surf.blit(P_Text, (10, y + G_Text.get_height() + 20))
-            P_Num = get_Text(Karte.Punkte, 40)
-            Surf.blit(P_Num, ((100 - P_Text.get_width()) / 2) - P_Num.get_width() / 2, y + G_Text.get_height() + 20)
+            P_Text = get_Text("Punkte:", 10)
+            Surf.blit(P_Text, (5, 175))
+            P_Num = get_Text(str(Karte.Punkte), 10)
+            Surf.blit(P_Num, (50 + (50 - P_Num.get_width() / 2), 175))
     return Surf
+
+def Split_Beschreibung(Karte):
+    Beschreibung = Karte.Beschreibung.split(" ")
+    Lines = []
+    Line = ""
+    for Wort in Beschreibung:
+        Line = Line + Wort
+        Text = get_Text(Line, 40)
+        if Text.get_width() >= 400:
+            Line = Line[:-len(Wort)]
+            Lines.append(Line)
+            Line = Wort
+    y = 100
+    for Line in Lines:
+        Text = get_Text(Line, 40)
+        Info_Surf.blit(Text, (250 - Text.get_width() / 2, y))
+        y += 15
 
 #Bildschirm ausgeben/wechseln
 def Render_Bildschirm(Spieler):
@@ -685,6 +736,6 @@ while done == False:
                     Fertig_Button.Change()
     #Spielkern
     if Start == True:
-
+        pass
 
     pg.display.flip()

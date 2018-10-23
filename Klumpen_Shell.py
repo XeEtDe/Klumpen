@@ -94,20 +94,6 @@ def Ausgabe_Feld():
 
 #später für Züge
 def Zug(Spieler):
-    global Aus
-    global Spieler_Zug
-    Aus = True
-    Spieler_Zug = False
-    Ablage_Spieler = Ablage[Spieler]
-    Feld_Spieler = Feld[Spieler]
-    Ablage_Spieler = Ablage[Spieler]
-    WAS = Werteverbesserung_Anzahl[Spieler]
-    #Ablage und Feld ausgeben
-    print("\n\n" + Spieler + "s Zug (" + Str_Übrig + ")")
-    print("\nAblage:")
-    Ausgabe(Ablage[Spieler])
-    print("\nFeld:")
-    Ausgabe_Feld()
     #Aussetzen?
     if Frost_Dict[Spieler] > 0:
         Frost_Dict[Spieler] -= 1
