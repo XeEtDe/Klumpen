@@ -301,7 +301,7 @@ Pfeil_Links_Blass = get_image("pfeillinksblass.png")
 Pfeil_Links = get_image("pfeillinks.png")
 def Feld_Übersicht_Links():
     pass
-Links_Rect = pg.Rect(270, 100, Pfeil_Links.get_width(), Pfeil_Links.get_height())
+Links_Rect = pg.Rect(510, 135, Pfeil_Links.get_width(), Pfeil_Links.get_height())
 Feld_Übersicht_Links_Button = Button(Links_Rect, Feld_Übersicht_Links, Pfeil_Links_Blass, None, Pfeil_Links)
 def Feld_Übersicht_Links():
     global Feld_Übersicht_Alt_Range
@@ -312,7 +312,7 @@ Pfeil_Rechts_Blass = get_image("pfeilrechtsblass.png")
 Pfeil_Rechts = get_image("pfeilrechts.png")
 def Feld_Übersicht_Rechts():
     pass
-Rechts_Rect = pg.Rect(1590 - Pfeil_Rechts.get_width(), 100, Pfeil_Rechts.get_width(), Pfeil_Rechts.get_height())
+Rechts_Rect = pg.Rect(1590 - Pfeil_Rechts.get_width(), 135, Pfeil_Rechts.get_width(), Pfeil_Rechts.get_height())
 Feld_Übersicht_Rechts_Button = Button(Rechts_Rect, Feld_Übersicht_Rechts, Pfeil_Rechts_Blass, None, Pfeil_Rechts)
 def Feld_Übersicht_Rechts():
     global Feld_Übersicht_Alt_Range
@@ -388,7 +388,7 @@ def Print_Ablage(Spieler, Range = range(0, 6)):
             CDS[Karte] = True
     #für Buttons
     global Ablage_Alt_Range
-    Ablage_Alt_Range = Range[0]
+    Ablage_Alt_Range = Range
     #Sortieren
     Liste = Ablage[Spieler].copy()
     Ablage[Spieler].clear()
@@ -423,47 +423,35 @@ def Print_Ablage(Spieler, Range = range(0, 6)):
 #Feld ausgeben
 def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
     global Feld_Übersicht_Alt_Range
-    Feld_Übersicht_Alt_Range = Range[0]
-    x = 300
-    y = 100
+    Feld_Übersicht_Alt_Range = Range
+    Surf = pg.Surface(50, 40)
+    y = 35
+    x = 70
     for Num in Range:
-        for LR in Feld[Spieler][Num]:
-            Mod_Größe = LR.Größe
-            if LR in CDS:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[LR]
-                Add_Größe = Verbesserung_Karte
-                Mod_Größe = LR.Größe + Add_Größe
-            Cap = get_Text(LR.Name, 40)
-            if "Magisch" in LR.Name:
-                if LR.Art == "Wald":
-                    Hintergrund = get_image("waldmagisch.png")
-                elif LR.Art == "Wüste":
-                    Hintergrund = get_image("wüstemagisch.png")
-                elif LR.Art == "Berge":
-                    Hintergrund = get_image("bergemagisch.png")
-                elif LR.Art == "See":
-                    Hintergrund = get_image("seemagisch.png")
-                elif LR.Art == "Wonderland":
-                    Hintergrund = get_image("wonderlandmagisch.png")
-            else:
-                if LR.Art == "Wald":
-                    Hintergrund = get_image("wald.png")
-                elif LR.Art == "Wüste":
-                    Hintergrund = get_image("wüste.png")
-                elif LR.Art == "Berge":
-                    Hintergrund = get_image("berge.png")
-                elif LR.Art == "See":
-                    Hintergrund = get_image("see.png")
-                elif LR.Art == "Wonderland":
-                    Hintergrund = get_image("wonderland.png")
-            Inside = get_Text(str(len(Feld[Spieler][LR])) + " / " + str(LR.Mod_Größe))
-            Surf = pg.Surface(60, 60)
-            Surf.blit(Cap, (30 - Cap.get_width() / 2, 0))
-            Hintergrund.blit(Inside, (Hintergrund.get_width() / 2 - Inside.get_width() / 2, Hintergrund.get_height() / 2 - Inside.get_height() / 2))
-            Surf.blit(Hintergrund, (0, Cap.get_height() + 10)) ###Hintergrund pixel: 60, Cap.get_height()
-            screen.blit(Surf, (x, y))
-            x += 60
+        LR = Feld_Spieler[Num]
+        Mod_Größe = LR.Größe
+        if LR in CDS:
+            Verbesserung_Spieler = Verbesserung[Spieler]
+            Verbesserung_Karte = Verbesserung_Spieler[LR]
+            Add_Größe = Verbesserung_Karte
+            Mod_Größe = LR.Größe + Add_Größe
+        if LR.Art == "Wald":
+            Hintergrund = (190, 240, 50)
+        elif LR.Art == "Wüste":
+            Hintergrund = (255, 190, 0)
+        elif LR.Art == "Berge":
+            Hintergrund = (220, 170, 130)
+        elif LR.Art == "See":
+            Hintergrund = (170, 240, 255)
+        elif LR.Art == "Wonderland":
+            Hintergrund = (240, 170, 255)
+        Surf.fill(Hintergrund)
+        Cap = SMaxG(LR.Name, 50, 18)
+        Inside = SMaxG(str(len(Feld[Spieler][LR])) + " / " + str(LR.Mod_Größe), 50, 18)
+        Surf.blit(Cap, (25 - Cap.get_width() / 2, 5))
+        Surf.blit(Inside, (25 - Inside.get_width() / 2, 22))
+        Feld_Surf.blit(Surf, (x, y))
+        x += 60
     #Buttons wenn Übersicht links oder rechts
     if Range[0] > 0 and Feld_Übersicht_Links_Button.Switch == False:
         Feld_Übersicht_Links_Button.Change()
@@ -476,7 +464,7 @@ def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
         if Feld_Übersicht_Rechts_Button.Switch == True:
             Feld_Übersicht_Rechts_Button.Change()
 
-
+def Print_Feld(Spieler, LR_Pos, Range = range(0, 6)):
     #Couter, Magisch, Stärker Dicts
     CDS = Counter_Dict[Spieler]
     Feld_Spieler = Feld[Spieler]
@@ -504,6 +492,15 @@ def Print_Feld_Übersicht(Spieler, Range = range(0, 6)):
                 else:
                     SDS[LW] += 1
     #Ausgabe
+    global Feld_Übersicht_Alt_Range
+    Num = Feld_Übersicht_Alt_Range[LR_Pos + 1]
+    LR = Feld_Spieler[Num]
+    global Alt_Pos
+    Alt_Pos = LR_Pos
+    global Feld_Alt_Range
+    Feld_Alt_Range = Range
+
+
 
 
 #einzelne Karte ausgeben
