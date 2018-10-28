@@ -1,7 +1,8 @@
 import pygame as pg
+import Karten
 pg.init()
 
-def SchriftMaxgröße(Text, Länge = None, Höhe = None, Farbe = (0, 0, 0), Schriftart = None):
+def SchriftFunc(Text, Länge = None, Höhe = None, Farbe = (0, 0, 0), Schriftart = None):
     Größe = 1
     Alte_Größe = 0
     while True:
@@ -15,3 +16,4 @@ def SchriftMaxgröße(Text, Länge = None, Höhe = None, Farbe = (0, 0, 0), Schr
         Alte_Größe = Größe
         Größe += 1
     return pg.font.Font(Schriftart, Alte_Größe).render(Text, True, Farbe)
+
