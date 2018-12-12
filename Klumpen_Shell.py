@@ -7,6 +7,13 @@ def Regeln():
     print("Einige Lebewesen haben Extrafunktionen. Platziere diese Lebewesen zuerst in Lebensräumen auf dem Feld, um diese zu nutzen.")
     print("Allerdings kannst du nur eine dieser Aktionen pro Zug ausführen. Davor kannst du beliebig viele Lebewesen auf dem Feld bewegen.")
 
+    #Vor jeder Reihe von Zügen/pro Runde einmal
+    print("\nTippe \"Karten Name 1 + Karten Name 2\" um zwei Karten zu kombinieren. Damit kannst du auch Lebewesen in Lebensräumen auf dem Feld platzieren.")
+    print("Tippe den Namen eines Lebensraums in deiner Ablage, um diesen im Feld zu platzieren.")
+    print("Vor diesen Aktionen kannst du beliebig viele Lebewesen innerhalb des Feldes bewegen (ebenfalls mit \"+\").")
+    print("Für Extrafunktionen, die mit anderen Karten (nicht mit Spielern) interagieren: Um  die Extrafunktion zu nutzen, tippe ein \"+\" hinter deine Eingabe. Wenn beide Karten Extrafunktionen haben, tippe zuerst die, die du nutzen willst.")
+    print("Um weitere Regeln zu sehen, tippe \"Regeln\". Um den Zug zu übersprigen, drücke Enter.")
+
 #Ausgabe
 def Ausgabe(Ort):
     #Ausgabe von Verbesserungen
@@ -1248,15 +1255,8 @@ def Add(Karten):
         
 #Spielkern
 #Runden
-Runden_Counter = 0
+
 while Runden_Counter < Runden:
-    Runden_Counter += 1
-    print("\nRunde " + str(Runden_Counter))
-    if (Runden_Counter + 1) == Runden:
-        print("Vorletzte Runde")
-    elif Runden_Counter == Runden:
-          print("Letzte Runde")
-    Input_Enter = input("\n")
     #Karten für Runde
     if not Runden_Counter == 1:
         #Auswahlstapel
@@ -1353,55 +1353,7 @@ while Runden_Counter < Runden:
             for Karte in Dict:
                 Ablage[Spieler].append(Dict[Karte])
                 print("durch " + Karte.Name + ":")
-                print(Dict[Karte])                
-    #Spieler Zug
-    #Vor jeder Reihe von Zügen/pro Runde einmal
-    Züge_Counter = 0
-    print("\nTippe \"Karten Name 1 + Karten Name 2\" um zwei Karten zu kombinieren. Damit kannst du auch Lebewesen in Lebensräumen auf dem Feld platzieren.")
-    print("Tippe den Namen eines Lebensraums in deiner Ablage, um diesen im Feld zu platzieren.")
-    print("Vor diesen Aktionen kannst du beliebig viele Lebewesen innerhalb des Feldes bewegen (ebenfalls mit \"+\").")
-    print("Für Extrafunktionen, die mit anderen Karten (nicht mit Spielern) interagieren: Um  die Extrafunktion zu nutzen, tippe ein \"+\" hinter deine Eingabe. Wenn beide Karten Extrafunktionen haben, tippe zuerst die, die du nutzen willst.")
-    print("Um weitere Regeln zu sehen, tippe \"Regeln\". Um den Zug zu übersprigen, drücke Enter.")
-    while Züge_Counter < Züge:
-        Züge_Counter += 1
-        Übrig = Züge - Züge_Counter + 1
-        Str_Übrig = "noch " + str(Übrig)
-        if Übrig == 1:
-            Str_Übrig = "letzter"
-        #Spieler Züge
-        for Spieler in Alle_Spieler:
-            Zug(Spieler)
-    #Extrazüge
-    Extraprint = False
-    for Spieler in Alle_Spieler:
-        Extracounter = 0
-        Dict = {}
-        Feld_Spieler = Feld[Spieler]
-        for LR in Feld[Spieler]:
-            for LW in Feld_Spieler[LR]:
-                if LW in Extrazüge:
-                    Extracounter += Extrazüge[LW]
-                    Dict.update({LW:Extrazüge[LW]})
-        if not Extracounter == 0:
-            if Extraprint == False:
-                Extraprint = True
-                print("\nExtrazüge\n")
-            print(Spieler + ":")
-            for Karte in Dict:
-                print(Karte.Name + ": + " + str(Extrazüge[Karte]))
-        while Extracounter > 0:
-            Übrig = Extracounter
-            Str_Übrig = "noch " + str(Übrig)
-            if Übrig == 1:
-                Str_Übrig = "letzter"
-            Extracounter -= 1
-            Zug(Spieler)
-        #Werteverbesserungskarten pro Runde
-        WAS = Werteverbesserung_Anzahl[Spieler]
-        for WV_Karte in WAS:
-            if (not WV_Karte == Parasit) and (not WV_Karte == Friedensengel) and (not WV_Karte == Diebische_Elster) and (not WV_Karte == Urwolf):
-                WASK = WAS[WV_Karte]
-                WASK[0] = WASK[1]
+                print(Dict[Karte])
             
 #Auswertung
 #Punkte
