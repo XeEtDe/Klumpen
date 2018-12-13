@@ -925,13 +925,13 @@ def Druck(Karte, Spieler):
             Surf.blit(P_Num, (P_Text.get_width() + (250 / 2 - P_Text.get_width() - P_Num.get_width() / 2), 175))
     return Surf
 
-def Info_Text(Text):
+def Info_Text(Text_Raw):
     Info_Surf.fill((255, 255, 255))
     y = 10
-    if "\n" in Text:
-        Text = Text.split("\n")
+    if "\n" in Text_Raw:
+        Text = Text_Raw.split("\n")
     else:
-        Text = [Text]
+        Text = [Text_Raw]
     for Schriftteil in Text:
         Test = False
         for Karte in Karten.Alle_Karten:
@@ -940,33 +940,31 @@ def Info_Text(Text):
             elif Schriftteil == Karte.Beschreibung:
                 Test = "Beschreibung"
         if Test == "Name":
-            Dings = SMaxG("Karte: " + Schriftteil, 430, 50)
-            Info_Surf.blit(Dings, (450 / 2 - Dings.get_width() / 2, 10))
+            Dings = SMaxG("Karte: " + Schriftteil, 400, 45)
+            Info_Surf.blit(Dings, (450 / 2 - Dings.get_width() / 2, 20))
         elif Test == "Beschreibung":
-            Teil = Schriftteil.split()
-            Höhe = 140
-            Größe = 52
-            while Höhe > 130:
-                Größe -= 2
-                Lines = []
-                Line = ""
-                for Wort in Teil:
-                    Line = Line + Wort
-                    Teil = get_Text(Line, Größe)
-                    if Teil.get_width() >= 420:
-                        Line = Line[:-len(Wort)]
-                        Lines.append(Line)
-                        Line = Wort
-                Höhe = (get_Text(Lines[0], Größe).get_height() + 10) * len(Lines)
+            Textline = Schriftteil.split(" ")
+            Größe = 35
+            Lines = []
+            Line = ""
+            for Wort in Textline:
+                Line = Line + Wort + " "
+                Realtext = get_Text(Line, Größe)
+                if Realtext.get_width() >= 440:
+                    Line = Line[:-(len(Wort) + 1)]
+                    Lines.append(Line)
+                    Line = Wort + " "
+            if not Line in Lines:
+                Lines.append(Line)
+            y = 80
             for Line in Lines:
-                y = 70
-                for Line in Lines:
-                    Teil = get_Text(Line, Größe)
-                    Info_Surf.blit(Teil, (450 / 2 - Teil.get_width() / 2, y))
-                    y += 10
+                Teil = get_Text(Line, Größe)
+                Info_Surf.blit(Teil, (450 / 2 - Teil.get_width() / 2, y))
+                y += 40
         else:
             Teil = get_Text(Teil, 35)
             Info_Surf.blit(Teil, (450 / 2 - Teil.get_width() / 2, y + 5))
+    screen.blit(Info_Surf, (0, 0))
 
 #Startbildschirm
 screen.blit(get_image("hintergrundblass.png"), (0, 0))
