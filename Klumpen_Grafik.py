@@ -358,6 +358,7 @@ Nächster_Text = get_Text("Fertig", 40)
 Nächster_Rect = pg.Rect(1550 - Nächster_Bild.get_width(), 10, Nächster_Bild.get_width(), Nächster_Bild.get_height())
 Nächster_Button = Button(Nächster_Rect, lambda: Nächster(Spieler), Start_Bild, Nächster_Text)
 def Nächster(Alter_Spieler):
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(610, 0, 800, 100))
     global Runden_Counter
     global Züge_Counter
     global Züge_String
@@ -376,7 +377,6 @@ def Nächster(Alter_Spieler):
         Züge_String = "noch " + str(Übrig) + " Züge"
         if Übrig == 1:
             Züge_String = "letzter Zug"
-        ##Neue Überschrift
         #Letzter Spieler mit letzem Zug -> Runde vorbei
         if Züge_Counter == Züge:
             #Extrazüge berechnen
@@ -392,42 +392,46 @@ def Nächster(Alter_Spieler):
                                 Extracounter += Extrazüge[LW]
                                 Extrazüge_Dict[Spieler][0].append(LW)
                     Extrazüge_Dict[Spieler][1] = Extracounter
-            #Extrazüge ausführen
-            if not Extrazüge_Dict == {}:
-                for Spieler in Extrazüge_Dict:
+            #Extrazüge ausführen#################Fehler########################
+            for Spieler in Alle_Spieler:
+                if Spieler in Extrazüge_Dict:
                     if Extrazüge_Dict[Spieler][1] == 0:
-                        Extrazüge_Dict.remove(Spieler)
-                    else:
-                        String = "Extrazüge\n"
-                        for LW in Extrazüge_Dict[Spieler][0]:
-                            String += Karte.Name + ": + " + str(Extrazüge[LW]) + "\n"
-                        String += "Insgesamt: + " + str(Extrazüge_Dict[Spieler][1])
-                        Info_Text(String)
-                        Extrazüge_Dict[Spieler][0].remove(Extrazüge_Dict[Spieler][0][0])
-                        Neuer_Spieler = Spieler
-                        Übrig = Extrazüge_Dict[Spieler][1]
-                        Züge_String = "noch " + str(Übrig) + " Züge"
-                        if Übrig == 1:
-                            Züge_String = "letzter Zug"
+                        Extrazüge_Dict.pop(Spieler)
+            if not Extrazüge_Dict == {}:
+                Spieler = Extrazüge_Dict[0]
+                String = "Extrazüge\n"
+                for LW in Extrazüge_Dict[Spieler][0]:
+                    String += Karte.Name + ": + " + str(Extrazüge[LW]) + "\n"
+                String += "Insgesamt: + " + str(Extrazüge_Dict[Spieler][1])
+                Info_Text(String)
+                Extrazüge_Dict[Spieler][0].remove(Extrazüge_Dict[Spieler][0][0])
+                Neuer_Spieler = Spieler
+                Übrig = Extrazüge_Dict[Spieler][1]
+                Züge_String = "noch " + str(Übrig) + " Züge"
+                if Übrig == 1:
+                    Züge_String = "letzter Zug"
             #Runde fertig wenn Extrazüge aufgebraucht
-            else:
+            if Extrazüge_Dict == {}:
+                Runden_Counter += 1
+                #Spiel zuende?
+                if Runden_Counter == Runden:
+                    Ende()
+                    return
+                Züge_Counter = 0
+                Züge_String = "noch " + str(Züge) + " Züge"
+                if Züge == 1:
+                    Züge_String = "letzter Zug"
+                Übrig = Runden - Runden_Counter
+                Runden_String = "noch " + str(Übrig) + " Runden"
+                if Übrig == 1:
+                    Runden_String = "letzte Runde"
                 EZ = True
                 #Werteverbesserungskarten pro Runde
                 WAS = Werteverbesserung_Anzahl[Spieler]
                 for WV_Karte in WAS:
-                    if (not WV_Karte == Parasit) and (not WV_Karte == Friedensengel) and (not WV_Karte == Diebische_Elster) and (not WV_Karte == Urwolf):
+                    if (not WV_Karte == Karten.Parasit) and (not WV_Karte == Karten.Friedensengel) and (not WV_Karte == Karten.Diebische_Elster) and (not WV_Karte == Karten.Urwolf):
                         WASK = WAS[WV_Karte]
                         WASK[0] = WASK[1]
-                Runden_Counter += 1
-                Runden_String = "noch " + str(Runden_Counter) + " Runden"
-                #Spiel zuende?
-                if Runden_Counter > Runden:
-                    Ende()
-                    return
-                #letzte Runde? -> Überschrift
-                elif Runden_Counter == Runden:
-                    screen.fill((255, 255, 255))
-                    Runden_String = "letzte Runde"
                 #Auswahlstapel
                 ##############
     #Neuer Spieler (der nach dem alten)
@@ -435,7 +439,7 @@ def Nächster(Alter_Spieler):
         for N in range(0, len(Alle_Spieler)):
             if Alle_Spieler[N] == Alter_Spieler:
                 Num = N + 1
-                if Num > len(Alle_Spieler):
+                if Num > (len(Alle_Spieler) - 1):
                     Num = 0
                 break
         Spieler = Alle_Spieler[Num]
@@ -884,8 +888,8 @@ def Druck(Karte, Spieler):
         #Lebensräume
         LRs = get_Text("LRs:", 30)
         Surf.blit(LRs, (5, 135))
-        LR_Text = SMaxG(Mod_Lebensraum, 110, LRs.get_height())
-        Surf.blit(LR_Text, (LRs.get_width() + (250 / 2 - LRs.get_width() - LR_Text.get_width() / 2), 135))
+        LR_Text = SMaxG(Mod_Lebensraum, 140 - LRs.get_width(), LRs.get_height())
+        Surf.blit(LR_Text, (LRs.get_width() + ((150 - LRs.get_width()) / 2 - LR_Text.get_width() / 2), 135))
         #Punkte
         if Modus == "Punkte":
             P_Text = get_Text("Punkte:", 30)
