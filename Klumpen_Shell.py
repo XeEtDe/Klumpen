@@ -110,32 +110,6 @@ def Zug(Spieler):
                 Ablage[Spieler].remove(Schwarzer_Trank)
             else:
                 print("Du besitzt diese Karte nicht.")
-        #Lebensraum auf Feld
-        else:
-            Counter_Input = 0
-            for Karte in Ablage[Spieler]:
-                Counter_Input += 1
-                if Input == Karte.Name:
-                    if Karte in Alle_Lebensraum:
-                        if Karte not in Feld[Spieler]:
-                            Ablage[Spieler].remove(Karte)
-                            Feld[Spieler].update({Karte:[]})
-                            Spieler_Zug = True
-                            break
-                        else:
-                            print("Du kannst nur einmal denselben Lebensraum auf dem Feld haben.")
-                            break
-                    else:
-                        print("Du kannst nur Lebensräume auf dem Feld platzieren.")
-                        break
-                elif Counter_Input == len(Ablage[Spieler]):
-                    print("Du besitzt diese Karte nicht.")
-        #Ablage und Feld ausgeben
-        if not Aus == False:
-            print("\nAblage:")
-            Ausgabe(Ablage[Spieler])
-            print("\nFeld:")
-            Ausgabe_Feld()
     #Drachenei brüten
     #Werte minus 1 und Drachenei in Drachen nach einem Zug
     D = False

@@ -105,7 +105,7 @@ Verrückter_Gnom = Lebewesen("Verrückter Gnom", "An manchen Tagen hallt das Lac
 Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; können pro Runde die Werte eines Lebewesens um 3 erhöhen (müssen dazu auf dem Feld platziert sein)", 6, 5, 7, ["See"], ["Klumpi+Perle"])
 Dunkler_Magier = Lebewesen("Dunkler Magier", "Stellt aus Elementen Gifte her, die du auf andere Spieler anwenden kannst (muss dazu auf dem Feld platziert sein)", 6, 6, 6, ["Alle"], ["Klumpi+Dunkle Macht"])
 Marienkäfer = Lebewesen("Marienkäfer", "Bei der Zugreihenfolge des Auswahlstapels bist du vor den anderen Spielern an der Reihe, solange der Käfer auf dem Feld platziert ist", 6, 1, 11, ["Alle"], ["Klumpi+Pfingstrose"])
-Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei der du entscheidest ob sie ein Element, Lebewesen oder Lebensraum sein soll, wenn er auf dem Feld platziert ist (dazu: Joker + gewünschte Kartenart)", 6, 6, 6, ["Alle"], ["Klumpi+Sternenstaub", "Klumpi+Kristall"])
+Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei der du entscheidest ob sie ein Element, Lebewesen oder Lebensraum sein soll (muss auf dem Feld platziert sein)", 6, 6, 6, ["Alle"], ["Klumpi+Sternenstaub", "Klumpi+Kristall"])
 # -> Stufe 4 -> +7 #Schleim, Blut, Engelshaar, Stein von Elyaris#
 Kobold = Lebewesen("Kobold", "Gibt dir pro Runde einen Kessel voller Gold, wenn er auf dem Feld platziert ist", 8, 8, 8, ["Alle"], ["Klumpi+Regenbogen"])
 Schreier = Lebewesen("Schreier", "Sein greller Schrei hallt noch Tage in den Ohren derer, die ihn höhren; kann drei Mal im Spiel einen Spieler drei Züge aussetzen lassen", 8, 10, 6, ["Alle"], ["Klumpi+Eis", "Klumpi+Blitz"])

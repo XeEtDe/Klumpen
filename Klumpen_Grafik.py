@@ -6,6 +6,7 @@ import string
 import textbox
 import SchriftMaxgröße
 SMaxG = SchriftMaxgröße.SchriftFunc
+from Add_Funktion import Add
 
 #Startbildschirm
 screen = pg.display.set_mode((1600, 900), pg.FULLSCREEN)
@@ -73,18 +74,6 @@ class Button:
         if not self.Text == None:
             Oberfläche.blit(self.Text, (Oberfläche.get_width() / 2 - self.Text.get_width() / 2, Oberfläche.get_height() / 2 - self.Text.get_height() / 2))
         screen.blit(Oberfläche, (self.Rect[0], self.Rect[1]))
-
-#Startbildschirm
-screen.blit(get_image("hintergrundblass.png"), (0, 0))
-#Klumpen
-Klecks_Blau = get_image("klecks.png")
-screen.blit(Klecks_Blau, (screen.get_width() / 2 - Klecks_Blau.get_width() / 2, screen.get_height() / 2 - Klecks_Blau.get_height() / 2 - 200)) #mittig von Schrift
-Text_K = get_Text("Klumpen", 90, (255, 255, 255))
-screen.blit(Text_K, (screen.get_width() / 2 - Text_K.get_width() / 2, screen.get_height() / 2 - Text_K.get_height() / 2 - 200)) #mittig, etwas nach oben verschoben
-#Regeln
-Regeln_Button.create_button()
-#Start
-Start_Button.create_button()
 
 #Buttons und Funktionen
 Einstellungen = [None, [], 0, 0] #[Modus, Spieler, Runden, Züge]
@@ -175,8 +164,11 @@ Boxen = [Input_Box, Runden_Box, Züge_Box]
 #Fertig Button
 Großer_Haken = get_image("hakengroß.png")
 Großer_Haken_Blass = get_image("hakengroßblass.png")
+Einstellungen_Fertig = False
 def Fertig():
     if Fertig_Button.Switch == True:
+        global Einstellungen_Fertig
+        Einstellungen_Fertig = True
         global Modus
         global Alle_Spieler
         global Runden
@@ -268,6 +260,18 @@ Start_Bild = get_image("start.png")
 Text_S = get_Text("Start", 70)
 Start_Rect = pg.Rect(1000, 500, Start_Bild.get_width(), Start_Bild.get_height())
 Start_Button = Button(Start_Rect, Start, Start_Bild, Text_S)
+
+#Startbildschirm
+screen.blit(get_image("hintergrundblass.png"), (0, 0))
+#Klumpen
+Klecks_Blau = get_image("klecks.png")
+screen.blit(Klecks_Blau, (screen.get_width() / 2 - Klecks_Blau.get_width() / 2, screen.get_height() / 2 - Klecks_Blau.get_height() / 2 - 200)) #mittig von Schrift
+Text_K = get_Text("Klumpen", 90, (255, 255, 255))
+screen.blit(Text_K, (screen.get_width() / 2 - Text_K.get_width() / 2, screen.get_height() / 2 - Text_K.get_height() / 2 - 200)) #mittig, etwas nach oben verschoben
+#Regeln
+Regeln_Button.create_button()
+#Start
+Start_Button.create_button()
 
 ##############################################################################################################################################################################
 ###############################################################################################################################################################################
@@ -383,7 +387,6 @@ def Nächster(Alter_Spieler):
     global Spieler
     global Extrazüge_Dict
     global EZ
-    global Aktion
     Neuer_Spieler = None
     #Züge
     if Alter_Spieler == Alle_Spieler[-1]:
@@ -404,8 +407,8 @@ def Nächster(Alter_Spieler):
                     Feld_Spieler = Feld[Spieler]
                     for LR in Feld[Spieler]:
                         for LW in Feld_Spieler[LR]:
-                            if LW in Extrazüge:
-                                Extracounter += Extrazüge[LW]
+                            if LW in Extrazüge_Dict[Spieler]:
+                                Extracounter += Extrazüge_Dict[Spieler][LW]
                                 Extrazüge_Dict[Spieler][0].append(LW)
                     Extrazüge_Dict[Spieler][1] = Extracounter
             #Extrazüge ausführen#################Fehler########################
@@ -463,9 +466,6 @@ def Nächster(Alter_Spieler):
         screen.blit(Info_Surf, (0, 0))
     else:
         Spieler = Neuer_Spieler
-    global Spieler_Zug
-    Spieler_Zug = False
-    Aktion = None
     #Überschrift
     Text = SMaxG(Runden_String, None, 30)
     screen.blit(Text, (610 + (415 / 2 - Text.get_width() / 2), 10))
@@ -476,8 +476,9 @@ def Nächster(Alter_Spieler):
     else:
         Text = SMaxG(Spieler + "s Zug", 350, 50)
     screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
-    Ausgabe(Spieler, Ablage_Surf)
-    Ausgabe(Spieler, Feld_Übersicht_Surf)
+    global Spieler_Zug
+    Spieler_Zug  = False
+    Clear()
 
 ##Karten Buttons##
 #Ablage
@@ -530,18 +531,27 @@ Feld_Übersicht_Button_5 = Button(Karten_Feld_Übersicht_Rects[5], lambda: Karte
 
 #Karten Funktion
 Alt_LR_Pos = 0
-Kombi_List = []
+Extra_List = []
 def Karten_Func(Kategorie, Button_Num):
     global Spieler
     global Aktion
-    global Kombi_List
+    global Extra_List
+    global Spieler_Zug
+    EDS = Einmal_Dict[Spieler]
+    for Karte in EDS:
+        EDS[Karte] = True
     if Kategorie == "Ablage":
         List = Ablage[Spieler]
         global Ablage_Alt_Range
         Alt_Range = Ablage_Alt_Range
     elif Kategorie == "Feld":
         global Alt_LR_Pos
-        List = Feld[Spieler][Alt_LR_Pos]
+        Counter = 0
+        for LR in Feld[Spieler]:
+            if Counter == Alt_LR_Pos:
+                List = Feld[Spieler][LR]
+                break
+            Counter += 1
         global Feld_Alt_Range
         Alt_Range = Feld_Alt_Range
     elif Kategorie == "Feld_Übersicht":
@@ -550,21 +560,117 @@ def Karten_Func(Kategorie, Button_Num):
         Alt_Range = Feld_Übersicht_Alt_Range
     Num = Alt_Range[Button_Num]
     if Num <= (len(List) - 1):
-        Karte = List[Num]
+        Counter = 0
+        for Dings in List:
+            if Counter == Num:
+                Karte = Dings
+                break
+            Counter += 1
         #Funktionen, Kombi, etc
         if Aktion == "Kombi":
-            Kombi_List.append(Karte.Name)
-            if len(Kombi_List) == 1:
+            Extra_List.append(Karte)
+            if len(Extra_List) == 1:
                 Info_Text("Kombi:\n" + Karte.Name + " + ?\nWähle eine weitere Karte")
-            elif len(Kombi_List) == 2:
-                Add(Kombi_List)
-                Aktion = None
+            elif len(Extra_List) == 2:
+                Kombi_Func(Extra_List)
+        elif Aktion == "Extra":
+            Extra_List.append(Karte)
+            if len(Extra_List) == 1:
+                if Extra_List[0] == Karten.Joker:
+                    Info_Text("Wähle eine Kartenart")
+                    for Button in Joker_Buttons:
+                        Button.create_button()
+                else:
+                    Info_Text("Extrafunktion der Karte: " + Karte.Name + "\nWähle eine Karte, auf die du die Extrafunktion anwenden möchstest")
+            elif len(Extra_List) == 2:
+                Extra_Func(Extra_List)
+        elif Aktion == "LR":
+            if Karte in Karten.Alle_Lebensraum:
+                if (not Karte in Feld[Spieler]) and (Karte in Ablage[Spieler]):
+                    Ablage[Spieler].remove(Karte)
+                    Feld[Spieler].update({Karte:[]})
+                    Spieler_Zug = True
+                    Clear()
+                else:
+                    Info_Text("Du kannst nur einmal denselben Lebensraum auf dem Feld haben und der Lebensraum muss aus der Ablage gewählt werden")
+            else:
+                Info_Text("Du kannst nur Lebensräume auf dem Feld platzieren")
+        elif Aktion == "LW":
+            if len(Extra_List) == 0:
+                if Karte in Karten.Alle_Lebewesen:
+                    if Kategorie == "Ablage":
+                        if Spieler_Zug == True:
+                            Info_Text("Du hast deinen Zug bereits gemacht und kannst nur noch Lebewesen innerhalb des Feldes bewegen")
+                            Clear()
+                        else:
+                            Extra_List.append([Karte, "Ablage"])
+                            Info_Text("Wähle einen Lebensraum, in dem du das Lebewesen platzieren möchtest: " + Karte.Name)
+                    else:
+                        Extra_List.append([Karte, "Feld"])
+                        Info_Text("Wähle einen Lebensraum, in dem du das Lebewesen platzieren möchtest: " + Karte.Name)
+                else:
+                    Info_Text("Du kannst nur Lebewesen bewegen")
+            elif len(Extra_List) == 1:
+                if Karte in Karten.Alle_Lebensraum:
+                    Extra_List.append(Karte)
+                    if Karte in Feld[Spieler]:
+                        LR_Karte = Extra_List[1]
+                        LW_Karte = Extra_List[0][0]
+                        #Größe
+                        Voll_Test = False
+                        Art_Test = False
+                        Alte_LW = Feld[Spieler][LR_Karte]
+                        Größe = LR_Karte.Größe
+                        if LR_Karte in EDS:
+                            if EDS[LR_Karte] == True:
+                                Add_Größe = Verbesserung_Spieler[LR_Karte]
+                                Größe = LR_Karte.Größe + Add_Größe                    
+                        if len(Alte_LW) < Größe:
+                            Voll_Test = True
+                        else:
+                            Info_Text("Dieser Lebensraum ist bereits voll")
+                        #Art
+                        Art_Test = False
+                        Zusatz_LR = []
+                        if LW_Karte in EDS:
+                            if EDS[LW_Karte] == True:
+                                VSK = Verbesserung_Spieler[LW_Karte]
+                                for LR in VSK["Lebensräume"]:
+                                    Zusatz_LR.append(LR)
+                        for LR in LW_Karte.Lebensraum:
+                            if LR == LR_Karte.Art or LR == "Alle":
+                                Art_Test = True
+                                break
+                        for LR in Zusatz_LR:
+                            if LR == LR_Karte.Art or LR == "Alle":
+                                Art_Test = True
+                                break
+                        if Art_Test == False:
+                            Info_Text("Dieser Lebensraum ist für das Lebewesen nicht geeignet")
+                        #Hinzufügen?
+                        if Voll_Test == True and Art_Test == True:
+                            Feld[Spieler][LR_Karte].append(LW_Karte)
+                            if Extra_List[0][1] == "Ablage":
+                                Ablage[Spieler].remove(LW_Karte)
+                                Spieler_Zug = True
+                            else:
+                                Counter = 0
+                                for LR in Feld[Spieler]:
+                                    if Counter == Alt_LR_Pos:
+                                        Feld[Spieler][LR].remove[LW_Karte]
+                                        break
+                                    Counter += 1
+                    else:
+                        Info_Text("Der Lebensraum muss sich auf dem Feld befinden")
+                    Clear()
+                else:
+                    Info_Text("Wähle einen Lebensraum")
         #normal Text am Rand ausgeben
         else:
             if Kategorie == "Feld_Übersicht":
                 Ausgabe(Spieler, Feld_Surf, range(0, 6), Num)
                 if Modus == "Punkte":
-                    Info_Text(Karte.Name + "\n" + Karte.Beschreibung + "\n" + "Punkte: " + Karte.Punkte)
+                    Info_Text(Karte.Name + "\n" + Karte.Beschreibung + "\n" + "Punkte: " + str(Karte.Punkte))
                 else:
                     Info_Text(Karte.Name + "\n" + Karte.Beschreibung)
             else:
@@ -574,16 +680,731 @@ def Karten_Func(Kategorie, Button_Num):
 Aktion = None
 def Aktion_Func(Aktion_):
     global Aktion
+    global Extra_List
+    Extra_List = []
     Aktion = Aktion_
     if Aktion == "Kombi":
         Info_Text("Wähle zwei Karten, die du kombinieren möchtest")
-Kombi_Rect = pg.Rect()
-Kombi_Button = Button(Kombi_Rect, Kombi_Func(), None, "Kombi")
+    elif Aktion == "Extra":
+        Info_Text("Wähle die Karte, deren Extrafunktion du anwenden möchtest")
+    elif Aktion == "LR":
+        Info_Text("Wähle einen Lebensraum aus deiner Ablage, den du auf dem Feld platzieren möchtest")
+    elif Aktion == "LW":
+        Info_Text("Wähle ein Lebewesen auf dem Feld, das du bewegen möchtest")
+Kombi_Rect = pg.Rect(450, 750, 287.5, 150)
+Kombi_Button = Button(Kombi_Rect, lambda: Aktion_Func("Kombi"), None, get_Text("Kombi", 30))
+Extra_Rect = pg.Rect(737.5, 750, 287.5, 150)
+Extra_Button = Button(Extra_Rect, lambda: Aktion_Func("Extra"), None, get_Text("Extrafunktion", 30))
+LR_Rect = pg.Rect(1025, 750, 287.5, 150)
+LR_Button = Button(LR_Rect, lambda: Aktion_Func("LR"), None, get_Text("Lebensraum platzieren", 30))
+LW_Rect = pg.Rect(1312.5, 750, 287.5, 150)
+LW_Button = Button(LW_Rect, lambda: Aktion_Func("LW"), None, get_Text("Lebewesen bewegen", 30))
+
+def Kombi_Func(Karten_Liste):
+    global Spieler_Zug
+    global Spieler
+    Ablage_Spieler = Ablage[Spieler]
+    Feld_Spieler = Feld[Spieler]
+    Neue_Karte = False
+    EDS = Einmal_Dict[Spieler]
+    for Karte in EDS:
+        EDS[Karte] = True
+    WAS = Werteverbesserung_Anzahl[Spieler]
+    Verbesserung_Spieler = Verbesserung[Spieler]
+    E_Karte = Karten_Liste[0]
+    Andere_Karte = Karten_Liste[1]
+    Gesuchte_Kombi_1 = E_Karte.Name + "+" + Andere_Karte.Name
+    Gesuchte_Kombi_2 = Andere_Karte.Name + "+" + E_Karte.Name
+    #Ort und Besitz?
+    LR_1 = False
+    LR_2 = False
+    LR_Neu = False
+    #E_Karte
+    Ort_1 = False
+    for Liste in Feld_Spieler:
+        if E_Karte in Feld_Spieler[Liste]:
+            LR_1 = Liste
+            Ort_1 = Feld_Spieler[Liste]
+            break
+    if Ort_1 == False:
+        if E_Karte in Feld[Spieler]:
+            Ort_1 = Feld[Spieler]
+    if Ort_1 == False:
+        if E_Karte in Ablage[Spieler]:
+            Ort_1 = Ablage[Spieler]
+    #Andere_Karte
+    Ort_2 = False
+    #Doppelte Karte/Karte 1 = Karte 2
+    if E_Karte == Andere_Karte:
+        for Liste in Feld_Spieler:
+            if Andere_Karte in Feld_Spieler[Liste]:
+                if not Ort_1 == Feld_Spieler[Liste]:
+                    LR_2 = Liste
+                    Ort_2 = Feld_Spieler[Liste]
+                    break
+                else:
+                    Counter = 0
+                    for Krt in Feld_Spieler[Liste]:
+                        if Krt == Andere_Karte:
+                            Counter += 1
+                    if Counter >= 2:
+                        LR_2 = Liste
+                        Ort_2 = Feld_Spieler[Liste]
+                        break
+        if Ort_2 == False:
+            if Andere_Karte in Feld[Spieler]:
+                if not Ort_1 == Feld[Spieler]:
+                    Ort_2 = Feld[Spieler]
+                else:
+                    Counter = 0
+                    for Krt in Feld[Spieler]:
+                        if Krt == Andere_Karte:
+                            Counter += 1
+                    if Counter >= 2:
+                        Ort_2 = Feld[Spieler]
+        if Ort_2 == False:
+            if Andere_Karte in Ablage[Spieler]:
+                if not Ort_1 == Ablage[Spieler]:
+                    Ort_2 = Ablage[Spieler]
+                else:
+                    Counter = 0
+                    for Krt in Ablage[Spieler]:
+                        if Krt == Andere_Karte:
+                            Counter += 1
+                    if Counter >= 2:
+                        Ort_2 = Ablage[Spieler]
+    #Nicht doppelt
+    else:
+        for Liste in Feld_Spieler:
+            if Andere_Karte in Feld_Spieler[Liste]:
+                LR_2 = Liste
+                Ort_2 = Feld_Spieler[Liste]
+                break
+        if Ort_2 == False:
+            if Andere_Karte in Feld[Spieler]:
+                Ort_2 = Feld[Spieler]
+        if Ort_2 == False:
+            if Andere_Karte in Ablage[Spieler]:
+                Ort_2 = Ablage[Spieler]
+    Counter_Add = 0
+    for Karte in Karten.Alle_Karten:
+        Counter_Add += 1
+        #Kombi
+        if Gesuchte_Kombi_1 in Karte.Kombi or Gesuchte_Kombi_2 in Karte.Kombi:
+            Neue_Karte = Karte
+            #LR
+            if E_Karte in Karten.Alle_Lebensraum or Andere_Karte in Karten.Alle_Lebensraum:
+                if E_Karte in Karten.Alle_Lebensraum:
+                    LR_Karte = E_Karte
+                    Andere_Karte = Andere_Karte
+                else:
+                    LR_Karte = Andere_Karte
+                    Andere_Karte = E_Karte
+                #LR + LR
+                if Andere_Karte in Karten.Alle_Lebensraum:
+                    #min. eine Feld
+                    if Ort_1 == Feld_Spieler or Ort_2 == Feld_Spieler:
+                        Neue_LW = []
+                        if Ort_1 == Feld_Spieler:
+                            LW_1 = Feld_Spieler[E_Karte]
+                            for LW in LW_1:
+                                Neue_LW.append(LW)
+                            del Feld_Spieler[E_Karte]
+                        else:
+                            Ablage_Spieler.remove(E_Karte)
+                        if Ort_2 == Feld_Spieler:
+                            LW_2 = Feld_Spieler[Andere_Karte]
+                            for LW in LW_2:
+                                Neue_LW.append(LW)
+                            del Feld_Spieler[Andere_Karte]
+                        else:
+                            Ablage_Spieler.remove(Andere_Karte)
+                        Feld_Spieler.update({Neue_Karte:[]})
+                        if not Neue_LW == []:
+                            for LW in Neue_LW:
+                                Feld_Spieler[Neue_Karte].append(LW)
+                        Spieler_Zug = True
+                        break
+                    #beide Ablage
+                    elif Ort_1 == Ablage_Spieler and Ort_2 == Ablage_Spieler:
+                        Ablage_Spieler.remove(E_Karte)
+                        Ablage_Spieler.remove(Andere_Karte)
+                        Ablage_Spieler.append(Neue_Karte)
+                        Spieler_Zug = True
+                        break
+                #LR + E
+                elif Andere_Karte in Karten.Alle_Elemente:
+                    #LR in Feld
+                    if LR_Karte in Feld_Spieler:
+                        Feld_Spieler.update({Neue_Karte:[]})
+                        for LW in Feld_Spieler[LR_Karte]:
+                            Feld_Spieler[Neue_Karte].append(LW)
+                        del Feld_Spieler[LR_Karte]
+                        Ablage_Spieler.remove(Andere_Karte)
+                        Spieler_Zug = True
+                        break
+                    #LR in Ablage
+                    elif LR_Karte in Ablage_Spieler:
+                        Ablage_Spieler.remove(E_Karte)
+                        Ablage_Spieler.remove(Andere_Karte)
+                        Ablage_Spieler.append(Neue_Karte)
+                        Spieler_Zug = True
+                        break
+            #LW
+            elif E_Karte in Karten.Alle_Lebewesen or Andere_Karte in Karten.Alle_Lebewesen:
+                if E_Karte in Karten.Alle_Lebewesen:
+                    LW_Karte = E_Karte
+                    Andere_Karte = Andere_Karte
+                else:
+                    LW_Karte = Andere_Karte
+                    Andere_Karte = E_Karte
+                #LW + LW
+                if Andere_Karte in Karten.Alle_Lebewesen:
+                    #beide Ablage oder beide selber LR
+                    if Ort_1 == Ort_2:
+                        Ort_1.remove(E_Karte)
+                        Ort_2.remove(Andere_Karte)
+                        Ort_1.append(Neue_Karte)
+                        Spieler_Zug = True
+                        break
+                    #unterschiedliche LRs
+                    else:
+                        #Falsch
+                        if LR_1 == False or LR_2 == False:
+                            Info_Text("Du kannst nur innerhalb des Feldes oder der Ablage kombinieren.")
+                            break
+                        #Ort/geeigneter LR
+                        Fertig = False
+                        Lebensräume = []
+                        for LR in Neue_Karte.Lebensraum:
+                            Lebensräume.append(LR)
+                        if Neue_Karte in EDS:
+                            if EDS[Neue_Karte] == True:
+                                VSK = Verbesserung_Spieler[Neue_Karte]
+                                for LR in VSK["Lebensräume"]:
+                                    Lebensräume.append(LR)
+                        for LR in Lebensräume:
+                            if LR == LR_1.Art or LR == "Alle":
+                                Ort_1.append(Neue_Karte)
+                                Ort_1.remove(E_Karte)
+                                Ort_2.remove(Andere_Karte)
+                                Fertig = True
+                                Spieler_Zug = True
+                                LR_Neu = LR_1
+                                break
+                            elif LR == LR_2.Art:
+                                Ort_2.append(Neue_Karte)
+                                Ort_1.remove(E_Karte)
+                                Ort_2.remove(Andere_Karte)
+                                Fertig = True
+                                Spieler_Zug = True
+                                LR_Neu = LR_2
+                                break
+                        if Spieler_Zug == True:
+                            break
+                        if Fertig == False:
+                            Info_Text("Keiner der beiden Lebensräume ist geeignet für das neue Lebewesen.")
+                            break
+                #LW + E
+                elif Andere_Karte in Karten.Alle_Elemente:
+                    #in Ablage
+                    if LW_Karte in Ablage_Spieler:
+                        Ablage_Spieler.remove(LW_Karte)
+                        Ablage_Spieler.remove(Andere_Karte)
+                        Ablage_Spieler.append(Neue_Karte)
+                        Spieler_Zug = True
+                        break
+                    #LW auf Feld/in LR
+                    else:
+                        Lebensräume = []
+                        for LR in Neue_Karte.Lebensraum:
+                            Lebensräume.append(LR)
+                        if Neue_Karte in EDS:
+                            if EDS[Neue_Karte] == True:
+                                VSK = Verbesserung_Spieler[Neue_Karte]
+                                for LR in VSK["Lebensräume"]:
+                                    Lebensräume.append(LR)
+                        if LW_Karte == E_Karte:
+                            for LR in Lebensräume:
+                                if LR == LR_1.Art or LR == "Alle":
+                                    Ort_1.append(Neue_Karte)
+                                    Ort_1.remove(E_Karte)
+                                    Ablage_Spieler.remove(Andere_Karte)
+                                    Spieler_Zug = True
+                                    LR_Neu = LR_1
+                                    break
+                            if Spieler_Zug == False:
+                                Info_Text("Der Lebensraum ist nicht geeignet für das neue Lebewesen.")
+                                break
+                            break
+                        elif LW_Karte == Andere_Karte:
+                            for LR in Lebensräume:
+                                if LR == LR_2.Art or LR == "Alle":
+                                    Ort_2.append(Neue_Karte)
+                                    Ort_2.remove(Andere_Karte)
+                                    Ablage_Spieler.remove(Andere_Karte)
+                                    Spieler_Zug = True
+                                    LR_Neu = LR_2
+                                    break
+                            if Spieler_Zug == False:
+                                Info_Text("Der Lebensraum ist nicht geeignet für das neue Lebewesen.")
+                                break
+                            break
+            #E + E
+            elif E_Karte in Karten.Alle_Elemente and Andere_Karte in Karten.Alle_Elemente:
+                Ablage[Spieler].append(Neue_Karte)
+                Ablage[Spieler].remove(E_Karte)
+                Ablage[Spieler].remove(Andere_Karte)
+                Spieler_Zug = True
+                break
+        #Keine Kombi möglich
+        elif Counter_Add == len(Karten.Alle_Karten):
+            Info_Text("Diese Karten lassen sich nicht kombinieren.")
+    #Verbesserungen
+    if Spieler_Zug == True:
+        Info_Text("Neue Karte: " + Neue_Karte.Name)
+        #Weitergabe Verbesserungen
+        if Neue_Karte in Karten.Alle_Lebensraum:
+            Counter = 0
+            if E_Karte in Karten.Alle_Lebensraum and E_Karte in Verbesserung_Spieler:
+                Counter += Verbesserung_Spieler[E_Karte]
+                del Verbesserung_Spieler[E_Karte]
+            if Andere_Karte in Karten.Alle_Lebensraum and Andere_Karte in Verbesserung_Spieler:
+                Counter += Verbesserung_Spieler[Andere_Karte]
+                del Verbesserung_Spieler[E_Karte]
+            if not Counter == 0:
+                if not Neue_Karte in Verbesserung_Spieler:
+                    Counter_Dict[Spieler].update({Neue_Karte:False})
+                    Einmal_Dict[Spieler].update({Neue_Karte:False})
+                    Verbesserung_Spieler.update({Neue_Karte:0})
+                Verbesserung_Spieler[Neue_Karte] += Counter
+        elif Neue_Karte in Karten.Alle_Lebewesen:
+            Counter_P = 0
+            Counter_A = 0
+            Counter_V = 0
+            if E_Karte in Karten.Alle_Lebewesen and E_Karte in Verbesserung_Spieler:
+                VSK = Verbesserung_Spieler[E_Karte]
+                Counter_P += VSK["Punkte"]
+                Counter_A += VSK["Angriff"]
+                Counter_V += VSK["Verteidigung"]
+                del Verbesserung_Spieler[E_Karte]
+            if Andere_Karte in Karten.Alle_Lebewesen and Andere_Karte in Verbesserung_Spieler:
+                VSK = Verbesserung_Spieler[Andere_Karte]
+                Counter_P += VSK["Punkte"]
+                Counter_A += VSK["Angriff"]
+                Counter_V += VSK["Verteidigung"]
+                del Verbesserung_Spieler[Andere_Karte]
+            if not (Counter_P == 0 and Counter_A == 0 and Counter_V == 0):
+                if not Neue_Karte in Verbesserung_Spieler:
+                    Counter_Dict[Spieler].update({Neue_Karte:False})
+                    Einmal_Dict[Spieler].update({Neue_Karte:False})
+                    Verbesserung_Spieler.update({Neue_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VSK = Verbesserung_Spieler[Neue_Karte]
+                VSK["Punkte"] += Counter_P
+                VSK["Angriff"] += Counter_A
+                VSK["Verteidigung"] += Counter_V
+    Clear()
+
+def Extra_Func(Liste):
+    global Spieler_Zug
+    global Spieler
+    Ablage_Spieler = Ablage[Spieler]
+    Feld_Spieler = Feld[Spieler]
+    Neue_Karte = False
+    EDS = Einmal_Dict[Spieler]
+    for Karte in EDS:
+        EDS[Karte] = True
+    WAS = Werteverbesserung_Anzahl[Spieler]
+    Verbesserung_Spieler = Verbesserung[Spieler]
+    E_Karte = Liste[0]
+    Dings = Liste[1]
+    Andere_Karte = None
+    for Karte in Karten.Alle_Karten:
+        if Dings == Karte.Name:
+            Andere_Karte = Karte
+            break
+    #Ort und Besitz?
+    LR_1 = False
+    LR_2 = False
+    LR_Neu = False
+    #E_Karte
+    Ort_1 = False
+    for Liste in Feld_Spieler:
+        if E_Karte in Feld_Spieler[Liste]:
+            LR_1 = Liste
+            Ort_1 = Feld_Spieler[Liste]
+            break
+    if Ort_1 == False:
+        if E_Karte in Feld[Spieler]:
+            Ort_1 = Feld[Spieler]
+    if Ort_1 == False:
+        if E_Karte in Ablage[Spieler]:
+            Ort_1 = Ablage[Spieler]
+    Ort = Ort_1
+    if not Andere_Karte == None:
+        #Andere_Karte
+        Ort_2 = False
+        #Doppelte Karte/Karte 1 = Karte 2
+        if E_Karte == Andere_Karte:
+            for Liste in Feld_Spieler:
+                if Andere_Karte in Feld_Spieler[Liste]:
+                    if not Ort_1 == Feld_Spieler[Liste]:
+                        LR_2 = Liste
+                        Ort_2 = Feld_Spieler[Liste]
+                        break
+                    else:
+                        Counter = 0
+                        for Krt in Feld_Spieler[Liste]:
+                            if Krt == Andere_Karte:
+                                Counter += 1
+                        if Counter >= 2:
+                            LR_2 = Liste
+                            Ort_2 = Feld_Spieler[Liste]
+                            break
+            if Ort_2 == False:
+                if Andere_Karte in Feld[Spieler]:
+                    if not Ort_1 == Feld[Spieler]:
+                        Ort_2 = Feld[Spieler]
+                    else:
+                        Counter = 0
+                        for Krt in Feld[Spieler]:
+                            if Krt == Andere_Karte:
+                                Counter += 1
+                        if Counter >= 2:
+                            Ort_2 = Feld[Spieler]
+            if Ort_2 == False:
+                if Andere_Karte in Ablage[Spieler]:
+                    if not Ort_1 == Ablage[Spieler]:
+                        Ort_2 = Ablage[Spieler]
+                    else:
+                        Counter = 0
+                        for Krt in Ablage[Spieler]:
+                            if Krt == Andere_Karte:
+                                Counter += 1
+                        if Counter >= 2:
+                            Ort_2 = Ablage[Spieler]
+        #Nicht doppelt
+        else:
+            for Liste in Feld_Spieler:
+                if Andere_Karte in Feld_Spieler[Liste]:
+                    LR_2 = Liste
+                    Ort_2 = Feld_Spieler[Liste]
+                    break
+            if Ort_2 == False:
+                if Andere_Karte in Feld[Spieler]:
+                    Ort_2 = Feld[Spieler]
+            if Ort_2 == False:
+                if Andere_Karte in Ablage[Spieler]:
+                    Ort_2 = Ablage[Spieler]
+        Anderer_Ort = Ort_2
+        Anderer_LR = LR_2
+    else:
+        Andere_Karte = Dings
+    #Start#
+    if E_Karte in WAS:
+        WASK = WAS[E_Karte]
+    #Tränke
+    if "Trank" in E_Karte.Name:
+        #Lebensraum-Tränke
+        if "Lebensraum" in E_Karte.Beschreibung or "Duftender Trank" == E_Karte.Name:
+            if Andere_Karte in Karten.Alle_Lebensraum:
+                #Vergrößerungs-Trank
+                if E_Karte.Name == "Vergrößerungs-Trank":
+                    if not Andere_Karte in Verbesserung_Spieler:
+                        Counter_Dict[Spieler].update({Andere_Karte:False})
+                        Einmal_Dict[Spieler].update({Andere_Karte:False})
+                        Verbesserung_Spieler.update({Andere_Karte:0})
+                    Verbesserung_Spieler[Andere_Karte] += 1
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+                #Duftender Trank
+                elif E_Karte.Name == "Duftender Trank":
+                    if "Klein" in Andere_Karte.Name:
+                        if "Magisch" in Andere_Karte.Name:
+                            Neue_Karte = Karten.Magisches_Kleines_Wonderland
+                        else:
+                            Neue_Karte = Karten.Kleines_Wonderland
+                    elif "Groß" in Andere_Karte.Name:
+                        if "Magisch" in Andere_Karte.Name:
+                            Neue_Karte = Karten.Magisches_Großes_Wonderland
+                        else:
+                            Neue_Karte = Karten.Großes_Wonderland
+                    else:
+                        if "Magisch" in Andere_Karte.Name:
+                            Neue_Karte = Karten.Magisches_Wonderland
+                        else:
+                            Neue_Karte = Karten.Wonderland
+                    if Andere_Karte in Feld[Spieler]:
+                        Feld_Spieler.update({Neue_Karte:[]})
+                        for LW in Feld_Spieler[Andere_Karte]:
+                            Feld_Spieler[Neue_Karte].append(LW)
+                        del Feld_Spieler[Andere_Karte]
+                    elif Andere_Karte in Ablage[Spieler]:
+                        Ablage[Spieler].append(Neue_Karte)
+                        Ablage[Spieler].remove(Andere_Karte)
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+            else:
+                Info_Text("Du kannst diesen Trank nur auf Lebensräume anwenden.")
+        #Lebewesen-Tränke     
+        elif "Lebewesen" in E_Karte.Beschreibung:
+            if Andere_Karte in Karten.Alle_Lebewesen:
+                Mehr_LRs_Tränke = ["Heißer Trank", "Wässriger Trank", "Matschiger Trank", "Blubbernder Trank", "Verkohlter Trank"]
+                Werte_Tränke = ["Güldener Trank", "Level-Up Trank", "Glitzernder Trank", "Himmlischer Trank"]
+                #Mehr LR Tränke
+                if E_Karte.Name in Mehr_LRs_Tränke:
+                    if E_Karte.Name == "Heißer Trank":
+                        LR = "Wüste"
+                    elif E_Karte.Name == "Wässriger Trank":
+                        LR = "See"
+                    elif E_Karte.Name == "Matschiger Trank":
+                        LR = "Wald"
+                    elif E_Karte.Name == "Blubbernder Trank":
+                        LR = "Berge"
+                    elif E_Karte.Name == "Verkohlter Trank":
+                        LR = "Alle"
+                    if not Andere_Karte in Verbesserung_Spieler:
+                        Counter_Dict[Spieler].update({Andere_Karte:False})
+                        Einmal_Dict[Spieler].update({Andere_Karte:False})
+                        Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                    VSK = Verbesserung_Spieler[Andere_Karte]
+                    if not LR in VSK["Lebensräume"]:
+                        VSK["Lebensräume"].append(LR)
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+                #Werte Tränke
+                elif E_Karte.Name in Werte_Tränke:
+                    if E_Karte.Name == "Güldener Trank":
+                        Wert = 3
+                    elif E_Karte.Name == "Level-Up Trank":
+                        Wert = 5
+                    elif E_Karte.Name == "Glitzernder Trank":
+                        Wert = 7
+                    elif E_Karte.Name == "Himmlischer Trank":
+                        Wert = 10
+                    if not Andere_Karte in Verbesserung_Spieler:
+                        Counter_Dict[Spieler].update({Andere_Karte:False})
+                        Einmal_Dict[Spieler].update({Andere_Karte:False})
+                        Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                    VSK = Verbesserung_Spieler[Andere_Karte]
+                    VSK["Punkte"] += Wert
+                    VSK["Angriff"] += Wert
+                    VSK["Verteidigung"] += Wert
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+                #Dolly Trank
+                elif E_Karte.Name == "Dolly Trank":
+                    Ablage[Spieler].append(Andere_Karte)
+                    Spieler_Zug = True
+                    Ablage[Spieler].remove(E_Karte)
+            else:
+                Info_Text("Du kannst diesen Trank nur auf Lebenwesen anwenden.")
+    #Parasit
+    elif E_Karte == Karten.Parasit:
+        if Andere_Karte in Karten.Alle_Lebewesen:
+            if WASK[0] > 0:
+                if not E_Karte in Verbesserung_Spieler:
+                    Counter_Dict[Spieler].update({E_Karte:False})
+                    Einmal_Dict[Spieler].update({E_Karte:False})
+                    Verbesserung_Spieler.update({E_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VSK = Verbesserung_Spieler[E_Karte]
+                VSK["Punkte"] += Andere_Karte.Punkte
+                VSK["Angriff"] += Andere_Karte.Angriff
+                VSK["Verteidigung"] += Andere_Karte.Verteidigung
+                if not Andere_Karte in Verbesserung_Spieler:
+                    Counter_Dict[Spieler].update({Andere_Karte:False})
+                    Einmal_Dict[Spieler].update({Andere_Karte:False})
+                    Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VSK = Verbesserung_Spieler[Andere_Karte]
+                VSK["Punkte"] -= 4
+                VSK["Angriff"] -= 4
+                VSK["Verteidigung"] -= 4
+                WASK[0] -= 1
+                Spieler_Zug = True
+            else:
+                Info_Text("Fähigkeit kann nur einmal angewandt werden, Parasit muss auf dem Feld platziert sein.")
+        else:
+            Info_Text("Kann nur die Werte von Lebewesen aufnehmen.")
+    #Werteverbesserungskarte
+    elif E_Karte in Karten.Werteverbesserung_Übersicht:
+        if Andere_Karte in Karten.Alle_Lebewesen:
+            if WASK[0] > 0:
+                if not Andere_Karte in Verbesserung_Spieler:
+                    Counter_Dict[Spieler].update({Andere_Karte:False})
+                    Einmal_Dict[Spieler].update({Andere_Karte:False})
+                    Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VSK = Verbesserung_Spieler[Andere_Karte]
+                VSK["Punkte"] += Werteverbesserung_Übersicht[E_Karte]
+                VSK["Angriff"] += Werteverbesserung_Übersicht[E_Karte]
+                VSK["Verteidigung"] += Werteverbesserung_Übersicht[E_Karte]
+                WASK[0] -= 1
+                Spieler_Zug = True
+            else:
+                Info_Text("Fähigkeit kann nur einmal angewandt werden, Karte muss auf dem Feld platziert sein.")
+        else:
+            Info_Text("Kann nur die Werte von Lebewesen verbessern.")
+    #Mehr Lebensräume
+    elif E_Karte in Karten.ExtraLRs:
+        if Andere_Karte in Karten.Alle_Lebewesen:
+            if not Ort == Ablage[Spieler]:
+                #Alle?
+                Gesamt_LRs = []
+                for LR in Andere_Karte.Lebensraum:
+                    Gesamt_LRs.append(LR)
+                if Andere_Karte in Verbesserung_Spieler:
+                    VSK = Verbesserung_Spieler[Andere_Karte]
+                    for LR in VSK["Lebensräume"]:
+                        Gesamt_LRs.append(LR)
+                if "Alle" in Gesamt_LRs:
+                    Info_Text("Dieses Lebewesen kann bereits in allen Lebensräumen leben.")
+                else:
+                    #Zufall
+                    Spieler_Zug = True
+                    if ExtraLRs[E_Karte] == "Zufall":
+                        LRs_Kopie = LRs.copy()
+                        for LR in Gesamt_LRs:
+                            if not LR == "Wonderland":
+                                LRs_Kopie.remove(LR)
+                        Neu = random.choice(LRs_Kopie)
+                    else:
+                        Neu = ExtraLRs[E_Karte]
+                    if not Andere_Karte in Verbesserung_Spieler:
+                        Counter_Dict[Spieler].update({Andere_Karte:False})
+                        Einmal_Dict[Spieler].update({Andere_Karte:False})
+                        Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                    VSK = Verbesserung_Spieler[Andere_Karte]
+                    VSK["Lebensräume"].append(Neu)
+                    Test_Liste = []
+                    for LR in Andere_Karte.Lebensraum:
+                        if not LR == "Wonderland":
+                            Test_Liste.append(LR)
+                    for LR in VSK["Lebensräume"]:
+                        Test_Liste.append(LR)
+                    if len(Test_Liste) >= 4:
+                        VSK["Lebensräume"] = ["Alle"]
+            else:
+                Info_Text("Platziere Lebewesen auf dem Feld, um ihre Extrafunktion zu nutzen.")
+        else:
+            Info_Text("Kann nur auf Lebewesen angewandt werden.")
+    #Friedensengel
+    elif E_Karte == Karten.Friedensengel:
+        if Andere_Karte in Karten.Alle_Lebensraum:
+            if WASK[0] > 0:
+                if "Klein" in Andere_Karte.Name:
+                    if "Magisch" in Andere_Karte.Name:
+                        Neue_Karte = Karten.Magisches_Kleines_Wonderland
+                    else:
+                        Neue_Karte = Karten.Kleines_Wonderland
+                elif "Groß" in Andere_Karte.Name:
+                    if "Magisch" in Andere_Karte.Name:
+                        Neue_Karte = Karten.Magisches_Großes_Wonderland
+                    else:
+                        Neue_Karte = Karten.Großes_Wonderland
+                else:
+                    if "Magisch" in Andere_Karte.Name:
+                        Neue_Karte = Karten.Magisches_Wonderland
+                    else:
+                        Neue_Karte = Karten.Wonderland
+                if Andere_Karte in Feld[Spieler]:
+                    Feld_Spieler.update({Neue_Karte:[]})
+                    for LW in Feld_Spieler[Andere_Karte]:
+                        Feld_Spieler[Neue_Karte].append(LW)
+                    del Feld_Spieler[Andere_Karte]
+                elif Andere_Karte in Ablage[Spieler]:
+                    Ablage[Spieler].append(Neue_Karte)
+                    Ablage[Spieler].remove(Andere_Karte)
+                Spieler_Zug = True
+                WASK[0] -= 1
+            else:
+                Info_Text("Muss auf dem Feld platziert sein und kann nur 3 Mal angewandt werden.")
+        else:
+            Info_Text("Extrafunktion kann nur auf Lebensräume angewandt werden.")
+    #Zauberer
+    elif E_Karte == Karten.Zauberer:
+        if Andere_Karte in Karten.Alle_Elemente:
+            if not Ort == Ablage[Spieler]:
+                for Trank in Karten.Tränke_Kombi:
+                    if Andere_Karte in Karten.Tränke_Kombi[Trank]:
+                        Neue_Karte = Trank
+                        break
+                Ablage_Spieler.append(Neue_Karte)
+                Ablage_Spieler.remove(Andere_Karte)
+                Spieler_Zug = True
+            else:
+                Info_Text("Platziere den Zauberer im Feld um seine Funktion zu nutzen.")
+        else:
+            Info_Text("Zauberer kann nur Elemente in Tränke verwandeln.")
+    #Dunkler Magier
+    elif E_Karte == Karten.Dunkler_Magier:
+        if Andere_Karte in Karten.Alle_Elemente:
+            if not Ort == Ablage[Spieler]:
+                for Gift in Karten.Gifte_Kombi:
+                    if Andere_Karte in Karten.Gifte_Kombi[Gift]:
+                        Neue_Karte = Gift
+                        break
+                Ablage_Spieler.append(Neue_Karte)
+                Ablage_Spieler.remove(Andere_Karte)
+                Spieler_Zug = True
+            else:
+                Info_Text("Platziere den Dunklen Magier im Feld um seine Funktion zu nutzen.")
+        else:
+            Info_Text("Dunkler Magier kann nur Elemente in Gifte verwandeln.")
+    #Urwolf
+    elif E_Karte == Karten.Urwolf:
+        if Andere_Karte in Karten.Alle_Lebewesen:
+            if WASK[0] > 0:
+                Weiter = True
+                if Andere_Karte.Punkte > Karten.Werwolf.Punkte:
+                    Info_Text("Die Karte ist bereits besser als eine Werwolf-Karte.")
+                    Weiter = False
+                if not Anderer_Ort == Ablage[Spieler]:
+                    if not Anderer_LR.Art == "Wald":
+                        Info_Text("Der Lebensraum ist für einen Werwolf nicht geeignet. Wähle ein Lebewesen in einem Wald oder in der Ablage.")
+                        Weiter = False
+                if Weiter == True:
+                    Anderer_Ort.remove(Andere_Karte)
+                    Anderer_Ort.append(Werwolf)
+                    if Andere_Karte in Verbesserung_Spieler:
+                        if not Werwolf in Verbesserung_Spieler:
+                            Counter_Dict[Spieler].update({Werwolf:False})
+                            Einmal_Dict[Spieler].update({Werwolf:False})
+                            Verbesserung_Spieler.update({Werwolf:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VSK = Verbesserung_Spieler[Werwolf]
+                        VSK["Punkte"] += Werteverbesserung_Übersicht[Andere_Karte]
+                        VSK["Angriff"] += Werteverbesserung_Übersicht[Andere_Karte]
+                        VSK["Verteidigung"] += Werteverbesserung_Übersicht[Andere_Karte]
+                        del Verbesserung_Spieler[Andere_Karte]
+                    Spieler_Zug = True
+                    WASK[0] -= 1
+            else:
+                Info_Text("Kann nur einmal im Spiel angewandt werden, Karte muss auf dem Feld platziert sein.")
+        else:
+            Info_Text("Kann nur auf Lebewesen angewandt werden.")
+    #Joker
+    elif E_Karte == Karten.Joker:
+        if WASK[0] > 0:
+            Neue_Karte = None
+            if Andere_Karte == "LW":
+                Neue_Karte = random.choice(Karten.Start_Lebewesen)
+            elif Andere_Karte == "LR":
+                Neue_Karte = random.choice(Karten.Start_Lebensraum)
+            elif Andere_Karte == "E":
+                Neue_Karte = random.choice(Karten.Start_Elemente)
+            Ablage[Spieler].append(Neue_Karte)
+            Spieler_Zug = True
+            WASK[0] -= 1
+        else:
+            Info_Text("Kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein.")
+    else:
+        Info_Text("Diese Karte hat keine Extrafunktion")
+    Clear()
 
 ##Ausgabefunktionen##
 #Ausgabe von: Feld, Ablage, Übersicht
+Feld_Alt_Range = range(0, 6)
 def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
-    Feld_Spieler = Feld[Spieler]
+    Feld_Spieler = Feld[Spieler]            
+    CDS = Counter_Dict[Spieler]
     Surf.fill((255, 255, 255))
     global Feld_Übersicht_Alt_Range
     if Surf == Ablage_Surf or Surf == Feld_Surf:
@@ -596,7 +1417,6 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
             global Ablage_Alt_Range
             Ablage_Alt_Range = Range
             #Ausgabe von Verbesserungen, alt
-            CDS = Counter_Dict[Spieler]
             Feld_Spieler = Feld[Spieler]
             for Karte in CDS:
                 CDS[Karte] = False
@@ -633,7 +1453,13 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
         elif Surf == Feld_Surf:
             y_Surf = 180
             x_Surf = 452
-            LR = Feld[Spieler][Feld[Spieler].keys()[Feld_Übersicht_Alt_Range[LR_Pos]]]
+            Num = Feld_Übersicht_Alt_Range[LR_Pos]
+            Counter = 0
+            for Key in Feld[Spieler]:
+                if Counter == Num:
+                    LR = Key
+                    break
+                Counter += 1
             List = Feld[Spieler][LR]
             #für Buttons
             global Feld_Alt_Range
@@ -662,7 +1488,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
                             MDS[LW] += 1
                         else:
                             MDS.update({LW:1})
-                    if LW in Stärker_LR[LR.Art]:
+                    if LW in Karten.Stärker_LR[LR.Art]:
                         if not LW in SDS:
                             SDS.update({LW:1})
                         else:
@@ -697,7 +1523,12 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
         x = 35
         for Num in Range_1:
             if len(Feld_Spieler) >= (Num + 1):
-                LR = Feld_Spieler[Feld_Spieler.keys()[Num]]
+                Counter = 0
+                for Key in Feld_Spieler:
+                    if Counter == Num:
+                        LR = Key
+                        break
+                    Counter += 1
                 Mod_Größe = LR.Größe
                 if LR in CDS:
                     Verbesserung_Spieler = Verbesserung[Spieler]
@@ -716,7 +1547,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
                     Hintergrund = (240, 170, 255)
                 Dings.fill(Hintergrund)
                 Cap = SMaxG(LR.Name, 80, 18)
-                Inside = SMaxG(str(len(Feld[Spieler][LR])) + " / " + str(LR.Mod_Größe), 80, 18)
+                Inside = SMaxG(str(len(Feld[Spieler][LR])) + " / " + str(Mod_Größe), 80, 18)
                 Dings.blit(Cap, (40 - Cap.get_width() / 2, 5))
                 Dings.blit(Inside, (40 - Inside.get_width() / 2, 22))
                 Feld_Übersicht_Surf.blit(Dings, (x, y))
@@ -870,7 +1701,7 @@ def Druck(Karte, Spieler):
 #Text auf Infosurf ausgeben
 def Info_Text(Text_Raw):
     Info_Surf.fill((255, 255, 255))
-    y = 10
+    y = 20
     if "\n" in Text_Raw:
         Text = Text_Raw.split("\n")
     else:
@@ -882,7 +1713,8 @@ def Info_Text(Text_Raw):
                 Test = True
         if Test == True:
             Dings = SMaxG("Karte: " + Schriftteil, 400, 45)
-            Info_Surf.blit(Dings, (450 / 2 - Dings.get_width() / 2, 20))
+            Info_Surf.blit(Dings, (450 / 2 - Dings.get_width() / 2, y))
+            y += 60
         else:
             Textline = Schriftteil.split(" ")
             Größe = 35
@@ -897,7 +1729,6 @@ def Info_Text(Text_Raw):
                     Line = Wort + " "
             if not Line in Lines:
                 Lines.append(Line)
-            y = 80
             for Line in Lines:
                 Teil = get_Text(Line, Größe)
                 Info_Surf.blit(Teil, (450 / 2 - Teil.get_width() / 2, y))
@@ -944,8 +1775,13 @@ def Spiel_Screen():
     Feld_Übersicht_Button_3.create_button()
     Feld_Übersicht_Button_4.create_button()
     Feld_Übersicht_Button_5.create_button()
+    Kombi_Button.create_button()
+    Extra_Button.create_button()
+    LR_Button.create_button()
+    LW_Button.create_button()
     #Linien
-    Start_Ende = [[(450, 0), (450, 900)], [(450, 100), (1600, 100)], [(450, 450), (1600, 450)], [(450, 750), (1600, 750)]]
+    Start_Ende = [[(450, 0), (450, 900)], [(450, 100), (1600, 100)], [(450, 450), (1600, 450)], [(450, 750), (1600, 750)], 
+                  [(737.5, 750), (737.5, 900)], [(1025, 750), (1025, 900)], [(1312.5, 750), (1312.5, 900)]]
     for Linie in Start_Ende:
         pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
     #Überschrift
@@ -968,6 +1804,8 @@ def Spiel_Screen():
     else:
         Text = SMaxG(Spieler + "s Zug", 350, 50)
     screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
+    Ausgabe(Spieler, Ablage_Surf)
+    Ausgabe(Spieler, Feld_Übersicht_Surf)
 
 #Anfang vom Spiel
 Start = False
@@ -975,7 +1813,7 @@ def Spiel():
     global Spieler
     for Spieler in Alle_Spieler:
         #1. Ausgabe
-        Ablage.update({Spieler:[]})
+        Ablage.update({Spieler:[Karten.Joker]})
         Ablage[Spieler].append(random.choice(Karten.Start_Lebewesen))
         Ablage[Spieler].append(random.choice(Karten.Start_Lebensraum))
         Ablage[Spieler].append(random.choice(Karten.Start_Elemente))
@@ -1005,1064 +1843,59 @@ def Spiel():
     Ausgabe(Spieler, Ablage_Surf)
     Ausgabe(Spieler, Feld_Übersicht_Surf)
 
-#Kombi
-#def Add(Karten_Liste, Extra = False):
-    #Überprüfung und Zuweisung von Variablen
-    #if beide Listenelemente Karten:
-        #if Ort nicht definiert:
-            #Meldung
-            #break
-        #elif Extra == True:
-            #Extrafunktionen
-        #elif Lw und LR:
-            #LW bewegen
-        #elif Trank in Name:
-            #Tränke
-        #else:
-            #for Karte in Alle_Karten:
-                #if Gesuchte_Kombi in Karte.Kombi:
-                    #if eine Karte == LR:
-                        #LR + LR
-                        #LR + E
-                    #elif eine Karte == LW:
-                        #LW + LW
-                        #LW + E
-                    #else:
-                        #E + E
-                #elif Counter == len:
-                    #Keine Kombi möglich
-            #if Spieler_Zug == True: (erfolgreicher Zug)
-                #übertragene Verbesserungen
-    #elif ein Listenelement Karte: ###ab hier überarbeiten###
-        #if Gegener == None:
-            #Extraaktion ohne Gegner mit anderer Extrainfo
-        #else:
-            #Extraaktion mit Gegner
-    #else:
-        #Eine oder beide Karten existieren nicht
-def Add(Karten_Liste, Extra = False):
-    global Spieler_Zug
-    global Spieler
-    Ablage_Spieler = Ablage[Spieler]
-    Feld_Spieler = Feld[Spieler]
-    Neue_Karte = False
-    EDS = Einmal_Dict[Spieler]
-    for Karte in EDS:
-        EDS[Karte] = True
-    WAS = Werteverbesserung_Anzahl[Spieler]
-    Verbesserung_Spieler = Verbesserung[Spieler]
-    #Karten und Namen
-    Name_Karte_1 = Karten_Liste[0]
-    Name_Karte_2 = Karten_Liste[1]
-    Karte_1 = False
-    Karte_2 = False
-    for Karte in Alle_Karten:
-        if Name_Karte_1 == Karte.Name:
-            Karte_1 = Karte
-        if Name_Karte_2 == Karte.Name:
-            Karte_2 = Karte
-    if (not Karte_1 == False) and (not Karte_2 == False):
-        Gesuchte_Kombi_1 = Karte_1.Name + "+" + Karte_2.Name
-        Gesuchte_Kombi_2 = Karte_2.Name + "+" + Karte_1.Name
-        #Ort und Besitz?
-        LR_1 = False
-        LR_2 = False
-        LR_Neu = False
-        #Karte_1
-        Ort_1 = False
-        for Liste in Feld_Spieler:
-            if Karte_1 in Feld_Spieler[Liste]:
-                LR_1 = Liste
-                Ort_1 = Feld_Spieler[Liste]
-                break
-        if Ort_1 == False:
-            if Karte_1 in Feld[Spieler]:
-                Ort_1 = Feld[Spieler]
-        if Ort_1 == False:
-            if Karte_1 in Ablage[Spieler]:
-                Ort_1 = Ablage[Spieler]
-        #Karte_2
-        Ort_2 = False
-        #Doppelte Karte/Karte 1 = Karte 2
-        if Karte_1 == Karte_2:
-            for Liste in Feld_Spieler:
-                if Karte_2 in Feld_Spieler[Liste]:
-                    if not Ort_1 == Feld_Spieler[Liste]:
-                        LR_2 = Liste
-                        Ort_2 = Feld_Spieler[Liste]
-                        break
-                    else:
-                        Counter = 0
-                        for Krt in Feld_Spieler[Liste]:
-                            if Krt == Karte_2:
-                                Counter += 1
-                        if Counter >= 2:
-                            LR_2 = Liste
-                            Ort_2 = Feld_Spieler[Liste]
-                            break
-            if Ort_2 == False:
-                if Karte_2 in Feld[Spieler]:
-                    if not Ort_1 == Feld[Spieler]:
-                        Ort_2 = Feld[Spieler]
-                    else:
-                        Counter = 0
-                        for Krt in Feld[Spieler]:
-                            if Krt == Karte_2:
-                                Counter += 1
-                        if Counter >= 2:
-                            Ort_2 = Feld[Spieler]
-            if Ort_2 == False:
-                if Karte_2 in Ablage[Spieler]:
-                    if not Ort_1 == Ablage[Spieler]:
-                        Ort_2 = Ablage[Spieler]
-                    else:
-                        Counter = 0
-                        for Krt in Ablage[Spieler]:
-                            if Krt == Karte_2:
-                                Counter += 1
-                        if Counter >= 2:
-                            Ort_2 = Ablage[Spieler]
-        #Nicht doppelt
-        else:
-            for Liste in Feld_Spieler:
-                if Karte_2 in Feld_Spieler[Liste]:
-                    LR_2 = Liste
-                    Ort_2 = Feld_Spieler[Liste]
-                    break
-            if Ort_2 == False:
-                if Karte_2 in Feld[Spieler]:
-                    Ort_2 = Feld[Spieler]
-            if Ort_2 == False:
-                if Karte_2 in Ablage[Spieler]:
-                    Ort_2 = Ablage[Spieler]
-        #Besitz?/andere Fehler
-        if Ort_1 == False or Ort_2 == False:
-            print("Fehler Add(); Ort_1 oder Ort_2 nicht definiert")
-        #Extrafunktionen
-        elif Extra == True:
-            E_Karte = Karte_1
-            Andere_Karte = Karte_2
-            Ort = Ort_1
-            Anderer_Ort = Ort_2
-            Anderer_LR = LR_2
-            if E_Karte in WAS:
-                WASK = WAS[E_Karte]
-            #Parasit
-            if E_Karte == Karten.Parasit:
-                if Andere_Karte in Karten.Alle_Lebewesen:
-                    if WASK[0] > 0:
-                        if not E_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({E_Karte:False})
-                            Einmal_Dict[Spieler].update({E_Karte:False})
-                            Verbesserung_Spieler.update({E_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VSK = Verbesserung_Spieler[E_Karte]
-                        VSK["Punkte"] += Andere_Karte.Punkte
-                        VSK["Angriff"] += Andere_Karte.Angriff
-                        VSK["Verteidigung"] += Andere_Karte.Verteidigung
-                        if not Andere_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Andere_Karte:False})
-                            Einmal_Dict[Spieler].update({Andere_Karte:False})
-                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VSK = Verbesserung_Spieler[Andere_Karte]
-                        VSK["Punkte"] -= 4
-                        VSK["Angriff"] -= 4
-                        VSK["Verteidigung"] -= 4
-                        WASK[0] -= 1
-                        Spieler_Zug = True
-                    else:
-                        Info_Text("Fähigkeit kann nur einmal angewandt werden, Parasit muss auf dem Feld platziert sein.")
-                else:
-                    Info_Text("Kann nur die Werte von Lebewesen aufnehmen.")
-            #Werteverbesserungskarte
-            elif E_Karte in Karten.Werteverbesserung_Übersicht:
-                if Andere_Karte in Karten.Alle_Lebewesen:
-                    if WASK[0] > 0:
-                        if not Andere_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Andere_Karte:False})
-                            Einmal_Dict[Spieler].update({Andere_Karte:False})
-                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VSK = Verbesserung_Spieler[Andere_Karte]
-                        VSK["Punkte"] += Werteverbesserung_Übersicht[E_Karte]
-                        VSK["Angriff"] += Werteverbesserung_Übersicht[E_Karte]
-                        VSK["Verteidigung"] += Werteverbesserung_Übersicht[E_Karte]
-                        WASK[0] -= 1
-                        Spieler_Zug = True
-                        else:
-                            Info_Text("Fähigkeit kann nur einmal angewandt werden, Karte muss auf dem Feld platziert sein.")
-                    else:
-                        Info_Text("Kann nur die Werte von Lebewesen verbessern.")
-            #Mehr Lebensräume
-            elif E_Karte in Karten.ExtraLRs:
-                if Andere_Karte in Karten.Alle_Lebewesen:
-                    if not Ort == Ablage[Spieler]:
-                        #Alle?
-                        Gesamt_LRs = []
-                        for LR in Andere_Karte.Lebensraum:
-                            Gesamt_LRs.append(LR)
-                        if Andere_Karte in Verbesserung_Spieler:
-                            VSK = Verbesserung_Spieler[Andere_Karte]
-                            for LR in VSK["Lebensräume"]:
-                                Gesamt_LRs.append(LR)
-                        if "Alle" in Gesamt_LRs:
-                            Info_Text("Dieses Lebewesen kann bereits in allen Lebensräumen leben.")
-                        else:
-                            #Zufall
-                            Spieler_Zug = True
-                            if ExtraLRs[E_Karte] == "Zufall":
-                                LRs_Kopie = LRs.copy()
-                                for LR in Gesamt_LRs:
-                                    if not LR == "Wonderland":
-                                        LRs_Kopie.remove(LR)
-                                Neu = random.choice(LRs_Kopie)
-                            else:
-                                Neu = ExtraLRs[E_Karte]
-                            if not Andere_Karte in Verbesserung_Spieler:
-                                Counter_Dict[Spieler].update({Andere_Karte:False})
-                                Einmal_Dict[Spieler].update({Andere_Karte:False})
-                                Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                            VSK = Verbesserung_Spieler[Andere_Karte]
-                            VSK["Lebensräume"].append(Neu)
-                            Test_Liste = []
-                            for LR in Andere_Karte.Lebensraum:
-                                if not LR == "Wonderland":
-                                    Test_Liste.append(LR)
-                            for LR in VSK["Lebensräume"]:
-                                Test_Liste.append(LR)
-                            if len(Test_Liste) >= 4:
-                                VSK["Lebensräume"] = ["Alle"]
-                    else:
-                        Info_Text("Platziere Lebewesen auf dem Feld, um ihre Extrafunktion zu nutzen.")
-                else:
-                    Info_Text("Kann nur auf Lebewesen angewandt werden.")
-            #Friedensengel
-            elif E_Karte == Karten.Friedensengel:
-                if Andere_Karte in Karten.Alle_Lebensraum:
-                    if WASK[0] > 0:
-                        if "Klein" in Andere_Karte.Name:
-                            if "Magisch" in Andere_Karte.Name:
-                                Neue_Karte = Karten.Magisches_Kleines_Wonderland
-                            else:
-                                Neue_Karte = Karten.Kleines_Wonderland
-                        elif "Groß" in Andere_Karte.Name:
-                            if "Magisch" in Andere_Karte.Name:
-                                Neue_Karte = Karten.Magisches_Großes_Wonderland
-                            else:
-                                Neue_Karte = Karten.Großes_Wonderland
-                        else:
-                            if "Magisch" in Andere_Karte.Name:
-                                Neue_Karte = Karten.Magisches_Wonderland
-                            else:
-                                Neue_Karte = Karten.Wonderland
-                        if Andere_Karte in Feld[Spieler]:
-                            Feld_Spieler.update({Neue_Karte:[]})
-                            for LW in Feld_Spieler[Andere_Karte]:
-                                Feld_Spieler[Neue_Karte].append(LW)
-                            del Feld_Spieler[Andere_Karte]
-                        elif Andere_Karte in Ablage[Spieler]:
-                            Ablage[Spieler].append(Neue_Karte)
-                            Ablage[Spieler].remove(Andere_Karte)
-                        Spieler_Zug = True
-                        WASK[0] -= 1
-                    else:
-                        Info_Text("Muss auf dem Feld platziert sein und kann nur 3 Mal angewandt werden.")
-                else:
-                    Info_Text("Extrafunktion kann nur auf Lebensräume angewandt werden.")
-            #Zauberer
-            elif E_Karte == Karten.Zauberer:
-                if Andere_Karte in Karten.Alle_Elemente:
-                    if not Ort == Ablage[Spieler]:
-                        for Trank in Karten.Tränke_Kombi:
-                            if Andere_Karte in Karten.Tränke_Kombi[Trank]:
-                                Neue_Karte = Trank
-                                break
-                        Ablage_Spieler.append(Neue_Karte)
-                        Ablage_Spieler.remove(Andere_Karte)
-                        Spieler_Zug = True
-                    else:
-                        Info_Text("Platziere den Zauberer im Feld um seine Funktion zu nutzen.")
-                else:
-                    Info_Text("Zauberer kann nur Elemente in Tränke verwandeln.")
-            #Dunkler Magier
-            elif E_Karte == Karten.Dunkler_Magier:
-                if Andere_Karte in Karten.Alle_Elemente:
-                    if not Ort == Ablage[Spieler]:
-                        for Gift in Karten.Gifte_Kombi:
-                            if Andere_Karte in Karten.Gifte_Kombi[Gift]:
-                                Neue_Karte = Gift
-                                break
-                        Ablage_Spieler.append(Neue_Karte)
-                        Ablage_Spieler.remove(Andere_Karte)
-                        Spieler_Zug = True
-                    else:
-                        Info_Text("Platziere den Dunklen Magier im Feld um seine Funktion zu nutzen.")
-                else:
-                    Info_Text("Dunkler Magier kann nur Elemente in Gifte verwandeln.")
-            #Urwolf
-            elif E_Karte == Karten.Urwolf:
-                if Andere_Karte in Karten.Alle_Lebewesen:
-                    if WASK[0] > 0:
-                        Weiter = True
-                        if Andere_Karte.Punkte > Karten.Werwolf.Punkte:
-                            Info_Text("Die Karte ist bereits besser als eine Werwolf-Karte.")
-                            Weiter = False
-                        if not Anderer_Ort == Ablage[Spieler]:
-                            if not Anderer_LR.Art == "Wald":
-                                Info_Text("Der Lebensraum ist für einen Werwolf nicht geeignet. Wähle ein Lebewesen in einem Wald oder in der Ablage.")
-                                Weiter = False
-                        if Weiter == True:
-                            Anderer_Ort.remove(Andere_Karte)
-                            Anderer_Ort.append(Werwolf)
-                            if Andere_Karte in Verbesserung_Spieler:
-                                if not Werwolf in Verbesserung_Spieler:
-                                    Counter_Dict[Spieler].update({Werwolf:False})
-                                    Einmal_Dict[Spieler].update({Werwolf:False})
-                                    Verbesserung_Spieler.update({Werwolf:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                                VSK = Verbesserung_Spieler[Werwolf]
-                                VSK["Punkte"] += Werteverbesserung_Übersicht[Andere_Karte]
-                                VSK["Angriff"] += Werteverbesserung_Übersicht[Andere_Karte]
-                                VSK["Verteidigung"] += Werteverbesserung_Übersicht[Andere_Karte]
-                                del Verbesserung_Spieler[Andere_Karte]
-                            Spieler_Zug = True
-                            WASK[0] -= 1
-                    else:
-                        Info_Text("Kann nur einmal im Spiel angewandt werden, Karte muss auf dem Feld platziert sein.")
-                else:
-                    Info_Text("Kann nur auf Lebewesen angewandt werden.")
-            else:
-                Info_Text("Keine der Karten hat eine Extrafunktion.")
-        #LW bewegen
-        elif (Karte_1 in Alle_Lebensraum and Karte_2 in Alle_Lebewesen) or (Karte_2 in Alle_Lebensraum and Karte_1 in Alle_Lebewesen):
-            if Karte_1 in Alle_Lebensraum:
-                LR_Karte = Karte_1
-                LW_Karte = Karte_2
-            else:
-                LR_Karte = Karte_2
-                LW_Karte = Karte_1
-            #LR auf Feld
-            Feld_Test = False
-            if LR_Karte in Feld_Spieler:
-                Feld_Test = True
-            else:
-                Info_Text("Platziere den Lebensraum erst auf dem Feld.")
-            #Größe
-            Voll_Test = False
-            Art_Test = False
-            if Feld_Test == True:
-                Alte_LW = Feld_Spieler[LR_Karte]
-                Größe = LR_Karte.Größe
-                if LR_Karte in EDS:
-                    if EDS[LR_Karte] == True:
-                        Add_Größe = Verbesserung_Spieler[LR_Karte]
-                        Größe = LR_Karte.Größe + Add_Größe                    
-                if len(Alte_LW) < Größe:
-                    Voll_Test = True
-                else:
-                    Info_Text("Dieser Lebensraum ist bereits voll.")
-                #Art
-                Art_Test = False
-                Zusatz_LR = []
-                if LW_Karte in EDS:
-                    if EDS[LW_Karte] == True:
-                        VSK = Verbesserung_Spieler[LW_Karte]
-                        for LR in VSK["Lebensräume"]:
-                            Zusatz_LR.append(LR)
-                for LR in LW_Karte.Lebensraum:
-                    if LR == LR_Karte.Art or LR == "Alle":
-                        Art_Test = True
-                        break
-                for LR in Zusatz_LR:
-                    if LR == LR_Karte.Art or LR == "Alle":
-                        Art_Test = True
-                        break
-                if Art_Test == False:
-                    Info_Text("Dieser Lebensraum ist für das Lebewesen nicht geeignet.")
-            #Hinzufügen?
-            if Voll_Test == True and Art_Test == True and Feld_Test == True:
-                if LW_Karte in Ablage_Spieler:
-                    Spieler_Zug = True
-                if LW_Karte == Karte_1:
-                    A = Karte_1
-                    B = Karte_2
-                    Ort = Ort_1                    
-                elif LW_Karte == Karte_2:
-                    A = Karte_2
-                    B = Karte_1
-                    Ort = Ort_2
-                Feld_Spieler[B].append(A)
-                if A in Ablage[Spieler]:
-                    Ablage[Spieler].remove(A)
-                else:
-                    Ort.remove(A)
-        #Tränke
-        elif "Trank" in Karte_1.Name or "Trank" in Karte_2.Name:
-            if "Trank" in Karte_1.Name:
-                Trank_Karte = Karte_1
-                Andere_Karte = Karte_2
-            else:
-                Trank_Karte = Karte_2
-                Andere_Karte = Karte_1
-            #Lebensraum-Tränke
-            if "Lebensraum" in Trank_Karte.Beschreibung or "Duftender Trank" == Trank_Karte.Name:
-                if Andere_Karte in Karten.Alle_Lebensraum:
-                    #Vergrößerungs-Trank
-                    if Trank_Karte.Name == "Vergrößerungs-Trank":
-                        if not Andere_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Andere_Karte:False})
-                            Einmal_Dict[Spieler].update({Andere_Karte:False})
-                            Verbesserung_Spieler.update({Andere_Karte:0})
-                        Verbesserung_Spieler[Andere_Karte] += 1
-                        Spieler_Zug = True
-                        Ablage[Spieler].remove(Trank_Karte)
-                    #Duftender Trank
-                    elif Trank_Karte.Name == "Duftender Trank":
-                        if "Klein" in Andere_Karte.Name:
-                            if "Magisch" in Andere_Karte.Name:
-                                Neue_Karte = Karten.Magisches_Kleines_Wonderland
-                            else:
-                                Neue_Karte = Karten.Kleines_Wonderland
-                        elif "Groß" in Andere_Karte.Name:
-                            if "Magisch" in Andere_Karte.Name:
-                                Neue_Karte = Karten.Magisches_Großes_Wonderland
-                            else:
-                                Neue_Karte = Karten.Großes_Wonderland
-                        else:
-                            if "Magisch" in Andere_Karte.Name:
-                                Neue_Karte = Karten.Magisches_Wonderland
-                            else:
-                                Neue_Karte = Karten.Wonderland
-                        if Andere_Karte in Feld[Spieler]:
-                            Feld_Spieler.update({Neue_Karte:[]})
-                            for LW in Feld_Spieler[Andere_Karte]:
-                                Feld_Spieler[Neue_Karte].append(LW)
-                            del Feld_Spieler[Andere_Karte]
-                        elif Andere_Karte in Ablage[Spieler]:
-                            Ablage[Spieler].append(Neue_Karte)
-                            Ablage[Spieler].remove(Andere_Karte)
-                        Spieler_Zug = True
-                        Ablage[Spieler].remove(Trank_Karte)
-                else:
-                    Info_Text("Du kannst diesen Trank nur auf Lebensräume anwenden.")
-            #Lebewesen-Tränke     
-            elif "Lebewesen" in Trank_Karte.Beschreibung:
-                if Andere_Karte in Karten.Alle_Lebewesen:
-                    Mehr_LRs_Tränke = ["Heißer Trank", "Wässriger Trank", "Matschiger Trank", "Blubbernder Trank", "Verkohlter Trank"]
-                    Werte_Tränke = ["Güldener Trank", "Level-Up Trank", "Glitzernder Trank", "Himmlischer Trank"]
-                    #Mehr LR Tränke
-                    if Trank_Karte.Name in Mehr_LRs_Tränke:
-                        if Trank_Karte.Name == "Heißer Trank":
-                            LR = "Wüste"
-                        elif Trank_Karte.Name == "Wässriger Trank":
-                            LR = "See"
-                        elif Trank_Karte.Name == "Matschiger Trank":
-                            LR = "Wald"
-                        elif Trank_Karte.Name == "Blubbernder Trank":
-                            LR = "Berge"
-                        elif Trank_Karte.Name == "Verkohlter Trank":
-                            LR = "Alle"
-                        if not Andere_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Andere_Karte:False})
-                            Einmal_Dict[Spieler].update({Andere_Karte:False})
-                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VSK = Verbesserung_Spieler[Andere_Karte]
-                        if not LR in VSK["Lebensräume"]:
-                            VSK["Lebensräume"].append(LR)
-                        Spieler_Zug = True
-                        Ablage[Spieler].remove(Trank_Karte)
-                    #Werte Tränke
-                    elif Trank_Karte.Name in Werte_Tränke:
-                        if Trank_Karte.Name == "Güldener Trank":
-                            Wert = 3
-                        elif Trank_Karte.Name == "Level-Up Trank":
-                            Wert = 5
-                        elif Trank_Karte.Name == "Glitzernder Trank":
-                            Wert = 7
-                        elif Trank_Karte.Name == "Himmlischer Trank":
-                            Wert = 10
-                        if not Andere_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Andere_Karte:False})
-                            Einmal_Dict[Spieler].update({Andere_Karte:False})
-                            Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VSK = Verbesserung_Spieler[Andere_Karte]
-                        VSK["Punkte"] += Wert
-                        VSK["Angriff"] += Wert
-                        VSK["Verteidigung"] += Wert
-                        Spieler_Zug = True
-                        Ablage[Spieler].remove(Trank_Karte)
-                    #Dolly Trank
-                    elif Trank_Karte.Name == "Dolly Trank":
-                        Ablage[Spieler].append(Andere_Karte)
-                        Spieler_Zug = True
-                        Ablage[Spieler].remove(Trank_Karte)
-                else:
-                    Info_Text("Du kannst diesen Trank nur auf Lebenwesen anwenden.")
-        #Schleifen-Start/Kombi oder nicht        
-        else:
-            Counter_Add = 0
-            for Karte in Alle_Karten:
-                Counter_Add += 1
-                #Kombi
-                if Gesuchte_Kombi_1 in Karte.Kombi or Gesuchte_Kombi_2 in Karte.Kombi:
-                    Neue_Karte = Karte
-                    #LR
-                    if Karte_1 in Karten.Alle_Lebensraum or Karte_2 in Karten.Alle_Lebensraum:
-                        if Karte_1 in Karten.Alle_Lebensraum:
-                            LR_Karte = Karte_1
-                            Andere_Karte = Karte_2
-                        else:
-                            LR_Karte = Karte_2
-                            Andere_Karte = Karte_1
-                        #LR + LR
-                        if Andere_Karte in Karten.Alle_Lebensraum:
-                            #min. eine Feld
-                            if Ort_1 == Feld_Spieler or Ort_2 == Feld_Spieler:
-                                Neue_LW = []
-                                if Ort_1 == Feld_Spieler:
-                                    LW_1 = Feld_Spieler[Karte_1]
-                                    for LW in LW_1:
-                                        Neue_LW.append(LW)
-                                    del Feld_Spieler[Karte_1]
-                                else:
-                                    Ablage_Spieler.remove(Karte_1)
-                                if Ort_2 == Feld_Spieler:
-                                    LW_2 = Feld_Spieler[Karte_2]
-                                    for LW in LW_2:
-                                        Neue_LW.append(LW)
-                                    del Feld_Spieler[Karte_2]
-                                else:
-                                    Ablage_Spieler.remove(Karte_2)
-                                Feld_Spieler.update({Neue_Karte:[]})
-                                if not Neue_LW == []:
-                                    for LW in Neue_LW:
-                                        Feld_Spieler[Neue_Karte].append(LW)
-                                Spieler_Zug = True
-                                break
-                            #beide Ablage
-                            elif Ort_1 == Ablage_Spieler and Ort_2 == Ablage_Spieler:
-                                Ablage_Spieler.remove(Karte_1)
-                                Ablage_Spieler.remove(Karte_2)
-                                Ablage_Spieler.append(Neue_Karte)
-                                Spieler_Zug = True
-                                break
-                        #LR + E
-                        elif Andere_Karte in Karten.Alle_Elemente:
-                            #LR in Feld
-                            if LR_Karte in Feld_Spieler:
-                                Feld_Spieler.update({Neue_Karte:[]})
-                                for LW in Feld_Spieler[LR_Karte]:
-                                    Feld_Spieler[Neue_Karte].append(LW)
-                                del Feld_Spieler[LR_Karte]
-                                Ablage_Spieler.remove(Andere_Karte)
-                                Spieler_Zug = True
-                                break
-                            #LR in Ablage
-                            elif LR_Karte in Ablage_Spieler:
-                                Ablage_Spieler.remove(Karte_1)
-                                Ablage_Spieler.remove(Karte_2)
-                                Ablage_Spieler.append(Neue_Karte)
-                                Spieler_Zug = True
-                                break
-                    #LW
-                    elif Karte_1 in Karten.Alle_Lebewesen or Karte_2 in Karten.Alle_Lebewesen:
-                        if Karte_1 in Karten.Alle_Lebewesen:
-                            LW_Karte = Karte_1
-                            Andere_Karte = Karte_2
-                        else:
-                            LW_Karte = Karte_2
-                            Andere_Karte = Karte_1
-                        #LW + LW
-                        if Andere_Karte in Karten.Alle_Lebewesen:
-                            #beide Ablage oder beide selber LR
-                            if Ort_1 == Ort_2:
-                                Ort_1.remove(Karte_1)
-                                Ort_2.remove(Karte_2)
-                                Ort_1.append(Neue_Karte)
-                                Spieler_Zug = True
-                                break
-                            #unterschiedliche LRs
-                            else:
-                                #Falsch
-                                if LR_1 == False or LR_2 == False:
-                                    Info_Text("Du kannst nur innerhalb des Feldes oder der Ablage kombinieren.")
-                                    break
-                                #Ort/geeigneter LR
-                                Fertig = False
-                                Lebensräume = []
-                                for LR in Neue_Karte.Lebensraum:
-                                    Lebensräume.append(LR)
-                                if Neue_Karte in EDS:
-                                    if EDS[Neue_Karte] == True:
-                                        VSK = Verbesserung_Spieler[Neue_Karte]
-                                        for LR in VSK["Lebensräume"]:
-                                            Lebensräume.append(LR)
-                                for LR in Lebensräume:
-                                    if LR == LR_1.Art or LR == "Alle":
-                                        Ort_1.append(Neue_Karte)
-                                        Ort_1.remove(Karte_1)
-                                        Ort_2.remove(Karte_2)
-                                        Fertig = True
-                                        Spieler_Zug = True
-                                        LR_Neu = LR_1
-                                        break
-                                    elif LR == LR_2.Art:
-                                        Ort_2.append(Neue_Karte)
-                                        Ort_1.remove(Karte_1)
-                                        Ort_2.remove(Karte_2)
-                                        Fertig = True
-                                        Spieler_Zug = True
-                                        LR_Neu = LR_2
-                                        break
-                                if Spieler_Zug == True:
-                                    break
-                                if Fertig == False:
-                                    Info_Text("Keiner der beiden Lebensräume ist geeignet für das neue Lebewesen.")
-                                    break
-                        #LW + E
-                        elif Andere_Karte in Karten.Alle_Elemente:
-                            #in Ablage
-                            if LW_Karte in Ablage_Spieler:
-                                Ablage_Spieler.remove(LW_Karte)
-                                Ablage_Spieler.remove(Andere_Karte)
-                                Ablage_Spieler.append(Neue_Karte)
-                                Spieler_Zug = True
-                                break
-                            #LW auf Feld/in LR
-                            else:
-                                Lebensräume = []
-                                for LR in Neue_Karte.Lebensraum:
-                                    Lebensräume.append(LR)
-                                if Neue_Karte in EDS:
-                                    if EDS[Neue_Karte] == True:
-                                        VSK = Verbesserung_Spieler[Neue_Karte]
-                                        for LR in VSK["Lebensräume"]:
-                                            Lebensräume.append(LR)
-                                if LW_Karte == Karte_1:
-                                    for LR in Lebensräume:
-                                        if LR == LR_1.Art or LR == "Alle":
-                                            Ort_1.append(Neue_Karte)
-                                            Ort_1.remove(Karte_1)
-                                            Ablage_Spieler.remove(Karte_2)
-                                            Spieler_Zug = True
-                                            LR_Neu = LR_1
-                                            break
-                                    if Spieler_Zug == False:
-                                        Info_Text("Der Lebensraum ist nicht geeignet für das neue Lebewesen.")
-                                        break
-                                    break
-                                elif LW_Karte == Karte_2:
-                                    for LR in Lebensräume:
-                                        if LR == LR_2.Art or LR == "Alle":
-                                            Ort_2.append(Neue_Karte)
-                                            Ort_2.remove(Karte_2)
-                                            Ablage_Spieler.remove(Karte_2)
-                                            Spieler_Zug = True
-                                            LR_Neu = LR_2
-                                            break
-                                    if Spieler_Zug == False:
-                                        Info_Text("Der Lebensraum ist nicht geeignet für das neue Lebewesen.")
-                                        break
-                                    break
-                    #E + E
-                    elif Karte_1 in Karten.Alle_Elemente and Karte_2 in Karten.Alle_Elemente:
-                        Ablage[Spieler].append(Neue_Karte)
-                        Ablage[Spieler].remove(Karte_1)
-                        Ablage[Spieler].remove(Karte_2)
-                        Spieler_Zug = True
-                        break
-                #Keine Kombi möglich
-                elif Counter_Add == len(Alle_Karten):
-                    Info_Text("Diese Karten lassen sich nicht kombinieren.")
-            #Verbesserungen
-            if Spieler_Zug == True:
-                #Weitergabe Verbesserungen
-                if Neue_Karte in Karten.Alle_Lebensraum:
-                    Counter = 0
-                    if Karte_1 in Karten.Alle_Lebensraum and Karte_1 in Verbesserung_Spieler:
-                        Counter += Verbesserung_Spieler[Karte_1]
-                        del Verbesserung_Spieler[Karte_1]
-                    if Karte_2 in Karten.Alle_Lebensraum and Karte_2 in Verbesserung_Spieler:
-                        Counter += Verbesserung_Spieler[Karte_2]
-                        del Verbesserung_Spieler[Karte_1]
-                    if not Counter == 0:
-                        if not Neue_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Neue_Karte:False})
-                            Einmal_Dict[Spieler].update({Neue_Karte:False})
-                            Verbesserung_Spieler.update({Neue_Karte:0})
-                        Verbesserung_Spieler[Neue_Karte] += Counter
-                elif Neue_Karte in Karten.Alle_Lebewesen:
-                    Counter_P = 0
-                    Counter_A = 0
-                    Counter_V = 0
-                    if Karte_1 in Karten.Alle_Lebewesen and Karte_1 in Verbesserung_Spieler:
-                        VSK = Verbesserung_Spieler[Karte_1]
-                        Counter_P += VSK["Punkte"]
-                        Counter_A += VSK["Angriff"]
-                        Counter_V += VSK["Verteidigung"]
-                        del Verbesserung_Spieler[Karte_1]
-                    if Karte_2 in Karten.Alle_Lebewesen and Karte_2 in Verbesserung_Spieler:
-                        VSK = Verbesserung_Spieler[Karte_2]
-                        Counter_P += VSK["Punkte"]
-                        Counter_A += VSK["Angriff"]
-                        Counter_V += VSK["Verteidigung"]
-                        del Verbesserung_Spieler[Karte_2]
-                    if not (Counter_P == 0 and Counter_A == 0 and Counter_V == 0):
-                        if not Neue_Karte in Verbesserung_Spieler:
-                            Counter_Dict[Spieler].update({Neue_Karte:False})
-                            Einmal_Dict[Spieler].update({Neue_Karte:False})
-                            Verbesserung_Spieler.update({Neue_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VSK = Verbesserung_Spieler[Neue_Karte]
-                        VSK["Punkte"] += Counter_P
-                        VSK["Angriff"] += Counter_A
-                        VSK["Verteidigung"] += Counter_V
-    #Extra: Aktion mit anderem Spieler oder Joker
-    elif (not Karte_1 == False) or (not Karte_2 == False):
-        if not Karte_1 == False:
-            E_Karte = Karte_1
-            Andere_Name = Name_Karte_2
-        else:
-            E_Karte = Karte_2
-            Andere_Name = Name_Karte_1
-        Gegner = None
-        for SP in Alle_Spieler:
-            if SP == Andere_Name:
-                Gegner = SP
-        if Gegner == None:
-            #############Joker######################
-            if E_Karte == Karten.Joker:
-                WASK = WAS[Joker]
-                if WASK[0] > 0:
-                    Neue_Karte = None
-                    #######Auswahl als Buttons
-                    if Andere_Name == "Lebewesen" or Andere_Name == "lebewesen":
-                        Neue_Karte = random.choice(Start_Lebewesen)
-                    elif Andere_Name == "Lebensraum" or Andere_Name == "lebensraum":
-                        Neue_Karte = random.choice(Start_Lebensraum)
-                    elif Andere_Name == "Element" or Andere_Name == "element":
-                        Neue_Karte = random.choice(Start_Elemente)
-                    if Neue_Karte == None:
-                        Info_Text("Wähle zwischen Element, Lebewesen und Lebensraum.")
-                    else:
-                        Ablage[Spieler].append(Neue_Karte)
-                        Info_Text("Neue Karte:")
-                        #####################
-                        if not Neue_Karte in Karten.Start_Elemente:
-                            if Modus == "1":
-                                print(repr(Neue_Karte))
-                            elif Modus == "2":
-                                print(str(Neue_Karte))
-                        else:
-                            print(Neue_Karte)
-                        Spieler_Zug = True
-                        WASK[0] -= 1
-                else:
-                    Info_Text("Kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein.")
-            else:
-                Info_Text("Eine oder beide Karten existieren nicht.")
-        else:
-            ########################Aktion mit anderem Spieler##############################
-            VG = Verbesserung[Gegner]
-            EDG = Einmal_Dict[Gegner]
-            for Karte in EDG:
-                EDG[Karte] = True
-            #Gifte und Gefrorener Trank
-            if "Gift" in E_Karte.Name or E_Karte.Name == "Gefrorener Trank":
-                Werte_Gifte = [Elementares_Gift, Pampiges_Gift, Trügerisches_Gift, Blutiges_Gift]
-                Aussetzen_Gifte = [Magisches_Gift, Lähmendes_Gift, Gefrorener_Trank, Eisiges_Gift]
-                Zerstörungs_Gifte = [Reines_Gift, Gift_des_Vergessens]
-                VG = Verbesserung[Gegner]
-                #Werte Gifte
-                if E_Karte in Werte_Gifte:
-                    if E_Karte == Werte_Gifte[0]:
-                        Wert = 3
-                    elif E_Karte == Werte_Gifte[1]:
-                        Wert = 5
-                    elif E_Karte == Werte_Gifte[2]:
-                        Wert = 7
-                    elif E_Karte == Werte_Gifte[3]:
-                        Wert = 10
-                    Gegner_LW = []
-                    for LW in Ablage[Gegner]:
-                        if LW in Alle_Lebewesen:
-                            Gegner_LW.append(LW)
-                    Feld_Gegner = Feld[Gegner]
-                    for LR in Feld_Gegner:
-                        for LW in Feld_Gegner[LR]:
-                            Gegner_LW.append(LW)
-                    LW = random.choice(Gegner_LW)
-                    print("Spieler: " + Gegner)
-                    print("Ausgewähltes Lebewesen:\n")
-                    if LW in Verbesserung[Gegner]:
-                        VGK = VG[LW]
-                        LW.Punkte += VGK["Punkte"]
-                        LW.Angriff += VGK["Angriff"]
-                        LW.Verteidigung += VGK["Verteidigung"]
-                        for LR in VGK["Lebensräume"]:
-                            LWLR = LW.Lebensraum
-                            LWLR.append(LR)
-                    if Modus == "1":
-                        print(repr(Z_Karte))
-                    elif Modus == "2":
-                        print(str(Z_Karte))
-                    if LW in Verbesserung[Gegner]:
-                        VGK = VG[LW]
-                        LW.Punkte -= VGK["Punkte"]
-                        LW.Angriff -= VGK["Angriff"]
-                        LW.Verteidigung -= VGK["Verteidigung"]
-                        for LR in VGK["Lebensräume"]:
-                            LWLR = LW.Lebensraum
-                            LWLR.remove(LR)
-                    print("\n------->\n")
-                    if not LW in Verbesserung_Spieler:
-                        Counter_Dict[Gegner].update({LW:False})
-                        Einmal_Dict[Gegner].update({LW:False})
-                        Verbesserung[Gegner].update({LW:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                    VGK = VG[LW]
-                    VGK["Punkte"] -= Wert
-                    VGK["Angriff"] -= Wert
-                    VGK["Verteidigung"] -= Wert
-                    if (LW.Punkte + VGK["Punkte"]) < 0:
-                        VGK["Punkte"] = 0 - LW.Punkte
-                    if (LW.Angriff + VGK["Angriff"]) < 0:
-                        VGK["Angriff"] = 0 - LW.Angriff
-                    if (LW.Verteidigung + VGK["Verteidigung"]) < 0:
-                        VGK["Verteidigung"] = 0 - LW.Verteidigung
-                    LW.Punkte += VGK["Punkte"]
-                    LW.Angriff += VGK["Angriff"]
-                    LW.Verteidigung += VGK["Verteidigung"]
-                    for LR in VGK["Lebensräume"]:
-                        LWLR = LW.Lebensraum
-                        LWLR.append(LR)
-                    if Modus == "1":
-                        print(repr(Z_Karte))
-                    elif Modus == "2":
-                        print(str(Z_Karte))
-                    LW.Punkte -= VGK["Punkte"]
-                    LW.Angriff -= VGK["Angriff"]
-                    LW.Verteidigung -= VGK["Verteidigung"]
-                    for LR in VGK["Lebensräume"]:
-                        LWLR = LW.Lebensraum
-                        LWLR.remove(LR)
-                    Spieler_Zug = True
-                    Ablage[Spieler].remove(E_Karte)
-                    Aus = False
-                #Aussetzen Gifte
-                elif E_Karte in Aussetzen_Gifte:
-                    if E_Karte == Aussetzen_Gifte[0]:
-                        Wert = 1
-                    elif E_Karte == Aussetzen_Gifte[1] or E_Karte == Aussetzen_Gifte[2]:
-                        Wert = 3
-                    elif E_Karte == Aussetzen_Gifte[3]:
-                        Wert = 5
-                    Frost_Dict[Gegner] += Wert
-                    if Wert == 1:
-                        Druck = "einen Zug"
-                    else:
-                        Druck = str(Wert) + " Züge"
-                    print("\n" + Gegner + " setzt " + Druck + " aus.\n")
-                    Spieler_Zug = True
-                    Ablage[Spieler].remove(E_Karte)
-                    Aus = False
-                #Zerstörungs Gifte
-                elif E_Karte in Zerstörungs_Gifte:
-                    Gegner_LW = []
-                    for LW in Ablage[Gegner]:
-                        if (LW in Alle_Lebewesen) and (LW not in Gegner_LW):
-                            Gegner_LW.append(LW)
-                    Feld_Gegner = Feld[Gegner]
-                    for LR in Feld_Gegner:
-                        for LW in Feld_Gegner[LR]:
-                            if LW not in Gegner_LW:
-                                Gegner_LW.append(LW)
-                    if Gegner_LW == []:
-                        print("Dieser Spieler besitzt keine Lebewesen.")
-                    else:
-                        LW_Dict = {}
-                        for LW in Gegner_LW:
-                            LW_Dict.update({LW:LW.Punkte})
-                            if LW in Verbesserung[Gegner] and EDG[LW] == True:
-                                VGK = VG[LW]
-                                LW_Dict[LW] += VGK["Punkte"]
-                                EDG[LW] = False
-                        Werte_Liste = []
-                        for LW in LW_Dict:
-                            Werte_Liste.append(LW_Dict[LW])
-                        Werte_Liste.sort()
-                        if E_Karte == Zerstörungs_Gifte[0]:
-                            for Karte in LW_Dict:
-                                if Werte_Liste[0] == LW_Dict[Karte]:
-                                    Z_Karte = Karte
-                                    break
-                        elif E_Karte == Zerstörungs_Gifte[1]:
-                            for Karte in LW_Dict:
-                                if Werte_Liste[-1] == LW_Dict[Karte]:
-                                    Z_Karte = Karte
-                                    break
-                        Test = False
-                        for Karte in Ablage[Gegner]:
-                            if Karte == Z_Karte:
-                                Ablage[Gegner].remove(Z_Karte)
-                                Test = True
-                                break
-                        if Test == False:
-                            for LR in Feld[Gegner]:
-                                for LW in Feld_Gegner[LR]:
-                                    if LW == Z_Karte:
-                                        Feld_Gegner[LR].remove(Z_Karte)
-                                        Test = True
-                                        break
-                                if Test == True:
-                                    break
-                        Counter = 0
-                        for LW in Gegner_LW:
-                            if LW == Z_Karte:
-                                Counter += 1
-                        print("Spieler: " + Gegner)
-                        print("Ausgewähltes Lebewesen:\n")
-                        if Z_Karte in Verbesserung[Gegner] and Counter == 1:
-                            #Verbesserungen enfernen
-                            CDG = Counter_Dict[Gegner]
-                            del CDG[Z_Karte]
-                            del EDG[Z_Karte]
-                            del VG[Z_Karte]                            
-                            #Verbesserungen für print
-                            VGK = VG[Z_Karte]
-                            Z_Karte.Punkte += VGK["Punkte"]
-                            Z_Karte.Angriff += VGK["Angriff"]
-                            Z_Karte.Verteidigung += VGK["Verteidigung"]
-                            for LR in VGK["Lebensräume"]:
-                                LWLR = Z_Karte.Lebensraum
-                                LWLR.append(LR)
-                        if Modus == "1":
-                            print(repr(Z_Karte))
-                        elif Modus == "2":
-                            print(str(Z_Karte))
-                        if Z_Karte in Verbesserung[Gegner] and Counter == 1:
-                            VGK = VG[Z_Karte]
-                            Z_Karte.Punkte -= VGK["Punkte"]
-                            Z_Karte.Angriff -= VGK["Angriff"]
-                            Z_Karte.Verteidigung -= VGK["Verteidigung"]
-                            for LR in VGK["Lebensräume"]:
-                                LWLR = Z_Karte.Lebensraum
-                                LWLR.remove(LR)
-                        print("\nWurde entfernt.")
-                        Spieler_Zug = True
-                        Ablage[Spieler].remove(E_Karte)
-                        Aus = False
-            #Diebische Elster
-            elif E_Karte == Diebische_Elster:
-                WASK = WAS[Diebische_Elster]
-                if WASK[0] > 0:
-                    Gegner_LW = []
-                    for LW in Ablage[Gegner]:
-                        if (LW in Alle_Lebewesen) and (LW not in Gegner_LW):
-                            Gegner_LW.append(LW)
-                    Feld_Gegner = Feld[Gegner]
-                    for LR in Feld_Gegner:
-                        for LW in Feld_Gegner[LR]:
-                            if LW not in Gegner_LW:
-                                Gegner_LW.append(LW)
-                    if Gegner_LW == []:
-                        print("Dieser Spieler besitzt keine Lebewesen.")
-                    else:
-                        LW_Dict = {}
-                        for LW in Gegner_LW:
-                            LW_Dict.update({LW:LW.Punkte})
-                            if LW in Verbesserung[Gegner] and EDG[LW] == True:
-                                VGK = VG[LW]
-                                LW_Dict[LW] += VGK["Punkte"]
-                                EDG[LW] = False
-                        Werte_Liste = []
-                        for LW in LW_Dict:
-                            Werte_Liste.append(LW_Dict[LW])
-                        Werte_Liste.sort()
-                        for Karte in LW_Dict:
-                            if Werte_Liste[0] == LW_Dict[Karte]:
-                                Z_Karte = Karte
-                                break
-                        Test = False
-                        for Karte in Ablage[Gegner]:
-                            if Karte == Z_Karte:
-                                Ablage[Gegner].remove(Z_Karte)
-                                Test = True
-                                break
-                        if Test == False:
-                            for LR in Feld[Gegner]:
-                                for LW in Feld_Gegner[LR]:
-                                    if LW == Z_Karte:
-                                        Feld_Gegner[LR].remove(Z_Karte)
-                                        Test = True
-                                        break
-                                if Test == True:
-                                    break
-                        Counter = 0
-                        for LW in Gegner_LW:
-                            if LW == Z_Karte:
-                                Counter += 1
-                        print("Spieler: " + Gegner)
-                        print("Ausgewähltes Lebewesen:\n")
-                        if Z_Karte in Verbesserung[Gegner] and Counter == 1:
-                            VGK = VG[Z_Karte]
-                            #Verbesserungen ins Dict bei Spieler
-                            Verbesserung_Spieler = Verbesserung[Spieler]
-                            if not Z_Karte in Verbesserung_Spieler:
-                                Counter_Dict[Spieler].update({Z_Karte:False})
-                                Einmal_Dict[Spieler].update({Z_Karte:False})
-                                Verbesserung_Spieler.update({Z_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                            VSK = Verbesserung_Spieler[Z_Karte]
-                            VSK["Punkte"] += VGK["Punkte"]
-                            VSK["Angriff"] += VGK["Angriff"]
-                            VSK["Verteidigung"] += VGK["Verteidigung"]
-                            for LR in VGK["Lebensräume"]:
-                                VSK["Lebensräume"].append(LR)
-                            #Verbesserungen für print
-                            Z_Karte.Punkte += VGK["Punkte"]
-                            Z_Karte.Angriff += VGK["Angriff"]
-                            Z_Karte.Verteidigung += VGK["Verteidigung"]
-                            for LR in VGK["Lebensräume"]:
-                                LWLR = Z_Karte.Lebensraum
-                                LWLR.append(LR)
-                        if Modus == "1":
-                            print(repr(Z_Karte))
-                        elif Modus == "2":
-                            print(str(Z_Karte))
-                        if Z_Karte in Verbesserung[Gegner] and Counter == 1:
-                            VGK = VG[Z_Karte]
-                            Z_Karte.Punkte -= VGK["Punkte"]
-                            Z_Karte.Angriff -= VGK["Angriff"]
-                            Z_Karte.Verteidigung -= VGK["Verteidigung"]
-                            for LR in VGK["Lebensräume"]:
-                                LWLR = Z_Karte.Lebensraum
-                                LWLR.remove(LR)
-                        print("\nWurde " + Gegner + " geklaut und " + Spieler + " gegeben.")
-                        Ablage[Spieler].append(Z_Karte)
-                        WASK[0] -= 1
-                        Spieler_Zug = True
-                        Aus = False
-                else:
-                    print("Fähigkeit kann nur 3 Mal angewandt werden, Diebische Elster muss auf dem Feld platziert sein.")
-            #Furchtdrache
-            elif E_Karte == Furchtdrache or E_Karte == Starker_Furchtdrache:
-                WASK = WAS[E_Karte]
-                if WASK[0] > 0:
-                    if E_Karte == Furchtdrache:
-                        Wert = 1
-                    elif E_Karte == Starker_Furchtdrache:
-                        Wert = 3
-                    Frost_Dict[Gegner] += Wert
-                    if Wert == 1:
-                        Druck = "einen Zug"
-                    else:
-                        Druck = str(Wert) + " Züge"
-                    print("\n" + Gegner + " setzt " + Druck + " aus.\n")
-                    Spieler_Zug = True
-                    Aus = False
-                    WASK[0] -= 1
-                else:
-                    print("Extrafunktion kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein.")
-            else:
-                ("Diese Karte hat keine Extrafunktion, die auf andere Spieler angewandt werden kann.")
-    #Karten existieren nicht
+#Zeugsfunktionen
+#"Wirklich Verlassen?" Fenster
+def unnütze_Funktion():
+    global done
+    done = True
+Verlassen_Button = Button(pg.Rect(645, 460, 60, 30), unnütze_Funktion, None, SMaxG("Ja", 50, 20), None, (76, 117, 28))
+Nicht_Verlassen_Button = Button(pg.Rect(895, 460, 60, 30), Spiel_Screen, None, SMaxG("Nein", 50, 20), None, (128, 0, 0))
+def Wirklich_Verlassen():
+    global Einstellungen_Fertig
+    global done
+    global Buttons
+    if Einstellungen_Fertig == True:
+        Buttons = []
+        screen.blit(get_image("transparenter_hintergrund.png"), (0, 0))
+        Surf = pg.Surface((500, 100))
+        Surf.fill((255, 255, 255))
+        pg.draw.rect(screen, (0, 0, 0), pg.Rect(550, 400, 500, 100), 5)
+        Schrift = SMaxG("Spiel wirklich verlassen?", 480, 30)
+        Surf.blit(Schrift, (250 - Schrift.get_width() / 2, 10))
+        screen.blit(Surf, (550, 400))
+        Verlassen_Button.create_button()
+        Nicht_Verlassen_Button.create_button()
     else:
-        Info_Text("Eine oder beide Karten existieren nicht.")
+        done = True
+
+#Aktion beenden
+Aktions_Buttons = [Kombi_Button, Extra_Button, LR_Button, LW_Button]
+def Clear():
+    global Spieler
+    global Buttons
+    global Extra_List
+    global Aktion
+    for Button in Extra_Buttons:
+        if Button in Buttons:
+            Buttons.remove(Button)
+    Extra_List = []
+    Aktion = None
+    for Button in Aktions_Buttons:
+        if Spieler_Zug == True and Button.Switch == True:
+            Button.Change()
+    Ausgabe(Spieler, Ablage_Surf)
+    Ausgabe(Spieler, Feld_Übersicht_Surf)
+  
+#Kombi
+#Extrabuttons für Extrafunktionen
+Extra_Buttons = []
+#Joker
+Joker_LW_Button = Button(pg.Rect(125, 200, 200, 30), lambda: Extra_Func([Karten.Joker, "LW"]), None, get_Text("Lebewesen", 35))
+Joker_LR_Button = Button(pg.Rect(125, 240, 200, 30), lambda: Extra_Func([Karten.Joker, "LR"]), None, get_Text("Lebensraum", 35))
+Joker_E_Button = Button(pg.Rect(125, 280, 200, 30), lambda: Extra_Func([Karten.Joker, "E"]), None, get_Text("Element", 35))
+Joker_Buttons = [Joker_LW_Button, Joker_LR_Button, Joker_E_Button]
+for Button in Joker_Buttons:
+    Extra_Buttons.append(Button)
 
 #Events
 Spieler_Zug = False #Zug Ende
@@ -2072,12 +1905,14 @@ done = False
 while done == False:
     for event in pg.event.get():
         if event.type == pg.QUIT:
-                done = True
-                break
+            Wirklich_Verlassen()
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
-                done = True
-                break
+                if not Aktion == None:
+                    Aktion = None
+                    Extra_List = []
+                else:
+                    Wirklich_Verlassen()
         elif event.type == pg.MOUSEMOTION:
             for Button in Buttons:
                 if Button.Rect.collidepoint(pg.mouse.get_pos()):

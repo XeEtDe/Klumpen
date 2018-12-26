@@ -16,4 +16,3 @@ def SchriftFunc(Text, Länge = None, Höhe = None, Farbe = (0, 0, 0), Schriftart
         Alte_Größe = Größe
         Größe += 1
     return pg.font.Font(Schriftart, Alte_Größe).render(Text, True, Farbe)
-
