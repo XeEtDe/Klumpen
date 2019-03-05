@@ -299,7 +299,7 @@ Erzengel = Lebewesen("Erzengel", "Wacht über das gesamte Reich der Himmelswesen
 Friedensengel = Lebewesen("Friedensengel", "Wacht über den Frieden im Himmelsreich und in Klumpiland; kann insgesamt 3 Lebensräume zu Wonderlands machen, in denen alle Lebewesen leben können", 13, 5, 21, ["Alle"], ["Engel+Regenbogen"])
 
 #Rätselhafter Vogel -> Fee + Zottel ###
-Rätselhafter_Vogel = Lebewesen("Rätselhafter Vogel", "In seine Augen scheinen alle Geheinmisse dieser Welt zu schimmern", 8, 6, 10, ["Alle"], ["Fee+Zottel"])
+Rätselhafter_Vogel = Lebewesen("Rätselhafter Vogel", "In seine Augen scheinen alle Geheinmisse dieser Welt zu schimmern, doch ist er wirklich real?", 8, 6, 10, ["Alle"], ["Fee+Zottel"])
 # -> Stufe 1 -> +1 #Wasser, Erde, Magie#
 Glühwürmchen = Lebewesen("Glühwürmchen", "Owl City - Fireflies", 9, 5, 13, ["Alle"], ["Rätselhafter Vogel+Feuer"])
 Origami = Lebewesen("Origami", "Ein Vogel aus Papier, der seinen Erschaffer mit Informationen versorgt; gibt dir pro Runde einen Extrazug, wenn er auf dem Feld platziert ist", 9, 3, 15, ["Alle"], ["Rätselhafter Vogel+Luft"])
@@ -401,6 +401,7 @@ Erde = Elemente("Erde", "Eines der vier klassischen Elemente", [], True)
 Luft = Elemente("Luft", "Eines der vier klassischen Elemente", [], True)
 Magie = Elemente("Magie", "Eine leuchtende Kugel aus unbestimmter Macht", [], True)
 #Stufe 2 -> +3
+#Chaos = Elemente("Chaos", "Völliges Durcheinander", ["Magie+Magie"])
 Wölkchen = Elemente("Wölkchen", "Flauschige schwebende Masse", ["Feuer+Wasser", "Wasser+Luft", "Wasser+Wasser"])
 Staub = Elemente("Staub", "Etwas aufgewirbelte Erde", ["Luft+Erde", "Erde+Erde", "Luft+Luft"])
 Beere = Elemente("Beere", "Eine süße Frucht aus dem Nachtwald Perelín", ["Wasser+Erde", "Magie+Magie", "Magie+Wasser"])

@@ -33,9 +33,6 @@ def Zug(Spieler):
         Spieler_Zug = True
     #Input
     while Spieler_Zug == False:
-        #Kombi
-        elif "+" in Input:
-            Add(Input)
         #Schwarzer Trank
         elif Input == "Schwarzer Trank" or Input == "schwarzer Trank" or Input == "Schwarzer trank" or Input== "schwarzer Trank":
             if Schwarzer_Trank in Ablage[Spieler]:
@@ -110,144 +107,89 @@ def Zug(Spieler):
                 Ablage[Spieler].remove(Schwarzer_Trank)
             else:
                 print("Du besitzt diese Karte nicht.")
-    #Drachenei brüten
-    #Werte minus 1 und Drachenei in Drachen nach einem Zug
-    D = False
-    for Wert in Drachenei_Dict[Spieler]:
-        Drachenei_Dict[Spieler].remove(Wert)
-        Wert -= 1
-        Drachenei_Dict[Spieler].append(Wert)
-        if Wert == 0:
-            Drachenei_Dict[Spieler].remove(Wert)
-            for LR in Feld_Spieler:
-                for LW in Feld_Spieler[LR]:
-                    if LW.Name == "Drachenei":
-                        Feld_Spieler[LR].remove(LW)
-                        for Karte in Alle_Karten:
-                            if Karte.Name == "Drache":
-                                Feld_Spieler[LR].append(Karte)
-                                break
-                        D = True
-                        break
-                if D == True:
-                    break
-    #Neue Counter für neue Dracheneier
-    Counter = 0
-    for LR in Feld_Spieler:
-        for LW in Feld_Spieler[LR]:
-            if LW.Name == "Drachenei":
-                Counter += 1
-    while Counter > len(Drachenei_Dict[Spieler]):
-        Drachenei_Dict[Spieler].append(1)
-    #Verbesserung nicht kleiner 0
-    Verbesserung_Spieler = Verbesserung[Spieler]
-    for Karte in Verbesserung_Spieler:
-        VSK = Verbesserung_Spieler[Karte]
-        if (Karte.Punkte + VSK["Punkte"]) < 0:
-            VSK["Punkte"] = 0 - Karte.Punkte
-        if (Karte.Angriff + VSK["Angriff"]) < 0:
-            VSK["Angriff"] = 0 - Karte.Angriff
-        if (Karte.Verteidigung + VSK["Verteidigung"]) < 0:
-            VSK["Verteidigung"] = 0 - Karte.Verteidigung
-    #Werteverbesserungskarten
-    for WV_Karte in Werteverbesserung_Anzahl[Spieler]:
-        Jetzt_Anzahl = 0
-        for LR in Feld[Spieler]:
-            for LW in Feld_Spieler[LR]:
-                if LW == WV_Karte:
-                    if (LW == Friedensengel) or (LW == Diebische_Elster):
-                        Jetzt_Anzahl += 3
-                    else:
-                        Jetzt_Anzahl += 1   
-        WASK = WAS[WV_Karte] #Werteverbesserung_Anzahl[Spieler[Karte]] -> [0] = Unverbrauchte/Mögliche, [1] = letzte Anzahl
-        WASK[0] += (Jetzt_Anzahl - WASK[1])
-        WASK[1] = Jetzt_Anzahl
-        if WASK[0] < 0 or WASK[1] < 0:
-            print("Fehler Werteverbesserungskarten, Dict Werte negativ")
         
 #Spielkern
 #Runden
-
 while Runden_Counter < Runden:
     #Karten für Runde
     if not Runden_Counter == 1:
-        #Auswahlstapel
-        if len(Alle_Spieler) <= 5:
-            Anzahl_Auswahl_Karten = 2 * len(Alle_Spieler)
-        elif len(Alle_Spieler) > 5:
-            Anzahl_Auswahl_Karten = 4 * len(Alle_Spieler)
-        Auswahl = []
-        while Anzahl_Auswahl_Karten > 0:
-            Auswahl.append(random.choice(random.choice(Alle_Start_Karten)))
-            Anzahl_Auswahl_Karten -= 1
-        #zufällige Reihenfolge
-        Alle_Spieler_Kopie = Alle_Spieler.copy()
-        Reihenfolge = []
-        #Marienkäfer Extrafunktion
-        Marienkäfer_Dict = {}
-        for Spieler in Alle_Spieler:
-            Counter = 0
-            Feld_Spieler = Feld[Spieler]
-            for LR in Feld[Spieler]:
-                for LW in Feld_Spieler[LR]:
-                    if LW.Name == "Marienkäfer":
-                        Counter += 1
-            if not Counter == 0:
-                Marienkäfer_Dict.update({Spieler:Counter})
-        Werte = []
-        for Spieler in Marienkäfer_Dict:
-            if not Marienkäfer_Dict[Spieler] in Werte:
-                Werte.append(Marienkäfer_Dict[Spieler])
-        Werte.sort(reverse = True)
-        for Wert in Werte:
-            Liste = []
-            for Spieler in Marienkäfer_Dict:
-                if Marienkäfer_Dict[Spieler] == Wert:
-                    Liste.append(Spieler)
-            S = random.choice(Liste)
-            Reihenfolge.append(S)
-            Alle_Spieler_Kopie.remove(S)
-        while len(Alle_Spieler_Kopie) > 0:
-            SP = random.choice(Alle_Spieler_Kopie)
-            Reihenfolge.append(SP)
-            Alle_Spieler_Kopie.remove(SP)
-        #Erklärung
-        print("\nAlle Spieler wählen in zufälliger Reihenfolge je eine Karte bis der Auswahlstapel leer ist.")
-        print("\nAuswahlstapel:")
-        Ausgabe(Auswahl)
-        print("\nReihenfolge:")
-        for S in Reihenfolge:
-            print(S)
-        #Auswahl
-        while len(Auswahl) > 0:
-            #Spieler
-            for Spieler in Reihenfolge:
-                print("\nAblage:")
-                Ausgabe(Ablage[Spieler])
-                print("\nFeld:")
-                Ausgabe_Feld()
-                #bis richtige Eingabe
-                while True:
-                    Wahl_Karte = input("\n" + Spieler + ": Wähle eine Karte. Tippe dazu ihren Namen.\n")
-                    Durchgang_Counter = 0
-                    for Karte in Auswahl:
-                        Durchgang_Counter += 1
-                        #Karte geben und aus Auswahl entfernen
-                        if Karte.Name == Wahl_Karte:
-                            Ablage[Spieler].append(Karte)
-                            Auswahl.remove(Karte)
-                            Done = True
-                            break
-                        #Nicht in Stapel
-                        elif Durchgang_Counter == len(Auswahl):
-                            print("Die Karte befindet sich nicht im Auswahlstapel.")
-                            Done = False
-                    #nächster Spieler oder nochmal weil falsch
-                    if Done == True:
-                        if not len(Auswahl) == 0:
-                            print("\nAuswahlstapel:")
-                            Ausgabe(Auswahl)
-                        break
+        # #Auswahlstapel
+        # if len(Alle_Spieler) <= 5:
+        #     Anzahl_Auswahl_Karten = 2 * len(Alle_Spieler)
+        # elif len(Alle_Spieler) > 5:
+        #     Anzahl_Auswahl_Karten = 4 * len(Alle_Spieler)
+        # Auswahl = []
+        # while Anzahl_Auswahl_Karten > 0:
+        #     Auswahl.append(random.choice(random.choice(Alle_Start_Karten)))
+        #     Anzahl_Auswahl_Karten -= 1
+        # #zufällige Reihenfolge
+        # Alle_Spieler_Kopie = Alle_Spieler.copy()
+        # Reihenfolge = []
+        # #Marienkäfer Extrafunktion
+        # Marienkäfer_Dict = {}
+        # for Spieler in Alle_Spieler:
+        #     Counter = 0
+        #     Feld_Spieler = Feld[Spieler]
+        #     for LR in Feld[Spieler]:
+        #         for LW in Feld_Spieler[LR]:
+        #             if LW.Name == "Marienkäfer":
+        #                 Counter += 1
+        #     if not Counter == 0:
+        #         Marienkäfer_Dict.update({Spieler:Counter})
+        # Werte = []
+        # for Spieler in Marienkäfer_Dict:
+        #     if not Marienkäfer_Dict[Spieler] in Werte:
+        #         Werte.append(Marienkäfer_Dict[Spieler])
+        # Werte.sort(reverse = True)
+        # for Wert in Werte:
+        #     Liste = []
+        #     for Spieler in Marienkäfer_Dict:
+        #         if Marienkäfer_Dict[Spieler] == Wert:
+        #             Liste.append(Spieler)
+        #     S = random.choice(Liste)
+        #     Reihenfolge.append(S)
+        #     Alle_Spieler_Kopie.remove(S)
+        # while len(Alle_Spieler_Kopie) > 0:
+        #     SP = random.choice(Alle_Spieler_Kopie)
+        #     Reihenfolge.append(SP)
+        #     Alle_Spieler_Kopie.remove(SP)
+        # #Erklärung
+        # print("\nAlle Spieler wählen in zufälliger Reihenfolge je eine Karte bis der Auswahlstapel leer ist.")
+        # print("\nAuswahlstapel:")
+        # Ausgabe(Auswahl)
+        # print("\nReihenfolge:")
+        # for S in Reihenfolge:
+        #     print(S)
+        # #Auswahl
+        # while len(Auswahl) > 0:
+        #     #Spieler
+        #     for Spieler in Reihenfolge:
+        #         print("\nAblage:")
+        #         Ausgabe(Ablage[Spieler])
+        #         print("\nFeld:")
+        #         Ausgabe_Feld()
+        #         #bis richtige Eingabe
+        #         while True:
+        #             Wahl_Karte = input("\n" + Spieler + ": Wähle eine Karte. Tippe dazu ihren Namen.\n")
+        #             Durchgang_Counter = 0
+        #             for Karte in Auswahl:
+        #                 Durchgang_Counter += 1
+        #                 #Karte geben und aus Auswahl entfernen
+        #                 if Karte.Name == Wahl_Karte:
+        #                     Ablage[Spieler].append(Karte)
+        #                     Auswahl.remove(Karte)
+        #                     Done = True
+        #                     break
+        #                 #Nicht in Stapel
+        #                 elif Durchgang_Counter == len(Auswahl):
+        #                     print("Die Karte befindet sich nicht im Auswahlstapel.")
+        #                     Done = False
+        #             #nächster Spieler oder nochmal weil falsch
+        #             if Done == True:
+        #                 if not len(Auswahl) == 0:
+        #                     print("\nAuswahlstapel:")
+        #                     Ausgabe(Auswahl)
+        #                 break
     #Extrakarten
     Extraprint = False
     for Spieler in Alle_Spieler:
