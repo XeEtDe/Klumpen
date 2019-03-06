@@ -570,7 +570,7 @@ Feld_Button_5 = Button(Karten_Feld_Rects[5], lambda: Karten_Func("Feld", 5))
 Karten_Feld_Übersicht_Rects = []
 x = 555
 y = 135
-for Num in range(0, 9):
+for Num in range(0, 8):
     KaÜbRe = pg.Rect(x, y, 90, 42)
     Karten_Feld_Übersicht_Rects.append(KaÜbRe)
     x += 119
@@ -1670,11 +1670,12 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
     screen.blit(Surf, (x_Surf, y_Surf))
 
 #einzelne Karte ausgeben
-def Druck(Karte, Spieler):
+def Druck(Karte, Spieler, Auswahl = False):
     global Modus
-    CDS = Counter_Dict[Spieler]
-    MDS = Magisch_Dict[Spieler]
-    SDS = Stärker_Dict[Spieler]
+    if Auswahl == False:
+        CDS = Counter_Dict[Spieler]
+        MDS = Magisch_Dict[Spieler]
+        SDS = Stärker_Dict[Spieler]
     Surf = pg.Surface((150, 250))
     #Hintergrund und Art
     if Karte in Karten.Alle_Lebewesen:
@@ -1706,7 +1707,7 @@ def Druck(Karte, Spieler):
         Surf.blit(Name, (150 / 2 - Name.get_width() / 2, 35))
     #Lebewesen: LRs, Punkte/Kampf, Verteidigung 
     if Karte in Karten.Alle_Lebewesen:
-        #altes repr, dont touch
+        #altes repr, dont touch (yeah I did now)
         Mod_Punkte = Karte.Punkte
         Mod_Angriff = Karte.Angriff
         Mod_Verteidigung = Karte.Verteidigung
@@ -1714,49 +1715,50 @@ def Druck(Karte, Spieler):
         for LR in Karte.Lebensraum:
             if not LR == "Wonderland":
                 Mod_Lebensraum_.append(LR)
-        Mod_Lebensraum = ""
-        for LR in Mod_Lebensraum_:
-            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-        if Karte in CDS:
-            if CDS[Karte] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[Karte]
-                Add_Angriff = Verbesserung_Karte["Angriff"]
-                Mod_Angriff = Karte.Angriff + Add_Angriff
-                if Mod_Angriff < 0:
-                    Mod_Angriff = 0
-                Add_Verteidigung = Verbesserung_Karte["Verteidigung"]
-                Mod_Verteidigung = Karte.Verteidigung + Add_Verteidigung
-                if Mod_Verteidigung < 0:
-                    Mod_Verteidigung = 0
-                Add_Punkte = Verbesserung_Karte["Punkte"]
-                Mod_Punkte = Karte.Punkte + Add_Punkte
-                if Mod_Punkte < 0:
-                    Mod_Punkte = 0
-                for LR in Verbesserung_Karte["Lebensräume"]:
-                    if not LR in Mod_Lebensraum_:
-                        Mod_Lebensraum_.append(LR)
-                if "Alle" in Mod_Lebensraum_:
-                    Mod_Lebensraum = "Alle"
-                else:
-                    Mod_Lebensraum = ""
-                    for LR in Mod_Lebensraum_:
-                        Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-                    Mod_Lebensraum = Mod_Lebensraum.strip(", ")
-                CDS[Karte] = False
-        if Karte in Magisch_Dict[Spieler]:
-            if MDS[Karte] > 0:
-                Mod_Angriff += 1
-                Mod_Verteidigung += 1
-                Mod_Punkte += 1
-                MDS[Karte] -= 1
-        if Karte in Stärker_Dict[Spieler]:
-            if SDS[Karte] > 0:
-                Mod_Angriff += 2
-                Mod_Verteidigung += 2
-                Mod_Punkte += 2
-                SDS[Karte] -= 1
+        if Auswahl == False:
+            Mod_Lebensraum = ""
+            for LR in Mod_Lebensraum_:
+                Mod_Lebensraum = Mod_Lebensraum + LR + ", "
+            Mod_Lebensraum = Mod_Lebensraum.strip(", ")
+            if Karte in CDS:
+                if CDS[Karte] == True:
+                    Verbesserung_Spieler = Verbesserung[Spieler]
+                    Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                    Add_Angriff = Verbesserung_Karte["Angriff"]
+                    Mod_Angriff = Karte.Angriff + Add_Angriff
+                    if Mod_Angriff < 0:
+                        Mod_Angriff = 0
+                    Add_Verteidigung = Verbesserung_Karte["Verteidigung"]
+                    Mod_Verteidigung = Karte.Verteidigung + Add_Verteidigung
+                    if Mod_Verteidigung < 0:
+                        Mod_Verteidigung = 0
+                    Add_Punkte = Verbesserung_Karte["Punkte"]
+                    Mod_Punkte = Karte.Punkte + Add_Punkte
+                    if Mod_Punkte < 0:
+                        Mod_Punkte = 0
+                    for LR in Verbesserung_Karte["Lebensräume"]:
+                        if not LR in Mod_Lebensraum_:
+                            Mod_Lebensraum_.append(LR)
+                    if "Alle" in Mod_Lebensraum_:
+                        Mod_Lebensraum = "Alle"
+                    else:
+                        Mod_Lebensraum = ""
+                        for LR in Mod_Lebensraum_:
+                            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
+                        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
+                    CDS[Karte] = False
+            if Karte in Magisch_Dict[Spieler]:
+                if MDS[Karte] > 0:
+                    Mod_Angriff += 1
+                    Mod_Verteidigung += 1
+                    Mod_Punkte += 1
+                    MDS[Karte] -= 1
+            if Karte in Stärker_Dict[Spieler]:
+                if SDS[Karte] > 0:
+                    Mod_Angriff += 2
+                    Mod_Verteidigung += 2
+                    Mod_Punkte += 2
+                    SDS[Karte] -= 1
         #Lebensräume
         LRs = get_Text("LRs:", 30)
         Surf.blit(LRs, (5, 135))
@@ -1779,15 +1781,16 @@ def Druck(Karte, Spieler):
             V_Num = get_Text(str(Mod_Verteidigung), 30)
             Surf.blit(V_Num, (V_Text.get_width() + (250 / 2 - V_Text.get_width() - V_Num.get_width() / 2), 215))
     elif Karte in Karten.Alle_Lebensraum:
-        #altes repr, dont touch
+        #altes repr, dont touch (I did it again)
         Mod_Größe = Karte.Größe
-        if Karte in CDS:
-            if CDS[Karte] == True:
-                Verbesserung_Spieler = Verbesserung[Spieler]
-                Verbesserung_Karte = Verbesserung_Spieler[Karte]
-                Add_Größe = Verbesserung_Karte
-                Mod_Größe = Karte.Größe + Add_Größe
-                CDS[Karte] = False
+        if Auswahl == False:
+            if Karte in CDS:
+                if CDS[Karte] == True:
+                    Verbesserung_Spieler = Verbesserung[Spieler]
+                    Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                    Add_Größe = Verbesserung_Karte
+                    Mod_Größe = Karte.Größe + Add_Größe
+                    CDS[Karte] = False
         #Größe
         G_Text = get_Text("Größe:", 30)
         Surf.blit(G_Text, (5, 135))
@@ -2003,24 +2006,91 @@ def Wirklich_Verlassen():
         done = True
 
 #Auswahlstapel nach fertigen Runden
-Auswahl_Rects = []
-x = 
-y = 
+#Buttons
+Karten_Auswahl_Rects = []
+x = 467.5
+y = 170
+for Num in range(0, 12):
+    KaAuRe = pg.Rect(x, y, 150, 250)
+    Karten_Auswahl_Rects.append(KaAuRe)
+    if Num == 5:
+        x = 467.5
+        y = 480
+    else:
+        x += 165
+
+Auswahl_Button_0 = Button(Karten_Auswahl_Rects[0], lambda: Auswahl_Karten_Func(0))
+Auswahl_Button_1 = Button(Karten_Auswahl_Rects[1], lambda: Auswahl_Karten_Func(1))
+Auswahl_Button_2 = Button(Karten_Auswahl_Rects[2], lambda: Auswahl_Karten_Func(2))
+Auswahl_Button_3 = Button(Karten_Auswahl_Rects[3], lambda: Auswahl_Karten_Func(3))
+Auswahl_Button_4 = Button(Karten_Auswahl_Rects[4], lambda: Auswahl_Karten_Func(4))
+Auswahl_Button_5 = Button(Karten_Auswahl_Rects[5], lambda: Auswahl_Karten_Func(5))
+Auswahl_Button_6 = Button(Karten_Auswahl_Rects[6], lambda: Auswahl_Karten_Func(6))
+Auswahl_Button_7 = Button(Karten_Auswahl_Rects[7], lambda: Auswahl_Karten_Func(7))
+Auswahl_Button_8 = Button(Karten_Auswahl_Rects[8], lambda: Auswahl_Karten_Func(8))
+Auswahl_Button_9 = Button(Karten_Auswahl_Rects[9], lambda: Auswahl_Karten_Func(9))
+Auswahl_Button_10 = Button(Karten_Auswahl_Rects[10], lambda: Auswahl_Karten_Func(10))
+Auswahl_Button_11 = Button(Karten_Auswahl_Rects[11], lambda: Auswahl_Karten_Func(11))
+
+def Auswahl_Karten_Func(Button_Num):
+    global Spieler
+    global Ausgabe_Alt_Range
+    Num = Ausgabe_Alt_Range[Button_Num]
+    if Num <= (len(Auswahl_List) - 1):
+        Counter = 0
+        for Dings in List:
+            if Counter == Num:
+                Karte = Dings
+                break
+            Counter += 1
+        #Beschreibung als Info
+        Info_Text(Karte.Name + "\n" + Karte.Beschreibung)
+        #Karte merken
+        global Letzte_Auswahl_Karte
+        Letzte_Auswahl_Karte = Karte
+
+def Ausgabe_Auswahl(Range = range(0, 12)):
+    global Ausgabe_Alt_Range
+    Ausgabe_Alt_Range = Range
+    Widht = 467.5
+    Height = 170
+    for Num in Range:
+        if len(Auswahl_List) >= (Num + 1):
+            screen.blit(Druck(Auswahl_List[Num], None), (Width, Height))
+            if Num == 5:
+                Width = 467.5
+                Height = 480
+            else:
+                Width += 165
+    #Buttons wenn Auswahl oben oder unten mehr Karten
+    if Range[0] > 0:
+        if Auswahl_Hoch_Button.Switch == False:
+            Auswahl_Hoch_Button.Change()
+    else:
+        if Auswahl_Hoch_Button.Switch == True:
+            Auswahl_Hoch_Button.Change()
+    if len(Auswahl_List) > ((Range[-1]) + 1):
+        if Auswahl_Runter_Button.Switch == False:
+            Auswahl_Runter_Button.Change()
+    else:
+        if Auswahl_Runter_Button.Switch == True:
+            Auswahl_Runter_Button.Change()
 
 Auswahl_Hoch_Button = 
 Auswahl_Runter_Button = 
 Auswahl_Auswählen_Button = 
 Auswahl_Erklärung_Button = 
 
+#Funktion
 def Auswahlstapel():
     screen.fill((255, 255, 255))
     global Buttons
     Buttons = []
     #Auswahlstapel zufällig wählen
     Anzahl_Auswahl_Karten = 3 * len(Alle_Spieler)
-    Auswahl = []
+    Auswahl_List = []
     while Anzahl_Auswahl_Karten > 0:
-        Auswahl.append(random.choice(random.choice(Alle_Start_Karten)))
+        Auswahl_List.append(random.choice(random.choice(Alle_Start_Karten)))
         Anzahl_Auswahl_Karten -= 1
     #zufällige Reihenfolge
     Alle_Spieler_Kopie = Alle_Spieler.copy()
@@ -2069,6 +2139,8 @@ def Auswahlstapel():
     Auswahl_Button_7.create_button()
     Auswahl_Button_8.create_button()
     Auswahl_Button_9.create_button()
+    Auswahl_Button_10.create_button()
+    Auswahl_Button_11.create_button()
     Auswahl_Hoch_Button.create_button()
     Auswahl_Runter_Button.create_button()
     Auswahl_Auswählen_Button.create_button()
