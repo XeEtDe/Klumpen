@@ -367,7 +367,7 @@ Regel_Spiel_Button = Button(R_Rect, Regeln, R_Bild, R_Text)
 Runden_Counter = 0
 Züge_Counter = 0
 Extrazüge_Dict = {}
-EZ = True
+EZ = True #Extrazüge ja oder nein
 def Nächster(Alter_Spieler):
     pg.draw.rect(screen, (255, 255, 255), pg.Rect(612, 0, 800, 89))
     global Runden_Counter
@@ -424,19 +424,12 @@ def Nächster(Alter_Spieler):
             #Runde fertig wenn Extrazüge aufgebraucht
             if Extrazüge_Dict == {}:
                 Runden_Counter += 1
+                Züge_Counter = 0
+                EZ = True
                 #Spiel zuende?
                 if Runden_Counter == Runden:
                     Ende()
                     return
-                Züge_Counter = 0
-                Züge_String = "noch " + str(Züge) + " Züge"
-                if Züge == 1:
-                    Züge_String = "letzter Zug"
-                Übrig = Runden - Runden_Counter
-                Runden_String = "noch " + str(Übrig) + " Runden"
-                if Übrig == 1:
-                    Runden_String = "letzte Runde"
-                EZ = True
                 #Werteverbesserungskarten pro Runde
                 for WV_Karte in WAS:
                     if (not WV_Karte == Karten.Parasit) and (not WV_Karte == Karten.Friedensengel) and (not WV_Karte == Karten.Diebische_Elster) and (not WV_Karte == Karten.Urwolf):
@@ -444,6 +437,7 @@ def Nächster(Alter_Spieler):
                         WASK[0] = WASK[1]
                 #Auswahlstapel
                 Auswahlstapel()
+                return
     #Neuer Spieler (der nach dem alten)
     if Neuer_Spieler == None:
         for N in range(0, len(Alle_Spieler)):
@@ -1715,11 +1709,11 @@ def Druck(Karte, Spieler, Auswahl = False):
         for LR in Karte.Lebensraum:
             if not LR == "Wonderland":
                 Mod_Lebensraum_.append(LR)
+        Mod_Lebensraum = ""
+        for LR in Mod_Lebensraum_:
+            Mod_Lebensraum = Mod_Lebensraum + LR + ", "
+        Mod_Lebensraum = Mod_Lebensraum.strip(", ")
         if Auswahl == False:
-            Mod_Lebensraum = ""
-            for LR in Mod_Lebensraum_:
-                Mod_Lebensraum = Mod_Lebensraum + LR + ", "
-            Mod_Lebensraum = Mod_Lebensraum.strip(", ")
             if Karte in CDS:
                 if CDS[Karte] == True:
                     Verbesserung_Spieler = Verbesserung[Spieler]
@@ -2006,15 +2000,15 @@ def Wirklich_Verlassen():
         done = True
 
 #Auswahlstapel nach fertigen Runden
-#Buttons
+#Buttons - Karten anklicken
 Karten_Auswahl_Rects = []
-x = 467.5
+x = 482.5
 y = 170
 for Num in range(0, 12):
     KaAuRe = pg.Rect(x, y, 150, 250)
     Karten_Auswahl_Rects.append(KaAuRe)
     if Num == 5:
-        x = 467.5
+        x = 482.5
         y = 480
     else:
         x += 165
@@ -2027,18 +2021,17 @@ Auswahl_Button_4 = Button(Karten_Auswahl_Rects[4], lambda: Auswahl_Karten_Func(4
 Auswahl_Button_5 = Button(Karten_Auswahl_Rects[5], lambda: Auswahl_Karten_Func(5))
 Auswahl_Button_6 = Button(Karten_Auswahl_Rects[6], lambda: Auswahl_Karten_Func(6))
 Auswahl_Button_7 = Button(Karten_Auswahl_Rects[7], lambda: Auswahl_Karten_Func(7))
-Auswahl_Button_8 = Button(Karten_Auswahl_Rects[8], lambda: Auswahl_Karten_Func(8))
+Auswahl_Button_8 = Button(Karten_Auswahl_Rects[7], lambda: Auswahl_Karten_Func(8))
 Auswahl_Button_9 = Button(Karten_Auswahl_Rects[9], lambda: Auswahl_Karten_Func(9))
 Auswahl_Button_10 = Button(Karten_Auswahl_Rects[10], lambda: Auswahl_Karten_Func(10))
 Auswahl_Button_11 = Button(Karten_Auswahl_Rects[11], lambda: Auswahl_Karten_Func(11))
 
 def Auswahl_Karten_Func(Button_Num):
-    global Spieler
-    global Ausgabe_Alt_Range
-    Num = Ausgabe_Alt_Range[Button_Num]
+    global Auswahl_Alt_Range
+    Num = Auswahl_Alt_Range[Button_Num]
     if Num <= (len(Auswahl_List) - 1):
         Counter = 0
-        for Dings in List:
+        for Dings in Auswahl_List:
             if Counter == Num:
                 Karte = Dings
                 break
@@ -2048,17 +2041,21 @@ def Auswahl_Karten_Func(Button_Num):
         #Karte merken
         global Letzte_Auswahl_Karte
         Letzte_Auswahl_Karte = Karte
+        if Auswahl_Auswählen_Button.Switch == False:
+            Auswahl_Auswählen_Button.Change()
 
 def Ausgabe_Auswahl(Range = range(0, 12)):
-    global Ausgabe_Alt_Range
-    Ausgabe_Alt_Range = Range
-    Widht = 467.5
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(471, 121, 988, 658))
+    Info_Text(" ")
+    global Auswahl_Alt_Range
+    Auswahl_Alt_Range = Range
+    Width = 482.5
     Height = 170
     for Num in Range:
         if len(Auswahl_List) >= (Num + 1):
-            screen.blit(Druck(Auswahl_List[Num], None), (Width, Height))
+            screen.blit(Druck(Auswahl_List[Num], None, True), (Width, Height))
             if Num == 5:
-                Width = 467.5
+                Width = 482.5
                 Height = 480
             else:
                 Width += 165
@@ -2076,46 +2073,90 @@ def Ausgabe_Auswahl(Range = range(0, 12)):
         if Auswahl_Runter_Button.Switch == True:
             Auswahl_Runter_Button.Change()
 
-Auswahl_Hoch_Button = 
-Auswahl_Runter_Button = 
-Auswahl_Auswählen_Button = 
-Auswahl_Erklärung_Button = 
+#Buttons - Schieben
+#Hoch um eine Reihe
+Auswahl_Hoch_Rect = pg.Rect(1480, 150, Pfeil_Hoch.get_width(), Pfeil_Hoch.get_height())
+def Auswahl_Hoch():
+    global Auswahl_Alt_Range
+    Ausgabe_Auswahl(range(Auswahl_Alt_Range[0] - 6, Auswahl_Alt_Range[0] + 6))
+Auswahl_Hoch_Button = Button(Auswahl_Hoch_Rect, Auswahl_Hoch, Pfeil_Hoch_Blass, None, Pfeil_Hoch)
+#Runter um eine Reihe
+Auswahl_Runter_Rect = pg.Rect(1480, 750 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
+def Auswahl_Runter():
+    global Auswahl_Alt_Range
+    Ausgabe_Auswahl(range(Auswahl_Alt_Range[0] + 6, Auswahl_Alt_Range[0] + 18))
+Auswahl_Runter_Button = Button(Auswahl_Runter_Rect, Auswahl_Runter, Pfeil_Runter_Blass, None, Pfeil_Runter)
 
-#Funktion
+#Buttons - Auswählen der Karte
+Auswählen_Blass_Hgrund = get_image("auswählen_blass.png")
+Auswählen_Hgrund = get_image("auswählen.png")
+Auswählen_Rect = pg.Rect(850, 820, Auswählen_Hgrund.get_width(), Auswählen_Hgrund.get_height())
+def Auswahl_Auswählen():
+    if Auswahl_Auswählen_Button.Switch == True:
+        global Spieler
+        Alter_Spieler = Spieler
+        global Letzte_Auswahl_Karte
+        #Karte hinzufügen
+        Ablage[Spieler].append(Letzte_Auswahl_Karte)
+        Auswahl_List.remove(Letzte_Auswahl_Karte)
+        #Nächster Spieler
+        for N in range(0, len(Reihenfolge)):
+            if Reihenfolge[N] == Alter_Spieler:
+                Num = N + 1
+                if Num > (len(Reihenfolge) - 1):
+                    Num = 0
+                break
+        Spieler = Reihenfolge[Num]
+        Ausgabe_Auswahl()
+        Letzte_Auswahl_Karte = None
+        Auswahl_Auswählen_Button.Change()
+        #Überschrift anpassen
+        pg.draw.rect(screen, (255, 255, 255), pg.Rect(452, 52, 1146, 48))
+        Text = SMaxG(Spieler + ": Wähle eine Karte", None, 30)
+        screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 60))
+Auswahl_Auswählen_Button = Button(Auswählen_Rect, Auswahl_Auswählen, Auswählen_Blass_Hgrund, SMaxG("Auswählen", 300, 40, (255, 255, 255)), Auswählen_Hgrund)
+
+#Buttons - Erklärung/Fragezeichen Button
+#Auswahl_Erklärung_Button = 
+
+#Funktion/Screen
 def Auswahlstapel():
     screen.fill((255, 255, 255))
     global Buttons
     Buttons = []
     #Auswahlstapel zufällig wählen
+    if Züge > 
     Anzahl_Auswahl_Karten = 3 * len(Alle_Spieler)
+    global Auswahl_List
     Auswahl_List = []
     while Anzahl_Auswahl_Karten > 0:
-        Auswahl_List.append(random.choice(random.choice(Alle_Start_Karten)))
+        Auswahl_List.append(random.choice(random.choice(Karten.Alle_Start_Karten)))
         Anzahl_Auswahl_Karten -= 1
     #zufällige Reihenfolge
     Alle_Spieler_Kopie = Alle_Spieler.copy()
+    global Reihenfolge
     Reihenfolge = []
     #Marienkäfer Extrafunktion
     Marienkäfer_Dict = {}
-    for Spieler in Alle_Spieler:
+    for Spieler_ in Alle_Spieler:
         Counter = 0
-        Feld_Spieler = Feld[Spieler]
-        for LR in Feld[Spieler]:
+        Feld_Spieler = Feld[Spieler_]
+        for LR in Feld[Spieler_]:
             for LW in Feld_Spieler[LR]:
                 if LW.Name == "Marienkäfer":
                     Counter += 1
         if not Counter == 0:
-            Marienkäfer_Dict.update({Spieler:Counter})
+            Marienkäfer_Dict.update({Spieler_:Counter})
     Werte = []
-    for Spieler in Marienkäfer_Dict:
-        if not Marienkäfer_Dict[Spieler] in Werte:
-            Werte.append(Marienkäfer_Dict[Spieler])
+    for Spieler_ in Marienkäfer_Dict:
+        if not Marienkäfer_Dict[Spieler_] in Werte:
+            Werte.append(Marienkäfer_Dict[Spieler_])
     Werte.sort(reverse = True)
     for Wert in Werte:
         Liste = []
-        for Spieler in Marienkäfer_Dict:
-            if Marienkäfer_Dict[Spieler] == Wert:
-                Liste.append(Spieler)
+        for Spieler_ in Marienkäfer_Dict:
+            if Marienkäfer_Dict[Spieler_] == Wert:
+                Liste.append(Spieler_)
         S = random.choice(Liste)
         Reihenfolge.append(S)
         Alle_Spieler_Kopie.remove(S)
@@ -2123,9 +2164,11 @@ def Auswahlstapel():
         SP = random.choice(Alle_Spieler_Kopie)
         Reihenfolge.append(SP)
         Alle_Spieler_Kopie.remove(SP)
+    global Spieler
+    Spieler = Reihenfolge[0]
     #Screen
     #Linien
-    Start_Ende_Auswahl = [[(450, 0), (450, 900)], [(460, 120), (1550, 120)], [(460, 780), (1550, 780)], [(1450, 120), (1450, 780)], [(460, 120), (460, 780)], [(1550, 120), (1550, 780)]]
+    Start_Ende_Auswahl = [[(450, 0), (450, 900)], [(470, 120), (1560, 120)], [(470, 780), (1560, 780)], [(1464, 120), (1464, 780)], [(470, 120), (470, 780)], [(1560, 120), (1560, 780)]]
     for Linie in Start_Ende_Auswahl:
         pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
     #Buttons
@@ -2144,50 +2187,13 @@ def Auswahlstapel():
     Auswahl_Hoch_Button.create_button()
     Auswahl_Runter_Button.create_button()
     Auswahl_Auswählen_Button.create_button()
-    Auswahl_Erklärung_Button.create_button()
+    #Auswahl_Erklärung_Button.create_button()
     #Überschrift
-    
-
-
-
-
-    #Erklärung
-    print("\nAlle Spieler wählen in zufälliger Reihenfolge je eine Karte bis der Auswahlstapel leer ist.")
-    print("\nAuswahlstapel:")
-    Ausgabe(Auswahl)
-    print("\nReihenfolge:")
-    for S in Reihenfolge:
-        print(S)
-    #Auswahl
-    while len(Auswahl) > 0:
-        #Spieler
-        for Spieler in Reihenfolge:
-            print("\nAblage:")
-            Ausgabe(Ablage[Spieler])
-            print("\nFeld:")
-            Ausgabe_Feld()
-            #bis richtige Eingabe
-            while True:
-                Wahl_Karte = input("\n" + Spieler + ": Wähle eine Karte. Tippe dazu ihren Namen.\n")
-                Durchgang_Counter = 0
-                for Karte in Auswahl:
-                    Durchgang_Counter += 1
-                    #Karte geben und aus Auswahl entfernen
-                    if Karte.Name == Wahl_Karte:
-                        Ablage[Spieler].append(Karte)
-                        Auswahl.remove(Karte)
-                        Done = True
-                        break
-                    #Nicht in Stapel
-                    elif Durchgang_Counter == len(Auswahl):
-                        print("Die Karte befindet sich nicht im Auswahlstapel.")
-                        Done = False
-                #nächster Spieler oder nochmal weil falsch
-                if Done == True:
-                    if not len(Auswahl) == 0:
-                        print("\nAuswahlstapel:")
-                        Ausgabe(Auswahl)
-                    break
+    Text = SMaxG("Auswahlstapel", None, 40)
+    screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 10))
+    Text = SMaxG(Spieler + ": Wähle eine Karte", None, 30)
+    screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 60))
+    Ausgabe_Auswahl()
 
 #Events
 Spieler_Zug = False #Zug Ende
