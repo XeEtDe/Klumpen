@@ -6,7 +6,6 @@ import string
 import textbox
 import SchriftMaxgröße
 SMaxG = SchriftMaxgröße.SchriftFunc
-from Add_Funktion import Add
 
 #Startbildschirm
 screen = pg.display.set_mode((1600, 900), pg.FULLSCREEN)
@@ -74,6 +73,7 @@ class Button:
         Oberfläche.blit(Change_Bild, (Oberfläche.get_width() / 2 - Change_Bild.get_width() / 2, Oberfläche.get_height() / 2 - Change_Bild.get_height() / 2))
         if not self.Text == None:
             Oberfläche.blit(self.Text, (Oberfläche.get_width() / 2 - self.Text.get_width() / 2, Oberfläche.get_height() / 2 - self.Text.get_height() / 2))
+        pg.draw.rect(screen, (255, 255, 255), self.Rect)
         screen.blit(Oberfläche, (self.Rect[0], self.Rect[1]))
 
 # #Buttons und Funktionen
@@ -372,8 +372,6 @@ def Nächster(Alter_Spieler):
     pg.draw.rect(screen, (255, 255, 255), pg.Rect(612, 0, 800, 89))
     global Runden_Counter
     global Züge_Counter
-    global Züge_String
-    global Runden_String
     global Züge
     global Runden
     global Spieler
@@ -507,8 +505,16 @@ def Nächster(Alter_Spieler):
         if WASK[0] < 0 or WASK[1] < 0:
             print("Fehler Werteverbesserungskarten, Dict Werte negativ")
     #Überschrift
+    Übrig = Runden - Runden_Counter
+    Runden_String = "noch " + str(Übrig) + " Runden"
+    if Übrig == 1:
+        Runden_String = "letzte Runde"
     Text = SMaxG(Runden_String, None, 30)
     screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 10))
+    Übrig = Züge - Züge_Counter
+    Züge_String = "noch " + str(Übrig) + " Züge"
+    if Übrig == 1:
+        Züge_String = "letzter Zug"
     Text = SMaxG(Züge_String, None, 30)
     screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 60))
     if Spieler[-1] == "s" or Spieler[-1] == "S" or Spieler[-1] == "X" or Spieler[-1] == "x":
@@ -1516,17 +1522,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
                 if Test == True and Karte in Ablage[Spieler]:
                     CDS[Karte] = True
             #Sortieren
-            Liste = Ablage[Spieler].copy()
-            Ablage[Spieler].clear()
-            for Karte in Liste:
-                if Karte in Karten.Alle_Lebewesen:
-                    Ablage[Spieler].append(Karte)
-            for Karte in Liste:
-                if Karte in Karten.Alle_Lebensraum:
-                    Ablage[Spieler].append(Karte)
-            for Karte in Liste:
-                if Karte in Karten.Alle_Elemente:
-                    Ablage[Spieler].append(Karte)
+            Sortieren(Ablage[Spieler])
             #Buttons wenn Ablage oben oder unten mehr Karten
             if Range[0] > 0:
                 if Ablage_Hoch_Button.Switch == False:
@@ -1837,12 +1833,8 @@ def Info_Text(Text_Raw):
 
 ##Spielkern##
 #Spielmodus Screen
-Züge_String = None
-Runden_String = None
 def Spiel_Screen():
     global Spieler
-    global Züge_String
-    global Runden_String
     global Züge
     global Runden
     screen.fill((255, 255, 255))
@@ -1890,16 +1882,14 @@ def Spiel_Screen():
     for Linie in Start_Ende:
         pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
     #Überschrift
-    if Runden_String == None:
-        if str(Runden) == "1":
-            Runden_String = "letzte Runde"
-        else:
-            Runden_String = "noch " + str(Runden) + " Runden"
-    if Züge_String == None:
-        if str(Züge) == "1":
-            Züge_String = "letzter Zug"
-        else:
-            Züge_String = "noch " + str(Züge) + " Züge"
+    if (Runden - Runden_Counter) == 1:
+        Runden_String = "letzte Runde"
+    else:
+        Runden_String = "noch " + str(Runden - Runden_Counter) + " Runden"
+    if (Züge - Züge_Counter) == 1:
+        Züge_String = "letzter Zug"
+    else:
+        Züge_String = "noch " + str(Züge - Züge_Counter) + " Züge"
     #Surf Beschriftungen
     Text = SMaxG("Feld", None, 30)
     screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 100 + (15 - Text.get_height() / 2)))
@@ -1929,8 +1919,6 @@ def Spiel():
         Ablage[Spieler].append(random.choice(Karten.Start_Elemente))
         Ablage[Spieler].append(random.choice(random.choice(Karten.Nur)))
         Ablage[Spieler].append(random.choice(random.choice(Karten.Alle_Start_Karten)))
-        Ablage[Spieler].append(random.choice(random.choice(Karten.Alle_Start_Karten)))###
-        Ablage[Spieler].append(random.choice(random.choice(Karten.Alle_Start_Karten)))###
         #andere Dicts
         Feld.update({Spieler:{}})
         Ende_LW.update({Spieler:[]})
@@ -1974,6 +1962,29 @@ def Aktion_Aus():
     pg.draw.rect(screen, (255, 255, 255), pg.Rect(1450, 751, 150, 48))
 Abbrechen_Rect = pg.Rect(1475, 755, 100, 40)
 Abbrechen_Button = Button(Abbrechen_Rect, Clear, None, SMaxG("Abbrechen", 90, 35), None, (128, 0, 0))
+
+#Listen sortieren: Lebewesen, Lebensraum, Element + gleiche nebeneinander
+def Sortieren(Liste):
+    for Karte in Liste:
+        print(Karte.Name)
+    Dict = {"LW":{}, "LR":{}, "E":{}}
+    for Karte in Liste:
+        if Karte in Karten.Alle_Lebewesen:
+            Key = "LW"
+        if Karte in Karten.Alle_Lebensraum:
+            Key = "LR"
+        if Karte in Karten.Alle_Elemente:
+            Key = "E"
+        if Karte in Dict[Key]:
+            Dict[Key][Karte] += 1
+        else:
+            Dict[Key].update({Karte:1})
+    Liste.clear()
+    for Art in Dict:
+        for Karte in Dict[Art]:
+            while Dict[Art][Karte] > 0:
+                Liste.append(Karte)
+                Dict[Art][Karte] -= 1
 
 #"Wirklich Verlassen?" Fenster
 def unnütze_Funktion():
@@ -2108,12 +2119,18 @@ def Auswahl_Auswählen():
                 break
         Spieler = Reihenfolge[Num]
         Ausgabe_Auswahl()
-        Letzte_Auswahl_Karte = None
-        Auswahl_Auswählen_Button.Change()
         #Überschrift anpassen
         pg.draw.rect(screen, (255, 255, 255), pg.Rect(452, 52, 1146, 48))
         Text = SMaxG(Spieler + ": Wähle eine Karte", None, 30)
         screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 60))
+        #Button ausschalten
+        Letzte_Auswahl_Karte = None
+        Auswahl_Auswählen_Button.Change()
+        #Beenden wenn Auswahl leer -> weiter mit nächster Runde
+        if len(Auswahl_List) == 0:
+            Spieler = Alle_Spieler[0]
+            screen.fill((255, 255, 255))
+            Spiel_Screen()
 Auswahl_Auswählen_Button = Button(Auswählen_Rect, Auswahl_Auswählen, Auswählen_Blass_Hgrund, SMaxG("Auswählen", 300, 40, (255, 255, 255)), Auswählen_Hgrund)
 
 #Buttons - Erklärung/Fragezeichen Button
@@ -2125,13 +2142,17 @@ def Auswahlstapel():
     global Buttons
     Buttons = []
     #Auswahlstapel zufällig wählen
-    if Züge > 
     Anzahl_Auswahl_Karten = 3 * len(Alle_Spieler)
+    if Züge > 10:
+        Anzahl_Auswahl_Karten = 5 * len(Alle_Spieler)
+    elif Züge > 20:
+        Anzahl_Auswahl_Karten = 10 * len(Alle_Spieler)
     global Auswahl_List
     Auswahl_List = []
     while Anzahl_Auswahl_Karten > 0:
         Auswahl_List.append(random.choice(random.choice(Karten.Alle_Start_Karten)))
         Anzahl_Auswahl_Karten -= 1
+    Sortieren(Auswahl_List)
     #zufällige Reihenfolge
     Alle_Spieler_Kopie = Alle_Spieler.copy()
     global Reihenfolge
