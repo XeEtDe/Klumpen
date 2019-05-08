@@ -1,4 +1,3 @@
-Range = range(0,6)
-for Num in Range:
-    print(Num)
-print(Range[-1])
+Liste = [0, 0]
+Liste[1] = 3
+print(Liste)

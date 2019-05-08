@@ -70,7 +70,7 @@ Starker_Roter_Krieger = Lebewesen("Starker Roter Krieger", "Agressiver Krieger a
 Starker_Blauer_Krieger = Lebewesen("Starker Blauer Krieger", "Ausgeglichener Krieger mit balancierten Fähigkeiten", 11, 11, 11, ["Wald", "See"], ["Starker Krieger+Wasser"])
 Starker_Weißer_Krieger = Lebewesen("Starker Weißer Krieger", "Ausgeglichener Krieger mit balancierten Fähigkeiten", 11, 11, 11, ["Wald", "Berge"], ["Starker Krieger+Luft"])
 Starker_Brauner_Krieger = Lebewesen("Starker Brauner Krieger", "Krieger mit guten Abwehrfähigkeiten; stärker im Lebensraum Wald", 11, 9, 13, ["Wald"], ["Starker Krieger+Erde"])
-Starker_Goldener_Krieger = Lebewesen("Starker Goldener Gummikrieger", "Krieger mit vergoldeter Oberfläche, überall überlebensfähig", 11, 11, 11, ["Alle"], ["Starker Krieger+Magie"])
+Starker_Goldener_Krieger = Lebewesen("Starker Goldener Gummikrieger", "Krieger mit vergoldeter Oberfläche", 11, 11, 11, ["Alle"], ["Starker Krieger+Magie"])
 # -> Stufe 2 -> +3
 Starker_Wolkenkrieger = Lebewesen("Starker Wolkenkrieger", "Flauschig wie eine Wolke", 13, 11, 15, ["Wald", "Berge"], ["Starker Krieger+Wölkchen"])
 Starker_Gummibärchenkrieger = Lebewesen("Starker Gummibärchenkrieger", "Verwirrt seine Gegner mit Duftstoffen", 13, 13, 13, ["Wald", "See"], ["Starker Krieger+Beere"])
@@ -93,13 +93,13 @@ Starker_Gütiger_Krieger = Lebewesen("Starker Gütiger Krieger", "Ermöglicht di
 Klumpi = Lebewesen("Klumpi", "Ein sehr anpassungsfähiges Lebewesen mit viel Potential zur Weiterentwicklung", 1, 1, 1, ["Alle"], [], True)
 # -> Doppel ###
 # -> Stufe 1 -> +1 #Feuer, Wasser, Luft#
-Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unterirdisch weit verzweigte Tunnelsysteme gräbt; gibt dir eine weitere Elementkarte pro Runde, wenn er auf dem Feld platziert ist", 2, 2, 2, ["Wald"], ["Klumpi+Erde"])
+Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unterirdisch weit verzweigte Tunnelsysteme gräbt; gibt dir auf dem Feld platiert eine weitere Elementkarte pro Runde", 2, 2, 2, ["Wald"], ["Klumpi+Erde"])
 
-Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke (muss dazu auf dem Feld platziert sein)", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
+Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke", 2, 2, 2, ["Alle"], ["Klumpi+Magie"])
 # -> Stufe 2 -> +3
 Koi = Lebewesen("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; kann Lebensräume um einen Platz vergrößern", 4, 2, 6, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])
-Parasit = Lebewesen("Parasit", "Kann einmal im Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert (muss dazu auf dem Feld platziert sein)", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
-Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir pro Runde einen Extrazug, wenn sie auf dem Feld platziert ist", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
+Parasit = Lebewesen("Parasit", "Kann einmal im Spiel die Werte eines beliebigen anderen Lebewesens aufnehmen. Dessen Werte werden dabei um 4 verringert", 4, 4, 4, ["Alle"], ["Klumpi+Asche", "Klumpi+Staub"])
+Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir auf dem Feld platziert pro Runde einen Extrazug", 4, 4, 4, ["Wüste"], ["Klumpi+Zeit"])
 # -> Stufe 3 -> +5
 Verrückter_Gnom = Lebewesen("Verrückter Gnom", "An manchen Tagen hallt das Lachen diesen kleinen Männchens durch den Wald; gibt dir pro Runde ein Goldstück, wenn er auf dem Feld platziert ist", 6, 7, 5, ["Wald"], ["Klumpi+Pusteblume"])
 Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; können pro Runde die Werte eines Lebewesens um 3 erhöhen (müssen dazu auf dem Feld platziert sein)", 6, 5, 7, ["See"], ["Klumpi+Perle"])
@@ -669,6 +669,9 @@ Werteverbesserung_Übersicht = {Feenkönigin:1,
                                Sea_People:3,
                                Dunkel_Feenkönigin:5,
                                Himmels_Doppelzottel:5}
+
+#Counter für Extrafunktion nicht nach jeder Runde zurücksetzen z.B. für Karten mit Funktion einmal pro Spiel
+Einmal_pro_Spiel = [Parasit, Friedensengel, Diebische_Elster, Urwolf]
 
 #Statistik
 def Möglich(Karte_1, Karte_2): #Kombi möglich (zwei Karten)?, wenn ja: welche Karte wird daraus
