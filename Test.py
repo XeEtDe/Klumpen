@@ -1,3 +1,2 @@
-Liste = [0, 0]
-Liste[1] = 3
-print(Liste)
+Liste = ["1", "2", "3"]
+print(Liste.index("2"))
