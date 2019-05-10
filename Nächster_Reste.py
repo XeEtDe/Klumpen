@@ -1,5 +1,4 @@
 def Nächster(Spieler):
-    pg.draw.rect(screen, (255, 255, 255), pg.Rect(622, 0, 800, 89))
     global Runden_Counter
     global Züge_Counter
     global Züge
@@ -12,11 +11,6 @@ def Nächster(Spieler):
     ##Nach dem Zug mit altem Spieler##
     ##Züge aufgebraucht##
     if Alter_Spieler == Alle_Spieler[-1]:
-        #Überschrift
-        Übrig = Züge - Züge_Counter
-        Züge_String = "noch " + str(Übrig) + " Züge"
-        if Übrig == 1:
-            Züge_String = "letzter Zug"
         #Letzter Spieler mit letzem Zug -> Runde vorbei
         if Züge_Counter == Züge:
             #Extrazüge berechnen
@@ -46,27 +40,3 @@ def Nächster(Spieler):
             #Runde fertig wenn Extrazüge aufgebraucht
             if Extrazüge_Dict == {}:
                 Ex_Zü = True
-    #Überschrift
-    Übrig = Runden - Runden_Counter
-    Runden_String = "noch " + str(Übrig) + " Runden"
-    if Übrig == 1:
-        Runden_String = "letzte Runde"
-    Text = SMaxG(Runden_String, None, 30)
-    screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 10))
-    Übrig = Züge - Züge_Counter
-    Züge_String = "noch " + str(Übrig) + " Züge"
-    if Übrig == 1:
-        Züge_String = "letzter Zug"
-    Text = SMaxG(Züge_String, None, 30)
-    screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 60))
-    if Spieler[-1] == "s" or Spieler[-1] == "S" or Spieler[-1] == "X" or Spieler[-1] == "x":
-        Text = SMaxG(Spieler + "\' Zug", 300, 50)
-    else:
-        Text = SMaxG(Spieler + "s Zug", 300, 50)
-    screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
-    global Spieler_Zug
-    Spieler_Zug = False
-    for Bttn in Aktions_Buttons:
-        if Bttn.Switch == False:
-            Bttn.Change()
-    Clear()

@@ -433,13 +433,13 @@ def Nach_Zug(Spieler):
             WV_An_SP_Ka[1] = 0
     #letzter Spieler -> ##Züge aufgebraucht -> Auswahl oder Ende## oder ##nächster Spieler##
     #letzter für Runde
-    if Spieler = Alle_Spieler[-1]:
+    if Spieler == Alle_Spieler[-1]:
         global Züge_Counter
         global Runden_Counter
         Züge_Counter += 1
         #Runde vorbei
-        Züge_Counter == Züge:
-            Extrazüge() #################
+        if Züge_Counter == Züge:
+            #Extrazüge() #################
             Runden_Counter += 1
             Züge_Counter = 0
             #Spiel Ende?
@@ -453,9 +453,13 @@ def Nach_Zug(Spieler):
                             Werteverbesserung_Anzahl[Spieler_][WV_Karte][0] = Werteverbesserung_Anzahl[Spieler_][WV_Karte][1]
                 #Auswahl
                 Auswahlstapel()
+        #nächster Spieler selbe Runde
+        else:
+            Neuer_Spieler = Alle_Spieler[0]
+            Vor_Zug(Neuer_Spieler)
     #nächster
     else:
-        Neuer_Spieler = Alle_Spieler.index(Spieler) + 1
+        Neuer_Spieler = Alle_Spieler[Alle_Spieler.index(Spieler) + 1]
         Vor_Zug(Neuer_Spieler)
 
 def Vor_Zug(Spieler_):
@@ -465,7 +469,33 @@ def Vor_Zug(Spieler_):
     if Aussetzen_Dict[Spieler] >= 0:
         pass #############
     #Überschrift
-
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(622, 0, 800, 89))
+    global Runden
+    global Runden_Counter
+    global Züge
+    global Züge_Counter
+    #Runden
+    Übrig = Runden - Runden_Counter
+    Runden_String = "letzte Runde" if Übrig == 1 else "noch " + str(Übrig) + " Runden"
+    Text = SMaxG(Runden_String, None, 30)
+    screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 10))
+    #Züge
+    Übrig = Züge - Züge_Counter
+    Züge_String = "letzter Zug" if Übrig == 1 else "noch " + str(Übrig) + " Züge"
+    Text = SMaxG(Züge_String, None, 30)
+    screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 60))
+    #Spieler
+    if Spieler[-1] == "s" or Spieler[-1] == "S" or Spieler[-1] == "X" or Spieler[-1] == "x":
+        Text = SMaxG(Spieler + "\' Zug", 300, 50)
+    else:
+        Text = SMaxG(Spieler + "s Zug", 300, 50)
+    screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
+    #
+    global Spieler_Zug
+    Spieler_Zug = False
+    for Bttn in Aktions_Buttons:
+        if Bttn.Switch == False:
+            Bttn.Change()
     Clear()
 
 Nächster_Bild = get_image("startklein.png")
@@ -1476,7 +1506,7 @@ def Extra_Func(Liste):
             Aussetzen_Dict[Gegner] += Aussetzen_Gifte[E_Karte]
             Ablage[Spieler].remove(E_Karte)
             Spieler_Zug = True
-            Info_Text(Gegner + " setzt " + if Aussetzen_Gifte[E_Karte] == 1 "einen Zug" else (str(Aussetzen_Gifte[E_Karte]) + "Züge") + " aus")
+            Info_Text(Gegner + " setzt " + "einen Zug" if Aussetzen_Gifte[E_Karte] == 1 else (str(Aussetzen_Gifte[E_Karte]) + " Züge") + " aus")
     else:
         Info_Text("Diese Karte hat keine Extrafunktion")
     Clear(False)
@@ -2170,9 +2200,9 @@ def Auswahl_Auswählen():
         Auswahl_Auswählen_Button.Change()
         #Beenden wenn Auswahl leer -> weiter mit nächster Runde
         if len(Auswahl_List) == 0:
-            Spieler = Alle_Spieler[0]
             screen.fill((255, 255, 255))
             Spiel_Screen()
+            Vor_Zug(Alle_Spieler[0])
 Auswahl_Auswählen_Button = Button(Auswählen_Rect, Auswahl_Auswählen, Auswählen_Blass_Hgrund, SMaxG("Auswählen", 300, 40, (255, 255, 255)), Auswählen_Hgrund)
 
 #Buttons - Erklärung/Fragezeichen Button
