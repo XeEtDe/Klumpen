@@ -62,7 +62,6 @@ class Button:
 
     def delete_button(self):
         if self in Buttons:
-            pg.draw.rect(screen, (255, 255, 255), self.Rect)
             self.Maus_Pos = False
             if not self.Bild_2 == None:
                 self.Switch = False
@@ -320,50 +319,32 @@ Werteverbesserung_Anzahl = {} #Werteverbesserung - {Karte:[Mögliche, Letzte]}
 Pfeil_Hoch_Blass = get_image("pfeilhochblass.png")
 Pfeil_Hoch = get_image("pfeilhoch.png")
 Hoch_Rect = pg.Rect(1590 - Pfeil_Hoch.get_width(), 490, Pfeil_Hoch.get_width(), Pfeil_Hoch.get_height())
-def Ablage_Hoch():
-    global Ablage_Alt_Range
-    Ausgabe(Spieler, Ablage_Surf, range(Ablage_Alt_Range[0] - 6, Ablage_Alt_Range[0]))
-Ablage_Hoch_Button = Button(Hoch_Rect, Ablage_Hoch, Pfeil_Hoch_Blass, None, Pfeil_Hoch)
+Ablage_Hoch_Button = Button(Hoch_Rect, lambda: Ausgabe(Spieler, Ablage_Surf, range(Ablage_Alt_Range[0] - 6, Ablage_Alt_Range[0])), Pfeil_Hoch_Blass, None, Pfeil_Hoch)
 #Runter
 Pfeil_Runter_Blass = get_image("pfeilrunterblass.png")
 Pfeil_Runter = get_image("pfeilrunter.png")
 Runter_Rect = pg.Rect(1590 - Pfeil_Runter.get_width(), 740 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
-def Ablage_Runter():
-    global Ablage_Alt_Range
-    Ausgabe(Spieler, Ablage_Surf, range(Ablage_Alt_Range[0] + 6, Ablage_Alt_Range[0] + 12))
-Ablage_Runter_Button = Button(Runter_Rect, Ablage_Runter, Pfeil_Runter_Blass, None, Pfeil_Runter)
+Ablage_Runter_Button = Button(Runter_Rect, lambda: Ausgabe(Spieler, Ablage_Surf, range(Ablage_Alt_Range[0] + 6, Ablage_Alt_Range[0] + 12)), Pfeil_Runter_Blass, None, Pfeil_Runter)
 
 #Feld Übersicht schieben
 #Links
 Pfeil_Links_Blass = get_image("pfeillinksblass.png")
 Pfeil_Links = get_image("pfeillinks.png")
 Links_Rect = pg.Rect(455, 131, Pfeil_Links.get_width(), Pfeil_Links.get_height())
-def Feld_Übersicht_Links():
-    global Feld_Übersicht_Alt_Range
-    Ausgabe(Spieler, Feld_Übersicht_Surf, range(Feld_Übersicht_Alt_Range[0] - 8, Feld_Übersicht_Alt_Range[0]))
-Feld_Übersicht_Links_Button = Button(Links_Rect, Feld_Übersicht_Links, Pfeil_Links_Blass, None, Pfeil_Links)
+Feld_Übersicht_Links_Button = Button(Links_Rect, lambda: Ausgabe(Spieler, Feld_Übersicht_Surf, range(Feld_Übersicht_Alt_Range[0] - 8, Feld_Übersicht_Alt_Range[0])), Pfeil_Links_Blass, None, Pfeil_Links)
 #Rechts
 Pfeil_Rechts_Blass = get_image("pfeilrechtsblass.png")
 Pfeil_Rechts = get_image("pfeilrechts.png")
 Rechts_Rect = pg.Rect(1580 - Pfeil_Rechts.get_width(), 131, Pfeil_Rechts.get_width(), Pfeil_Rechts.get_height())
-def Feld_Übersicht_Rechts():
-    global Feld_Übersicht_Alt_Range
-    Ausgabe(Spieler, Feld_Übersicht_Surf, range(Feld_Übersicht_Alt_Range[0] + 8, Feld_Übersicht_Alt_Range[0] + 16))
-Feld_Übersicht_Rechts_Button = Button(Rechts_Rect, Feld_Übersicht_Rechts, Pfeil_Rechts_Blass, None, Pfeil_Rechts)
+Feld_Übersicht_Rechts_Button = Button(Rechts_Rect, lambda: Ausgabe(Spieler, Feld_Übersicht_Surf, range(Feld_Übersicht_Alt_Range[0] + 8, Feld_Übersicht_Alt_Range[0] + 16)), Pfeil_Rechts_Blass, None, Pfeil_Rechts)
 
 #Feld schieben
 #Hoch
 F_Hoch_Rect = pg.Rect(1590 - Pfeil_Hoch.get_width(), 190, Pfeil_Hoch.get_width(), Pfeil_Hoch.get_height())
-def Feld_Hoch():
-    global Feld_Alt_Range
-    Ausgabe(Spieler, Feld_Surf, range(Feld_Alt_Range[0] - 6, Feld_Alt_Range[0]), Alt_LR_Pos)
-Feld_Hoch_Button = Button(F_Hoch_Rect, Feld_Hoch, Pfeil_Hoch_Blass, None, Pfeil_Hoch)
+Feld_Hoch_Button = Button(F_Hoch_Rect, lambda: Ausgabe(Spieler, Feld_Surf, range(Feld_Alt_Range[0] - 6, Feld_Alt_Range[0]), Alt_LR_Pos), Pfeil_Hoch_Blass, None, Pfeil_Hoch)
 #Runter
 F_Runter_Rect = pg.Rect(1590 - Pfeil_Runter.get_width(), 440 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
-def Feld_Runter():
-    global Feld_Alt_Range
-    Ausgabe(Spieler, Feld_Surf, range(Feld_Alt_Range[0] + 6, Feld_Alt_Range[0] + 12), Alt_LR_Pos)
-Feld_Runter_Button = Button(F_Runter_Rect, Feld_Runter, Pfeil_Runter_Blass, None, Pfeil_Runter)
+Feld_Runter_Button = Button(F_Runter_Rect, lambda: Ausgabe(Spieler, Feld_Surf, range(Feld_Alt_Range[0] + 6, Feld_Alt_Range[0] + 12), Alt_LR_Pos), Pfeil_Runter_Blass, None, Pfeil_Runter)
 
 
 ##Regeln und Nächster##
@@ -378,6 +359,8 @@ Züge_Counter = 0
 Extrazüge_Dict = {}
 Ex_Zü = True #Extrazüge ja oder nein
 def Nach_Zug(Spieler):
+    global Züge_Counter
+    global Runden_Counter
     #Drachenei brüten
     #Werte minus 1 und Drachenei in Drachen nach einem Zug
     D = False
@@ -405,9 +388,9 @@ def Nach_Zug(Spieler):
     while Counter > len(Drachenei_Dict[Spieler]):
         Drachenei_Dict[Spieler].append(1)
     #Verbesserung nicht kleiner 0
-    Verbesserung_Spieler = Verbesserung[Spieler]
-    for Karte in Verbesserung_Spieler:
-        VB_SP_Ka = Verbesserung_Spieler[Karte]
+    Verbesserung[Spieler] = Verbesserung[Spieler]
+    for Karte in Verbesserung[Spieler]:
+        VB_SP_Ka = Verbesserung[Spieler][Karte]
         if (Karte.Punkte + VB_SP_Ka["Punkte"]) < 0:
             VB_SP_Ka["Punkte"] = 0 - Karte.Punkte
         if (Karte.Angriff + VB_SP_Ka["Angriff"]) < 0:
@@ -434,8 +417,6 @@ def Nach_Zug(Spieler):
     #letzter Spieler -> ##Züge aufgebraucht -> Auswahl oder Ende## oder ##nächster Spieler##
     #letzter für Runde
     if Spieler == Alle_Spieler[-1]:
-        global Züge_Counter
-        global Runden_Counter
         Züge_Counter += 1
         #Runde vorbei
         if Züge_Counter == Züge:
@@ -465,15 +446,26 @@ def Nach_Zug(Spieler):
 def Vor_Zug(Spieler_):
     global Spieler
     Spieler = Spieler_
+    Clear()
     #Aussetzen
     if Aussetzen_Dict[Spieler] >= 0:
-        pass #############
+        Aussetzen_Dict[Spieler] -= 1
+        #Buttons
+        for Bttn in Buttons:
+            Bttn.delete_button()
+        #Grafik
+        screen.blit(get_image("transparenter_hintergrund.png"), (0, 0))
+        pg.draw.rect(screen, (255, 255, 255), pg.Rect(500, 250, 600, 400))
+        pg.draw.rect(screen, (0, 0, 0), pg.Rect(500, 250, 600, 400), 3)
+        Text = get_Text("Du musst diesen Zug aussetzen", 40)
+        screen.blit(Text, (800 - Text.get_width() / 2, 270))
+        if Aussetzen_Dict[Spieler] > 0:
+            Text = get_Text("Du setzt noch einen weiteren Zug aus" if Aussetzen_Dict[Spieler] == 1 else "Du setzt noch " + str(Aussetzen_Dict[Spieler]) + " Züge aus", 20)
+            screen.blit(Text, (800 - Text.get_width() / 2, 430))    
+        Aussetzen_Button.create_button()
+        return  
     #Überschrift
     pg.draw.rect(screen, (255, 255, 255), pg.Rect(622, 0, 800, 89))
-    global Runden
-    global Runden_Counter
-    global Züge
-    global Züge_Counter
     #Runden
     Übrig = Runden - Runden_Counter
     Runden_String = "letzte Runde" if Übrig == 1 else "noch " + str(Übrig) + " Runden"
@@ -490,18 +482,19 @@ def Vor_Zug(Spieler_):
     else:
         Text = SMaxG(Spieler + "s Zug", 300, 50)
     screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
-    #
+    #weiter
     global Spieler_Zug
     Spieler_Zug = False
     for Bttn in Aktions_Buttons:
         if Bttn.Switch == False:
             Bttn.Change()
-    Clear()
-
 Nächster_Bild = get_image("startklein.png")
 Nächster_Text = get_Text("Fertig", 40)
-Nächster_Rect = pg.Rect(1590 - Nächster_Bild.get_width(), 10, Nächster_Bild.get_width(), Nächster_Bild.get_height())
-Nächster_Button = Button(Nächster_Rect, lambda: Nach_Zug(Spieler), Nächster_Bild, Nächster_Text)
+Nächster_Button = Button(pg.Rect(1590 - Nächster_Bild.get_width(), 10, Nächster_Bild.get_width(), Nächster_Bild.get_height()), lambda: Nach_Zug(Spieler), Nächster_Bild, Nächster_Text)
+
+def Aussetzen_Ende():
+    pass
+Aussetzen_Button = Button(pg.Rect(800 - Nächster_Bild.get_width() / 2, 480, Nächster_Bild.get_width(), Nächster_Bild.get_height()), Aussetzen_Ende, Nächster_Bild, get_Text("Okay", 40))
 
 ##Karten Buttons##
 #Ablage
@@ -561,9 +554,6 @@ Leuchtrand_Farbe = (255, 200, 0)
 Alt_LR_Pos = 0
 Extra_List = []
 def Karten_Func(Kategorie, Button_Num):
-    global Spieler
-    global Aktion
-    global Extra_List
     global Spieler_Zug
     Ein_Di_SP = Einmal_Dict[Spieler]
     for Karte in Ein_Di_SP:
@@ -571,23 +561,19 @@ def Karten_Func(Kategorie, Button_Num):
     List = None
     if Kategorie == "Ablage":
         List = Ablage[Spieler]
-        global Ablage_Alt_Range
         Alt_Range = Ablage_Alt_Range
         Rects = Karten_Ablage_Rects
     elif Kategorie == "Feld":
-        global Alt_LR_Pos
         Counter = 0
         for Lr in Feld[Spieler]:
             if Counter == Alt_LR_Pos:
                 List = Feld[Spieler][Lr]
                 break
             Counter += 1
-        global Feld_Alt_Range
         Alt_Range = Feld_Alt_Range
         Rects = Karten_Feld_Rects
     elif Kategorie == "Feld_Übersicht":
         List = Feld[Spieler]
-        global Feld_Übersicht_Alt_Range
         Alt_Range = Feld_Übersicht_Alt_Range
         Rects = Karten_Feld_Übersicht_Rects
     if not List == None:
@@ -669,7 +655,7 @@ def Karten_Func(Kategorie, Button_Num):
                             Größe = LR_Karte.Größe
                             if LR_Karte in Ein_Di_SP:
                                 if Ein_Di_SP[LR_Karte] == True:
-                                    Add_Größe = Verbesserung_Spieler[LR_Karte]
+                                    Add_Größe = Verbesserung[Spieler][LR_Karte]
                                     Größe = LR_Karte.Größe + Add_Größe                    
                             if len(Alte_LW) < Größe:
                                 Voll_Test = True
@@ -680,7 +666,7 @@ def Karten_Func(Kategorie, Button_Num):
                             Zusatz_LR = []
                             if LW_Karte in Ein_Di_SP:
                                 if Ein_Di_SP[LW_Karte] == True:
-                                    VB_SP_Ka = Verbesserung_Spieler[LW_Karte]
+                                    VB_SP_Ka = Verbesserung[Spieler][LW_Karte]
                                     for Lr in VB_SP_Ka["Lebensräume"]:
                                         Zusatz_LR.append(Lr)
                             for Lr in LW_Karte.Lebensraum:
@@ -726,8 +712,7 @@ def Karten_Func(Kategorie, Button_Num):
 Aktion = None
 def Aktion_Func(Aktion_, B):
     global Aktion
-    global Extra_List
-    Extra_List = []
+    Extra_List.clear()
     if B.Switch == True:
         Aktion = Aktion_
         Aktion_An(Aktion)
@@ -757,13 +742,12 @@ LW_Button = Button(LW_Rect, lambda: Aktion_Func("Lebewesen bewegen", LW_Button),
 
 def Kombi_Func(Karten_Liste):
     global Spieler_Zug
-    global Spieler
     Neue_Karte = False
     Ein_Di_SP = Einmal_Dict[Spieler]
     for Karte in Ein_Di_SP:
         Ein_Di_SP[Karte] = True
     Werteverbesserung_Anzahl[Spieler] = Werteverbesserung_Anzahl[Spieler]
-    Verbesserung_Spieler = Verbesserung[Spieler]
+    Verbesserung[Spieler] = Verbesserung[Spieler]
     E_Karte = Karten_Liste[0]
     Andere_Karte = Karten_Liste[1]
     Gesuchte_Kombi_1 = E_Karte.Name + "+" + Andere_Karte.Name
@@ -933,7 +917,7 @@ def Kombi_Func(Karten_Liste):
                             Lebensräume.append(Lr)
                         if Neue_Karte in Ein_Di_SP:
                             if Ein_Di_SP[Neue_Karte] == True:
-                                VB_SP_Ka = Verbesserung_Spieler[Neue_Karte]
+                                VB_SP_Ka = Verbesserung[Spieler][Neue_Karte]
                                 for Lr in VB_SP_Ka["Lebensräume"]:
                                     Lebensräume.append(Lr)
                         for Lr in Lebensräume:
@@ -974,7 +958,7 @@ def Kombi_Func(Karten_Liste):
                             Lebensräume.append(Lr)
                         if Neue_Karte in Ein_Di_SP:
                             if Ein_Di_SP[Neue_Karte] == True:
-                                VB_SP_Ka = Verbesserung_Spieler[Neue_Karte]
+                                VB_SP_Ka = Verbesserung[Spieler][Neue_Karte]
                                 for Lr in VB_SP_Ka["Lebensräume"]:
                                     Lebensräume.append(Lr)
                         if LW_Karte == E_Karte:
@@ -1019,40 +1003,40 @@ def Kombi_Func(Karten_Liste):
         #Weitergabe Verbesserungen
         if Neue_Karte in Karten.Alle_Lebensraum:
             Counter = 0
-            if E_Karte in Karten.Alle_Lebensraum and E_Karte in Verbesserung_Spieler:
-                Counter += Verbesserung_Spieler[E_Karte]
-                del Verbesserung_Spieler[E_Karte]
-            if Andere_Karte in Karten.Alle_Lebensraum and Andere_Karte in Verbesserung_Spieler:
-                Counter += Verbesserung_Spieler[Andere_Karte]
-                del Verbesserung_Spieler[E_Karte]
+            if E_Karte in Karten.Alle_Lebensraum and E_Karte in Verbesserung[Spieler]:
+                Counter += Verbesserung[Spieler][E_Karte]
+                del Verbesserung[Spieler][E_Karte]
+            if Andere_Karte in Karten.Alle_Lebensraum and Andere_Karte in Verbesserung[Spieler]:
+                Counter += Verbesserung[Spieler][Andere_Karte]
+                del Verbesserung[Spieler][E_Karte]
             if not Counter == 0:
-                if not Neue_Karte in Verbesserung_Spieler:
+                if not Neue_Karte in Verbesserung[Spieler]:
                     Counter_Dict[Spieler].update({Neue_Karte:False})
                     Einmal_Dict[Spieler].update({Neue_Karte:False})
-                    Verbesserung_Spieler.update({Neue_Karte:0})
-                Verbesserung_Spieler[Neue_Karte] += Counter
+                    Verbesserung[Spieler].update({Neue_Karte:0})
+                Verbesserung[Spieler][Neue_Karte] += Counter
         elif Neue_Karte in Karten.Alle_Lebewesen:
             Counter_P = 0
             Counter_A = 0
             Counter_V = 0
-            if E_Karte in Karten.Alle_Lebewesen and E_Karte in Verbesserung_Spieler:
-                VB_SP_Ka = Verbesserung_Spieler[E_Karte]
+            if E_Karte in Karten.Alle_Lebewesen and E_Karte in Verbesserung[Spieler]:
+                VB_SP_Ka = Verbesserung[Spieler][E_Karte]
                 Counter_P += VB_SP_Ka["Punkte"]
                 Counter_A += VB_SP_Ka["Angriff"]
                 Counter_V += VB_SP_Ka["Verteidigung"]
-                del Verbesserung_Spieler[E_Karte]
-            if Andere_Karte in Karten.Alle_Lebewesen and Andere_Karte in Verbesserung_Spieler:
-                VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                del Verbesserung[Spieler][E_Karte]
+            if Andere_Karte in Karten.Alle_Lebewesen and Andere_Karte in Verbesserung[Spieler]:
+                VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                 Counter_P += VB_SP_Ka["Punkte"]
                 Counter_A += VB_SP_Ka["Angriff"]
                 Counter_V += VB_SP_Ka["Verteidigung"]
-                del Verbesserung_Spieler[Andere_Karte]
+                del Verbesserung[Spieler][Andere_Karte]
             if not (Counter_P == 0 and Counter_A == 0 and Counter_V == 0):
-                if not Neue_Karte in Verbesserung_Spieler:
+                if not Neue_Karte in Verbesserung[Spieler]:
                     Counter_Dict[Spieler].update({Neue_Karte:False})
                     Einmal_Dict[Spieler].update({Neue_Karte:False})
-                    Verbesserung_Spieler.update({Neue_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                VB_SP_Ka = Verbesserung_Spieler[Neue_Karte]
+                    Verbesserung[Spieler].update({Neue_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VB_SP_Ka = Verbesserung[Spieler][Neue_Karte]
                 VB_SP_Ka["Punkte"] += Counter_P
                 VB_SP_Ka["Angriff"] += Counter_A
                 VB_SP_Ka["Verteidigung"] += Counter_V
@@ -1060,14 +1044,10 @@ def Kombi_Func(Karten_Liste):
 
 def Extra_Func(Liste):
     global Spieler_Zug
-    global Spieler
     Neue_Karte = False
     Ein_Di_SP = Einmal_Dict[Spieler]
     for Karte in Ein_Di_SP:
         Ein_Di_SP[Karte] = True
-    global Werteverbesserung_Anzahl
-    Werteverbesserung_Anzahl[Spieler] = Werteverbesserung_Anzahl[Spieler]
-    Verbesserung_Spieler = Verbesserung[Spieler]
     E_Karte = Liste[0]
     Dings = Liste[1]
     Andere_Karte = None
@@ -1162,11 +1142,11 @@ def Extra_Func(Liste):
             if Andere_Karte in Karten.Alle_Lebensraum:
                 #Vergrößerungs-Trank
                 if E_Karte.Name == "Vergrößerungs-Trank":
-                    if not Andere_Karte in Verbesserung_Spieler:
+                    if not Andere_Karte in Verbesserung[Spieler]:
                         Counter_Dict[Spieler].update({Andere_Karte:False})
                         Einmal_Dict[Spieler].update({Andere_Karte:False})
-                        Verbesserung_Spieler.update({Andere_Karte:0})
-                    Verbesserung_Spieler[Andere_Karte] += 1
+                        Verbesserung[Spieler].update({Andere_Karte:0})
+                    Verbesserung[Spieler][Andere_Karte] += 1
                     Spieler_Zug = True
                     Ablage[Spieler].remove(E_Karte)
                     Info_Text("Größe des Lebensraums " + Karte.Name + " um 1 verbessert")
@@ -1217,11 +1197,11 @@ def Extra_Func(Liste):
                         Lr = "Berge"
                     elif E_Karte.Name == "Verkohlter Trank":
                         Lr = "Alle"
-                    if not Andere_Karte in Verbesserung_Spieler:
+                    if not Andere_Karte in Verbesserung[Spieler]:
                         Counter_Dict[Spieler].update({Andere_Karte:False})
                         Einmal_Dict[Spieler].update({Andere_Karte:False})
-                        Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                    VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                        Verbesserung[Spieler].update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                    VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                     if not Lr in VB_SP_Ka["Lebensräume"]:
                         VB_SP_Ka["Lebensräume"].append(Lr)
                     Spieler_Zug = True
@@ -1239,11 +1219,11 @@ def Extra_Func(Liste):
                         Wert = 7
                     elif E_Karte.Name == "Himmlischer Trank":
                         Wert = 10
-                    if not Andere_Karte in Verbesserung_Spieler:
+                    if not Andere_Karte in Verbesserung[Spieler]:
                         Counter_Dict[Spieler].update({Andere_Karte:False})
                         Einmal_Dict[Spieler].update({Andere_Karte:False})
-                        Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                    VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                        Verbesserung[Spieler].update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                    VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                     VB_SP_Ka["Punkte"] += Wert
                     VB_SP_Ka["Angriff"] += Wert
                     VB_SP_Ka["Verteidigung"] += Wert
@@ -1265,23 +1245,23 @@ def Extra_Func(Liste):
                 Punkte = Andere_Karte.Punkte
                 Angriff = Andere_Karte.Angriff
                 Verteidigung = Andere_Karte.Verteidigung
-                if Andere_Karte in Verbesserung_Spieler:
-                    Punkte += Verbesserung_Spieler[Andere_Karte]["Punkte"]
-                    Angriff += Verbesserung_Spieler[Andere_Karte]["Angriff"]
-                    Verteidigung += Verbesserung_Spieler[Andere_Karte]["Verteidigung"]
+                if Andere_Karte in Verbesserung[Spieler]:
+                    Punkte += Verbesserung[Spieler][Andere_Karte]["Punkte"]
+                    Angriff += Verbesserung[Spieler][Andere_Karte]["Angriff"]
+                    Verteidigung += Verbesserung[Spieler][Andere_Karte]["Verteidigung"]
                 else:
                     Counter_Dict[Spieler].update({Andere_Karte:False})
                     Einmal_Dict[Spieler].update({Andere_Karte:False})
-                    Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                if not E_Karte in Verbesserung_Spieler:
+                    Verbesserung[Spieler].update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                if not E_Karte in Verbesserung[Spieler]:
                     Counter_Dict[Spieler].update({E_Karte:False})
                     Einmal_Dict[Spieler].update({E_Karte:False})
-                    Verbesserung_Spieler.update({E_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                VB_SP_Ka = Verbesserung_Spieler[E_Karte]
+                    Verbesserung[Spieler].update({E_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VB_SP_Ka = Verbesserung[Spieler][E_Karte]
                 VB_SP_Ka["Punkte"] += Punkte
                 VB_SP_Ka["Angriff"] += Angriff
                 VB_SP_Ka["Verteidigung"] += Verteidigung                    
-                VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                 VB_SP_Ka["Punkte"] -= 4
                 VB_SP_Ka["Angriff"] -= 4
                 VB_SP_Ka["Verteidigung"] -= 4
@@ -1296,11 +1276,11 @@ def Extra_Func(Liste):
     elif E_Karte in Karten.Werteverbesserung_Übersicht:
         if Andere_Karte in Karten.Alle_Lebewesen:
             if WV_An_SP_Ka[0] > 0:
-                if not Andere_Karte in Verbesserung_Spieler:
+                if not Andere_Karte in Verbesserung[Spieler]:
                     Counter_Dict[Spieler].update({Andere_Karte:False})
                     Einmal_Dict[Spieler].update({Andere_Karte:False})
-                    Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                    Verbesserung[Spieler].update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                 Wert = Karten.Werteverbesserung_Übersicht[E_Karte]
                 VB_SP_Ka["Punkte"] += Wert
                 VB_SP_Ka["Angriff"] += Wert
@@ -1320,8 +1300,8 @@ def Extra_Func(Liste):
                 Gesamt_LRs = []
                 for Lr in Andere_Karte.Lebensraum:
                     Gesamt_LRs.append(Lr)
-                if Andere_Karte in Verbesserung_Spieler:
-                    VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                if Andere_Karte in Verbesserung[Spieler]:
+                    VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                     for Lr in VB_SP_Ka["Lebensräume"]:
                         Gesamt_LRs.append(Lr)
                 if "Alle" in Gesamt_LRs:
@@ -1337,11 +1317,11 @@ def Extra_Func(Liste):
                         Neu = random.choice(LRs_Kopie)
                     else:
                         Neu = ExtraLRs[E_Karte]
-                    if not Andere_Karte in Verbesserung_Spieler:
+                    if not Andere_Karte in Verbesserung[Spieler]:
                         Counter_Dict[Spieler].update({Andere_Karte:False})
                         Einmal_Dict[Spieler].update({Andere_Karte:False})
-                        Verbesserung_Spieler.update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                    VB_SP_Ka = Verbesserung_Spieler[Andere_Karte]
+                        Verbesserung[Spieler].update({Andere_Karte:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                    VB_SP_Ka = Verbesserung[Spieler][Andere_Karte]
                     VB_SP_Ka["Lebensräume"].append(Neu)
                     Test_Liste = []
                     for Lr in Andere_Karte.Lebensraum:
@@ -1440,16 +1420,16 @@ def Extra_Func(Liste):
                 if Weiter == True:
                     Anderer_Ort.remove(Andere_Karte)
                     Anderer_Ort.append(Werwolf)
-                    if Andere_Karte in Verbesserung_Spieler:
-                        if not Werwolf in Verbesserung_Spieler:
+                    if Andere_Karte in Verbesserung[Spieler]:
+                        if not Werwolf in Verbesserung[Spieler]:
                             Counter_Dict[Spieler].update({Werwolf:False})
                             Einmal_Dict[Spieler].update({Werwolf:False})
-                            Verbesserung_Spieler.update({Werwolf:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
-                        VB_SP_Ka = Verbesserung_Spieler[Werwolf]
+                            Verbesserung[Spieler].update({Werwolf:{"Punkte":0, "Angriff":0, "Verteidigung":0, "Lebensräume":[]}})
+                        VB_SP_Ka = Verbesserung[Spieler][Werwolf]
                         VB_SP_Ka["Punkte"] += Werteverbesserung_Übersicht[Andere_Karte]
                         VB_SP_Ka["Angriff"] += Werteverbesserung_Übersicht[Andere_Karte]
                         VB_SP_Ka["Verteidigung"] += Werteverbesserung_Übersicht[Andere_Karte]
-                        del Verbesserung_Spieler[Andere_Karte]
+                        del Verbesserung[Spieler][Andere_Karte]
                     Spieler_Zug = True
                     WV_An_SP_Ka[0] -= 1
                     Info_Text(Andere_Karte.Name + "in Werwolf verwandelt")
@@ -1534,7 +1514,6 @@ def Gegner_Text(Num):
         return None
 def Gegner_wählen(Num):
     if len(Alle_Spieler) >= (Num + 1):
-        global Gift_Karte
         Extra_Func([Gift_Karte, Alle_Spieler[Num]])
     else:
         pass
@@ -1550,14 +1529,10 @@ for Bttn in Gegner_Buttons:
 #Aktion beenden
 Aktions_Buttons = [Kombi_Button, Extra_Button, LR_Button, LW_Button]
 def Clear(Info = True):
-    global Spieler
-    global Buttons
-    global Extra_List
     global Aktion
-    global Spieler_Zug
     for Bttn in Extra_Buttons:
         Bttn.delete_button()
-    Extra_List = []
+    Extra_List.clear()
     Aktion = None
     Aktion_Aus()
     if Spieler_Zug == True:
@@ -1695,8 +1670,8 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
                     Counter += 1
                 Mod_Größe = Lr.Größe
                 if Lr in Coun_Di_SP:
-                    Verbesserung_Spieler = Verbesserung[Spieler]
-                    Verbesserung_Karte = Verbesserung_Spieler[Lr]
+                    Verbesserung[Spieler] = Verbesserung[Spieler]
+                    Verbesserung_Karte = Verbesserung[Spieler][Lr]
                     Add_Größe = Verbesserung_Karte
                     Mod_Größe = Lr.Größe + Add_Größe
                 if Lr.Art == "Wald":
@@ -1734,7 +1709,6 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
 
 #einzelne Karte ausgeben
 def Druck(Karte, Spieler, Auswahl = False):
-    global Modus
     if Auswahl == False:
         Coun_Di_SP = Counter_Dict[Spieler]
         Magi_Di_SP = Magisch_Dict[Spieler]
@@ -1785,8 +1759,8 @@ def Druck(Karte, Spieler, Auswahl = False):
         if Auswahl == False:
             if Karte in Coun_Di_SP:
                 if Coun_Di_SP[Karte] == True:
-                    Verbesserung_Spieler = Verbesserung[Spieler]
-                    Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                    Verbesserung[Spieler] = Verbesserung[Spieler]
+                    Verbesserung_Karte = Verbesserung[Spieler][Karte]
                     Add_Angriff = Verbesserung_Karte["Angriff"]
                     Mod_Angriff = Karte.Angriff + Add_Angriff
                     if Mod_Angriff < 0:
@@ -1849,8 +1823,8 @@ def Druck(Karte, Spieler, Auswahl = False):
         if Auswahl == False:
             if Karte in Coun_Di_SP:
                 if Coun_Di_SP[Karte] == True:
-                    Verbesserung_Spieler = Verbesserung[Spieler]
-                    Verbesserung_Karte = Verbesserung_Spieler[Karte]
+                    Verbesserung[Spieler] = Verbesserung[Spieler]
+                    Verbesserung_Karte = Verbesserung[Spieler][Karte]
                     Add_Größe = Verbesserung_Karte
                     Mod_Größe = Karte.Größe + Add_Größe
                     Coun_Di_SP[Karte] = False
@@ -1907,13 +1881,10 @@ def Info_Text(Text_Raw):
 ##Spielkern##
 #Spielmodus Screen
 def Spiel_Screen():
-    global Spieler
-    global Züge
-    global Runden
     screen.fill((255, 255, 255))
     #Buttons
-    global Buttons
-    Buttons = []
+    for Bttn in Buttons:
+        Bttn.delete_button()
     Ablage_Runter_Button.create_button()
     Ablage_Hoch_Button.create_button()
     Feld_Übersicht_Links_Button.create_button()
@@ -2024,7 +1995,6 @@ def Aktion_An(Aktion):
     screen.blit(Aktion_Anzeige, (500, 751))
     Abbrechen_Button.create_button()
 def Aktion_Aus():
-    global Buttons
     Text = get_Text("Wähle eine Aktion:", 40)
     Aktion_Anzeige.fill((255, 255, 255))
     Aktion_Anzeige.blit(Text, (450 - Text.get_width() / 2 + 75, 24 - Text.get_height() / 2))
@@ -2056,17 +2026,20 @@ def Sortieren(Liste):
                 Dict[Art][Karte] -= 1
 
 #"Wirklich Verlassen?" Fenster
-def unnütze_Funktion():
+def Verlassen():
     global done
     done = True
-Verlassen_Button = Button(pg.Rect(645, 460, 60, 30), unnütze_Funktion, None, SMaxG("Ja", 50, 20), None, (76, 117, 28))
-Nicht_Verlassen_Button = Button(pg.Rect(895, 460, 60, 30), Spiel_Screen, None, SMaxG("Nein", 50, 20), None, (128, 0, 0))
+def Nicht_Verlassen():
+    Verlassen_Button.delete_button()
+    Nicht_Verlassen_Button.delete_button()
+    Spiel_Screen()
+Verlassen_Button = Button(pg.Rect(645, 460, 60, 30), Verlassen, None, SMaxG("Ja", 50, 20), None, (76, 117, 28))
+Nicht_Verlassen_Button = Button(pg.Rect(895, 460, 60, 30), Nicht_Verlassen, None, SMaxG("Nein", 50, 20), None, (128, 0, 0))
 def Wirklich_Verlassen():
-    global Einstellungen_Fertig
     global done
-    global Buttons
     if Einstellungen_Fertig == True:
-        Buttons = []
+        for Bttn in Buttons:
+            Bttn.delete_button()
         screen.blit(get_image("transparenter_hintergrund.png"), (0, 0))
         Surf = pg.Surface((500, 100))
         Surf.fill((255, 255, 255))
@@ -2107,7 +2080,6 @@ Auswahl_Button_10 = Button(Karten_Auswahl_Rects[10], lambda: Auswahl_Karten_Func
 Auswahl_Button_11 = Button(Karten_Auswahl_Rects[11], lambda: Auswahl_Karten_Func(11))
 
 def Auswahl_Karten_Func(Button_Num):
-    global Auswahl_Alt_Range
     Num = Auswahl_Alt_Range[Button_Num]
     if Num <= (len(Auswahl_List) - 1):
         Counter = 0
@@ -2159,16 +2131,10 @@ def Ausgabe_Auswahl(Range = range(0, 12)):
 #Buttons - Schieben
 #Hoch um eine Reihe
 Auswahl_Hoch_Rect = pg.Rect(1480, 150, Pfeil_Hoch.get_width(), Pfeil_Hoch.get_height())
-def Auswahl_Hoch():
-    global Auswahl_Alt_Range
-    Ausgabe_Auswahl(range(Auswahl_Alt_Range[0] - 6, Auswahl_Alt_Range[0] + 6))
-Auswahl_Hoch_Button = Button(Auswahl_Hoch_Rect, Auswahl_Hoch, Pfeil_Hoch_Blass, None, Pfeil_Hoch)
+Auswahl_Hoch_Button = Button(Auswahl_Hoch_Rect, lambda: Ausgabe_Auswahl(range(Auswahl_Alt_Range[0] - 6, Auswahl_Alt_Range[0] + 6)), Pfeil_Hoch_Blass, None, Pfeil_Hoch)
 #Runter um eine Reihe
 Auswahl_Runter_Rect = pg.Rect(1480, 750 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
-def Auswahl_Runter():
-    global Auswahl_Alt_Range
-    Ausgabe_Auswahl(range(Auswahl_Alt_Range[0] + 6, Auswahl_Alt_Range[0] + 18))
-Auswahl_Runter_Button = Button(Auswahl_Runter_Rect, Auswahl_Runter, Pfeil_Runter_Blass, None, Pfeil_Runter)
+Auswahl_Runter_Button = Button(Auswahl_Runter_Rect, lambda: Ausgabe_Auswahl(range(Auswahl_Alt_Range[0] + 6, Auswahl_Alt_Range[0] + 18)), Pfeil_Runter_Blass, None, Pfeil_Runter)
 
 #Buttons - Auswählen der Karte
 Auswählen_Blass_Hgrund = get_image("auswählen_blass.png")
@@ -2200,6 +2166,8 @@ def Auswahl_Auswählen():
         Auswahl_Auswählen_Button.Change()
         #Beenden wenn Auswahl leer -> weiter mit nächster Runde
         if len(Auswahl_List) == 0:
+            for Bttn in Buttons:
+                Bttn.delete_button()
             screen.fill((255, 255, 255))
             Spiel_Screen()
             Vor_Zug(Alle_Spieler[0])
@@ -2211,8 +2179,8 @@ Auswahl_Auswählen_Button = Button(Auswählen_Rect, Auswahl_Auswählen, Auswähl
 #Funktion/Screen
 def Auswahlstapel():
     screen.fill((255, 255, 255))
-    global Buttons
-    Buttons = []
+    for Bttn in Buttons:
+        Bttn.delete_button()
     #Auswahlstapel zufällig wählen
     Anzahl_Auswahl_Karten = 3 * len(Alle_Spieler)
     if Züge > 10:
