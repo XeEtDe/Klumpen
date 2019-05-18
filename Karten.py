@@ -4,13 +4,13 @@ Start_Lebewesen = []
 Start_Lebensraum = []
 Start_Elemente = []
 Nur = [Start_Lebewesen, Start_Elemente]
+Alle_Start_Karten = [Start_Lebewesen, Start_Lebensraum, Start_Elemente]
 
 Alle_Lebewesen = []
 Alle_Lebensraum = []
 Alle_Elemente = []
 Alle_Verteilung = [Alle_Lebewesen, Alle_Lebensraum, Alle_Elemente]
 
-Alle_Start_Karten = [Start_Lebewesen, Start_Lebensraum, Start_Elemente]
 Alle_Karten = []
 
 #Alle
@@ -108,7 +108,7 @@ Marienkäfer = Lebewesen("Marienkäfer", "Bei der Zugreihenfolge des Auswahlstap
 Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei der du entscheidest ob sie ein Element, Lebewesen oder Lebensraum sein soll (muss auf dem Feld platziert sein)", 6, 6, 6, ["Alle"], ["Klumpi+Sternenstaub", "Klumpi+Kristall"])
 # -> Stufe 4 -> +7 #Schleim, Blut, Engelshaar, Stein von Elyaris#
 Kobold = Lebewesen("Kobold", "Gibt dir pro Runde einen Kessel voller Gold, wenn er auf dem Feld platziert ist", 8, 8, 8, ["Alle"], ["Klumpi+Regenbogen"])
-Schreier = Lebewesen("Schreier", "Sein greller Schrei hallt noch Tage in den Ohren derer, die ihn höhren; kann drei Mal im Spiel einen Spieler drei Züge aussetzen lassen", 8, 10, 6, ["Alle"], ["Klumpi+Eis", "Klumpi+Blitz"])
+Schreier = Lebewesen("Schreier", "Sein greller Schrei hallt noch Tage in den Ohren derer, die ihn hören; kann drei Mal im Spiel einen Spieler drei Züge aussetzen lassen", 8, 10, 6, ["Alle"], ["Klumpi+Eis", "Klumpi+Blitz"])
 
 #Drachen
 Drachenei = Lebewesen("Drachenei", "Benötigt einen Zug zum Schlüpfen, nachdem es im Lebensraum platziert wurde", 0, 0, 0, ["Berge"], [], True)
@@ -225,8 +225,8 @@ Glitzerfee = Lebewesen("Glitzerfee", "Versorgt die Sterne mit Feenstaub; stärke
 Dunkelfee = Lebewesen("Dunkelfee", "Wächterin der Nacht; kann pro Runde die Werte eines Lebewesens um 3 erhöhen (muss dazu auf dem Feld platziert sein)", 9, 9, 9, ["Alle"], ["Fee+Dunkle Macht"])
 Babyfee = Lebewesen("Babyfee", "Gerade aus einer Blume geboren; ihr helles Lachen lässt jede Runde ein weiteres Lebewesen entstehen, wenn sie auf dem Feld platziert ist", 9, 2, 3, ["Alle"], ["Fee+Pusteblume", "Fee+Pfingstrose"])
 # -> Stufe 4 -> +7
-Unwetterfee = Lebewesen("Unwetterfee", "Extrafunktion", 11, 15, 7, ["Alle"], ["Fee+Blitz", "Fee+Eis", "Fee+Schleim"])
-Lebensfee = Lebewesen("Lebensfee", "Gibt dir pro Runde eine zufällige Karte, die keine Startkarte sein muss, wenn sie auf dem Feld platziert ist", 11, 11, 11, ["Alle"], ["Fee+Blut", "Fee+Stein von Elyaris", "Fee+Regenbogen", "Fee+Engelshaar"])
+Unwetterfee = Lebewesen("Unwetterfee", "Kann einmal pro Runde einen Spieler 3 Züge aussetzen lassen", 11, 15, 7, ["Alle"], ["Fee+Blitz", "Fee+Eis", "Fee+Schleim"])
+Lebensfee = Lebewesen("Lebensfee", "Gibt dir pro Runde eine zufällige Startkarte, wenn sie auf dem Feld platziert ist", 11, 11, 11, ["Alle"], ["Fee+Blut", "Fee+Stein von Elyaris", "Fee+Regenbogen", "Fee+Engelshaar"])
 
 #Feenkönigin -> Fee + Fee
 Feenkönigin = Lebewesen("Feenkönigin", "Herrscht über das Feenvolk; kann pro Runde die Werte eines Lebewesens um 1 erhöhen (muss dazu auf dem Feld platziert sein)", 8, 8, 8, ["Alle"], ["Fee+Fee"])
@@ -242,14 +242,14 @@ Ernte_Feenkönigin = Lebewesen("Ernte-Feenkönigin", "Gibt dir eine weitere Elem
 Zeit_Feenkönigin = Lebewesen("Zeit-Feenkönigin", "Gibt dir 3 Extrazüge pro Runde, wenn sie auf dem Feld platziert ist", 11, 11, 11, ["Alle"], ["Feenkönigin+Zeit"])
 Todes_Feenkönigin = Lebewesen("Todes-Feenkönigin", "Kann zwischen dem Jenseits und dieser Welt wandern; stärker im Lebensraum See", 11, 15, 7, ["See", "Wüste", "Berge"], ["Feenkönigin+Staub", "Feenkönigin+Asche"])
 # -> Stufe 3 -> +5
-Schimmer_Feenkönigin = Lebewesen("Schimmer-Feenkönigin", "Extrafunktion (muss dazu auf dem Feld platziert sein)", 13, 10, 16, ["Alle"], ["Feenkönigin+Perle"])
+Schimmer_Feenkönigin = Lebewesen("Schimmer-Feenkönigin", "Kann pro Runde einen Lebensraum um 3 vergrößern", 13, 10, 16, ["Alle"], ["Feenkönigin+Perle"])
 Kristall_Feenkönigin = Lebewesen("Kristall-Feenkönigin", "Wunderschön und kaum von einem Kristall zu unterscheiden; stärker im Lebensraum Berge", 13, 16, 10, ["Alle"], ["Feenkönigin+Kristall"])
 Glitzer_Feenkönigin = Lebewesen("Glitzer-Feenkönigin", "Versorgt die Sterne mit Feenstaub; stärker im Lebensraum Wüste", 13, 13, 13, ["Alle"], ["Feenkönigin+Sternenstaub"])
 Dunkel_Feenkönigin = Lebewesen("Dunkel-Feenkönigin", "Wächterin der Nacht; kann pro Runde die Werte eines Lebewesens um 5 erhöhen (muss dazu auf dem Feld platziert sein)", 13, 13, 13, ["Alle"], ["Feenkönigin+Dunkle Macht"])
 Baby_Feenkönigin = Lebewesen("Baby_Feenkönigin", "Gerade aus einer Blume geboren und als Königin bestimmt; ihr helles Lachen lässt jede Runde ein weiteres Lebewesen, das keine Startkarte sein muss, entstehen, wenn sie auf dem Feld platziert ist", 13, 4, 5, ["Alle"], ["Feenkönigin+Pusteblume", "Feenkönigin+Pfingstrose"])
 # -> Stufe 4 -> +7
-Unwetter_Feenkönigin = Lebewesen("Unwetter-Feenkönigin", "Extrafunktion", 15, 20, 10, ["Alle"], ["Feenkönigin+Blitz", "Feenkönigin+Eis", "Feenkönigin+Schleim"])
-Lebens_Feenkönigin = Lebewesen("Lebens-Feenkönigin", "Extrafunktion", 15, 15, 15, ["Alle"], ["Feenkönigin+Blut", "Feenkönigin+Stein von Elyaris", "Feenkönigin+Regenbogen", "Feenkönigin+Engelshaar"])
+Unwetter_Feenkönigin = Lebewesen("Unwetter-Feenkönigin", "Kann einmal pro Runde einen Spieler 5 Züge aussetzen lassen", 15, 20, 10, ["Alle"], ["Feenkönigin+Blitz", "Feenkönigin+Eis", "Feenkönigin+Schleim"])
+Lebens_Feenkönigin = Lebewesen("Lebens-Feenkönigin", "Gibt dir pro Runde eine zufällige Karte, die keine Startkarte sein muss, wenn sie auf dem Feld platziert ist", 15, 15, 15, ["Alle"], ["Feenkönigin+Blut", "Feenkönigin+Stein von Elyaris", "Feenkönigin+Regenbogen", "Feenkönigin+Engelshaar"])
 
 #Zeppelindrache -> Drache + Zottel
 Zeppelindrache = Lebewesen("Zeppelindrache", "Riesiger Drache, der trotz fehlender Flügel schweben kann", 12, 4, 20, ["Berge"], ["Drache+Zottel"])
@@ -381,8 +381,8 @@ Großes_Wonderland = Lebensraum("Großes Wonderland", "Hier können alle Lebewes
 Magisches_Kleines_Wonderland = Lebensraum("Magisches Kleines Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderland", 7, 1, ["Kleines Wonderland+Magie"])
 Magisches_Wonderland = Lebensraum("Magisches Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderland", 8, 3, ["Wonderland+Magie", "Magisches Kleines Wonderland+Magisches Kleines Wonderland", "Magisches Kleines Wonderland+Kleines Wonderland"])
 Magisches_Großes_Wonderland = Lebensraum("Magisches Großes Wonderland", "Hier können alle Lebewesen leben und ihre Werte werden um 1 verbessert", "Wonderland", 10, 8, ["Großes Wonderland+Magie", "Magisches Wonderland+Magisches Wonderland", "Magisches Wonderland+Wonderland"])
-for LW in Alle_Lebewesen:
-    LW.Lebensraum.append("Wonderland")
+for Lw in Alle_Lebewesen:
+    Lw.Lebensraum.append("Wonderland")
 
 #Elemente
 class Elemente(Karten):
@@ -422,6 +422,9 @@ Blitz = Elemente("Blitz", "Ein glühender Strahl zwischen Regen und Donner", ["W
 Regenbogen = Elemente("Regenbogen", "Mit einem Topf voller Gold am Ende (ja, es ist ein Kreis)", ["Beere+Wölkchen", "Wölkchen+Zeit", "Zeit+Staub", "Magie+Sternenstaub", "Erde+Sternenstaub", "Magie+Pusteblume", "Magie+Perle"])
 Engelshaar = Elemente("Engelshaar", "Eine goldene Locke", ["Kristall+Luft", "Sternenstaub+Luft", "Staub+Wölkchen", "Feuer+Pusteblume", "Erde+Pusteblume", "Erde+Kristall", "Luft+Pusteblume", "Wölkchen+Wölkchen"])
 Stein_von_Elyaris = Elemente("Stein von Elyaris", "Stammt von einer Insel und lässt einen alles vergessen", ["Staub+Asche", "Pfingstrose+Pusteblume", "Zeit+Asche", "Erde+Pfingstrose", "Erde+Perle", "Magie+Kristall", "Beere+Beere", "Zeit+Zeit"])
+#für Verrückten Gnom/Kobold
+Goldstück = Elemente("Goldstück", "Kann die Werte eines Lebewesens um 3 erhöhen oder einen Lebensraum um eins vergrößern")
+Kessel_voller_Gold = Elemente("Kessel voller Gold", "Kann die Werte eines Lebewesens um 5 erhöhen oder einen Lebensraum um 3 vergrößern")
 
 #Tränke -> Zauberer
 #Tränke -> Stufe 1
@@ -643,7 +646,8 @@ ExtraLRs = {Wetterfee:"Zufall", Schimmerfee:"Alle", Wetter_Feenkönigin:"Alle"}
 #Extrakarten - {Karte : Liste, aus der gewählt wird}
 Extrakarten = {Traumdrache:random.choice(Alle_Start_Karten), #Startkarten
                Mystischer_Zottel:random.choice(Alle_Start_Karten),
-               Lebensfee:random.choice(Alle_Verteilung), #Alle
+               Lebensfee:random.choice(Alle_Start_Karten),
+               Lebens_Feenkönigin:random.choice(Alle_Verteilung), #Alle
                Erzengel:random.choice(Alle_Verteilung),
                Starker_Traumdrache:random.choice(Alle_Verteilung),
                Mystische_Doppelzottel:random.choice(Alle_Verteilung),
@@ -651,7 +655,9 @@ Extrakarten = {Traumdrache:random.choice(Alle_Start_Karten), #Startkarten
                Gräberling:Start_Elemente,
                Babyfee:Start_Lebewesen,
                Ernte_Feenkönigin:Alle_Elemente,
-               Baby_Feenkönigin:Alle_Lebewesen}
+               Baby_Feenkönigin:Alle_Lebewesen,
+               Verrückter_Gnom:[Goldstück],
+               Kobold:[Kessel_voller_Gold]}
 
 #Extrazüge - {Karte : Anzahl}
 Extrazüge = {Sphinx:1,
@@ -670,8 +676,24 @@ Werteverbesserung_Übersicht = {Feenkönigin:1,
                                Dunkel_Feenkönigin:5,
                                Himmels_Doppelzottel:5}
 
+#Aussetzen - {Karte:Anzahl Züge}, einmal pro Runde
+Aussetzen_Karten = {Furchtdrache:1,
+                    Starker_Furchtdrache:3,
+                    Schreier:3,
+                    Unwetterfee:3,
+                    Unwetter_Feenkönigin:5}
+
+#Lebensraum vergrößern - {Karte:Anzahl weiterer Plätze}, einmal pro Runde
+Lr_Vergrößern = {Koi:1,
+                 Schimmer_Feenkönigin:3}
+
+#Gegner nötig für Extrafunktion
+Gegner_Nötig = [Gefrorener_Trank, Diebische_Elster]
+for Karte in Aussetzen_Karten:
+    Gegner_Nötig.append(Karte)
+
 #Counter für Extrafunktion nicht nach jeder Runde zurücksetzen z.B. für Karten mit Funktion einmal pro Spiel
-Einmal_pro_Spiel = [Parasit, Friedensengel, Diebische_Elster, Urwolf]
+Einmal_pro_Spiel = [Parasit, Friedensengel, Diebische_Elster, Urwolf, Schreier]
 
 #Statistik
 def Möglich(Karte_1, Karte_2): #Kombi möglich (zwei Karten)?, wenn ja: welche Karte wird daraus
