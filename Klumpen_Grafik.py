@@ -2127,7 +2127,7 @@ def Spiel():
     global Spieler
     for Spieler in Alle_Spieler:
         #1. Ausgabe
-        Ablage.update({Spieler:[Karten.Zeitfee]})
+        Ablage.update({Spieler:[Karten.Wasserdrache, Karten.See, Karten.Feuer]})
         Ablage[Spieler].append(random.choice(Karten.Start_Lebewesen))
         Ablage[Spieler].append(random.choice(Karten.Start_Lebensraum))
         Ablage[Spieler].append(random.choice(Karten.Start_Elemente))
@@ -2493,77 +2493,114 @@ def Extrakarten_Ende():
     Vor_Zug(Alle_Spieler[0])
 Extrakarten_Func_Button = Button(pg.Rect(750, 810, 100, 70), Extrakarten_Ende, None, SMaxG("Okay", 90, 60, (255, 255, 255)), None, (76, 117, 28))
 
+def Punktezählen(Spieler):
+    return Score
+    # Auswertung = {}
+    # for Spieler in Alle_Spieler:
+    #     Auswertung.update({Spieler:0})
+    #     #Verbesserung durch Lr
+    #     for Karte in Magisch_Dict[Spieler]:
+    #         Magisch_Dict[Spieler][Karte] = 0
+    #     for Karte in Stärker_Dict[Spieler]:
+    #         Stärker_Dict[Spieler][Karte] = 0
+    #     for Lr in Feld_Spieler:
+    #         for Lw in Feld_Spieler[Lr]:
+    #             if "Magisch" in Lr.Name:
+    #                 if Lw in Magisch_Dict[Spieler]:
+    #                     Magisch_Dict[Spieler][Lw] += 1
+    #                 else:
+    #                     Magisch_Dict[Spieler].update({Lw:1})
+    #             if Lw in Stärker_LR[Lr.Art]:
+    #                 if not Lw in Stärker_Dict[Spieler]:
+    #                     Stärker_Dict[Spieler].update({Lw:1})
+    #                 else:
+    #                     Stärker_Dict[Spieler][Lw] += 1                
+    #     #Lebensraum
+    #     for Lr in Feld_Spieler:
+    #         Auswertung[Spieler] += Lr.Punkte
+    #         #Lebewesen darin
+    #         for Lw in Feld_Spieler[Lr]:
+    #             Ende_Punkte = Lw.Punkte
+    #             if Lw in Verbesserung_Spieler:
+    #                 Add_Punkte = Verbesserung_Spieler[Lw]["Punkte"]
+    #                 if Add_Punkte < 0:
+    #                     Add_Punkte = 0
+    #                 Ende_Punkte += Add_Punkte
+    #                 Verbesserung[Spieler].remove(Lw)
+    #             if Lw in Magisch_Dict[Spieler]:
+    #                 if Magisch_Dict[Spieler] > 0:
+    #                     Ende_Punkte += 1
+    #                     Magisch_Dict[Spieler] -= 1
+    #             if Lw in Stärker_Dict[Spieler]:
+    #                 if Stärker_Dict[Spieler] > 0:
+    #                     Ende_Punkte += 2
+    #                     Stärker_Dict[Spieler] -= 1
+    #             Auswertung[Spieler] += Ende_Punkte
+    # #Sortieren
+    # Werte = []
+    # for Spieler in Auswertung:
+    #     if not Auswertung[Spieler] in Werte:
+    #         Werte.append(Auswertung[Spieler])
+    # Werte.sort(reverse = True)
+    # Counter = 0
+    # #Ausgeben
+    # for Wert in Werte:
+
 #Nach letzter Runde
 def Ende():
-    if Modus == "Punkte":
-        screen.fill((255, 255, 255))
-        Auswertung = {}
+    Auswertung = {}
+    Vor = {}
+    Liste = []
     for Spieler in Alle_Spieler:
-        Auswertung.update({Spieler:0})
-        #Verbesserung durch Lr
-        for Karte in Magisch_Dict[Spieler]:
-            Magisch_Dict[Spieler][Karte] = 0
-        for Karte in Stärker_Dict[Spieler]:
-            Stärker_Dict[Spieler][Karte] = 0
-        for Lr in Feld_Spieler:
-            for Lw in Feld_Spieler[Lr]:
-                if "Magisch" in Lr.Name:
-                    if Lw in Magisch_Dict[Spieler]:
-                        Magisch_Dict[Spieler][Lw] += 1
-                    else:
-                        Magisch_Dict[Spieler].update({Lw:1})
-                if Lw in Stärker_LR[Lr.Art]:
-                    if not Lw in Stärker_Dict[Spieler]:
-                        Stärker_Dict[Spieler].update({Lw:1})
-                    else:
-                        Stärker_Dict[Spieler][Lw] += 1                
-        #Lebensraum
-        for Lr in Feld_Spieler:
-            Auswertung[Spieler] += Lr.Punkte
-            #Lebewesen darin
-            for Lw in Feld_Spieler[Lr]:
-                Ende_Punkte = Lw.Punkte
-                if Lw in Verbesserung_Spieler:
-                    VSK = Verbesserung_Spieler[Lw]
-                    Add_Punkte = VSK["Punkte"]
-                    if Add_Punkte < 0:
-                        Add_Punkte = 0
-                    Ende_Punkte += Add_Punkte
-                    Verbesserung_Spieler.remove(Lw)
-                if Lw in Magisch_Dict[Spieler]:
-                    if Magisch_Dict[Spieler] > 0:
-                        Ende_Punkte += 1
-                        MSD -= 1
-                if Lw in Stärker_Dict[Spieler]:
-                    if Stärker_Dict[Spieler] > 0:
-                        Ende_Punkte += 2
-                        Stärker_Dict[Spieler] -= 1
-                Auswertung[Spieler] += Ende_Punkte
-    #Sortieren
-    Werte = []
-    for Spieler in Auswertung:
-        if not Auswertung[Spieler] in Werte:
-            Werte.append(Auswertung[Spieler])
-    Werte.sort(reverse = True)
-    Counter = 0
-    #Ausgeben
-    for Wert in Werte:
-        Counter += 1
-        print("\nPlatz " + str(Counter))
-        for Spieler in Auswertung:
-            if Auswertung[Spieler] == Wert:
-                Druck = str(Auswertung[Spieler]) + " Punkte"
-                if Wert == 1:
-                    Druck = str(Auswertung[Spieler]) + " Punkt"
-                print(Spieler + " - " + Druck)
-
+        Punkte = Punktezählen(Spieler)
+        Liste.append(Punkte)
+        if not Punkte in Vor:
+            Vor.update({Punkte:[Spieler]})
+        else:
+            Vor[Punkte].append(Spieler)
+    Liste.sort(reverse = True)
+    for Num in Liste:
+        Auswertung.update({Num:Vor[Num]})
+    #Screen
+    screen.fill((255, 255, 255))
+    Überschrift = get_Text("Auswertung", 70)
+    screen.blit(Überschrift, (800 - Überschrift.get_width() / 2, 50))
+    for Num, Wert in enumerate(Auswertung):
+        if Num == 0:
+            Str = "erster.png"
+            Zahl = "1."
+        elif Num == 1:
+            Str = "zweiter.png"
+            Zahl = "2."
+        elif Num == 2:
+            Str = "dritter.png"
+            Zahl = "3."
+        else:
+            Str = "vierterfünfter.png"
+            if Num == 3:
+                Zahl = "4."
+            else:
+                Zahl = "5."
+        for Num_, Spieler in enumerate(Auswertung[Wert]):
+            Surf = pg.Surface((1300, 100))
+            Surf.fill((255, 255, 255))
+            Bild = get_image(Str)
+            Surf.blit(Bild, (0, 0))
+            Text = get_Text(Zahl, 70)
+            Surf.blit(Text, (50 - Text.get_width() / 2, 50 - Text.get_height() / 2))
+            Dings = str(Wert) + " Punkte" if not Wert == 1 else "1 Punkt"
+            Name = get_Text(Spieler + " - " + Dings, 60)
+            Surf.blit(Name, (200, 50 - Name.get_height() / 2))
+            screen.blit(Surf, (300, 150 + (Num + Num_) * 150))
+        
 #Events
 Spieler_Zug = False #Zug Ende
 Aus = True #Ausgabe nach Zugende ja oder nein
 Input = False #Input Box Einstellungen
 done = False
 ########Löschen wenn fertig###############
-Spiel()
+#Spiel()
+Ende()
 ##########################################
 while done == False:
     for event in pg.event.get():
