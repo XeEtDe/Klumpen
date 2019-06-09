@@ -371,7 +371,7 @@ def Nach_Zug(Spieler, Aussetzen = False):
                 Drachenei_Dict[Spieler].remove(Wert)
                 for Lr in Feld[Spieler]:
                     for Lw in Feld[Spieler][Lr]:
-                        if Lw.Name == "Drachenei":
+                        if Lw == Karten.Drachenei:
                             Feld[Spieler][Lr].remove(Lw)
                             Feld[Spieler][Lr].append(Karten.Drache)
                             D = True
@@ -382,7 +382,7 @@ def Nach_Zug(Spieler, Aussetzen = False):
         Counter = 0
         for Lr in Feld[Spieler]:
             for Lw in Feld[Spieler][Lr]:
-                if Lw.Name == "Drachenei":
+                if Lw == Karten.Drachenei:
                     Counter += 1
         while Counter > len(Drachenei_Dict[Spieler]):
             Drachenei_Dict[Spieler].append(1)
@@ -392,10 +392,6 @@ def Nach_Zug(Spieler, Aussetzen = False):
             VB_SP_Ka = Verbesserung[Spieler][Karte]
             if (Karte.Punkte + VB_SP_Ka["Punkte"]) < 0:
                 VB_SP_Ka["Punkte"] = 0 - Karte.Punkte
-            if (Karte.Angriff + VB_SP_Ka["Angriff"]) < 0:
-                VB_SP_Ka["Angriff"] = 0 - Karte.Angriff
-            if (Karte.Verteidigung + VB_SP_Ka["Verteidigung"]) < 0:
-                VB_SP_Ka["Verteidigung"] = 0 - Karte.Verteidigung
         #Werteverbesserungskarten
         for WV_Karte in Werteverbesserung_Anzahl[Spieler]:
             Jetzt_Anzahl = 0
@@ -606,9 +602,8 @@ Alt_LR_Pos = 0
 Extra_List = []
 def Karten_Func(Kategorie, Button_Num):
     global Spieler_Zug
-    Ein_Di_SP = Einmal_Dict[Spieler]
-    for Karte in Ein_Di_SP:
-        Ein_Di_SP[Karte] = True
+    for Karte in Einmal_Dict[Spieler]:
+        Einmal_Dict[Spieler][Karte] = True
     List = None
     if Kategorie == "Ablage":
         List = Ablage[Spieler]
@@ -704,8 +699,8 @@ def Karten_Func(Kategorie, Button_Num):
                             Art_Test = False
                             Alte_LW = Feld[Spieler][LR_Karte]
                             Größe = LR_Karte.Größe
-                            if LR_Karte in Ein_Di_SP:
-                                if Ein_Di_SP[LR_Karte] == True:
+                            if LR_Karte in Einmal_Dict[Spieler]:
+                                if Einmal_Dict[Spieler][LR_Karte] == True:
                                     Add_Größe = Verbesserung[Spieler][LR_Karte]
                                     Größe = LR_Karte.Größe + Add_Größe                    
                             if len(Alte_LW) < Größe:
@@ -715,8 +710,8 @@ def Karten_Func(Kategorie, Button_Num):
                             #Art
                             Art_Test = False
                             Zusatz_LR = []
-                            if LW_Karte in Ein_Di_SP:
-                                if Ein_Di_SP[LW_Karte] == True:
+                            if LW_Karte in Einmal_Dict[Spieler]:
+                                if Einmal_Dict[Spieler][LW_Karte] == True:
                                     VB_SP_Ka = Verbesserung[Spieler][LW_Karte]
                                     for Lr in VB_SP_Ka["Lebensräume"]:
                                         Zusatz_LR.append(Lr)
@@ -794,9 +789,9 @@ LW_Button = Button(LW_Rect, lambda: Aktion_Func("Lebewesen bewegen", LW_Button),
 def Kombi_Func(Karten_Liste):
     global Spieler_Zug
     Neue_Karte = False
-    Ein_Di_SP = Einmal_Dict[Spieler]
-    for Karte in Ein_Di_SP:
-        Ein_Di_SP[Karte] = True
+    Einmal_Dict[Spieler] = Einmal_Dict[Spieler]
+    for Karte in Einmal_Dict[Spieler]:
+        Einmal_Dict[Spieler][Karte] = True
     Werteverbesserung_Anzahl[Spieler] = Werteverbesserung_Anzahl[Spieler]
     Verbesserung[Spieler] = Verbesserung[Spieler]
     E_Karte = Karten_Liste[0]
@@ -966,8 +961,8 @@ def Kombi_Func(Karten_Liste):
                         Lebensräume = []
                         for Lr in Neue_Karte.Lebensraum:
                             Lebensräume.append(Lr)
-                        if Neue_Karte in Ein_Di_SP:
-                            if Ein_Di_SP[Neue_Karte] == True:
+                        if Neue_Karte in Einmal_Dict[Spieler]:
+                            if Einmal_Dict[Spieler][Neue_Karte] == True:
                                 VB_SP_Ka = Verbesserung[Spieler][Neue_Karte]
                                 for Lr in VB_SP_Ka["Lebensräume"]:
                                     Lebensräume.append(Lr)
@@ -1007,8 +1002,8 @@ def Kombi_Func(Karten_Liste):
                         Lebensräume = []
                         for Lr in Neue_Karte.Lebensraum:
                             Lebensräume.append(Lr)
-                        if Neue_Karte in Ein_Di_SP:
-                            if Ein_Di_SP[Neue_Karte] == True:
+                        if Neue_Karte in Einmal_Dict[Spieler]:
+                            if Einmal_Dict[Spieler][Neue_Karte] == True:
                                 VB_SP_Ka = Verbesserung[Spieler][Neue_Karte]
                                 for Lr in VB_SP_Ka["Lebensräume"]:
                                     Lebensräume.append(Lr)
@@ -1096,9 +1091,9 @@ def Kombi_Func(Karten_Liste):
 def Extra_Func(Liste):
     global Spieler_Zug
     Neue_Karte = False
-    Ein_Di_SP = Einmal_Dict[Spieler]
-    for Karte in Ein_Di_SP:
-        Ein_Di_SP[Karte] = True
+    Einmal_Dict[Spieler] = Einmal_Dict[Spieler]
+    for Karte in Einmal_Dict[Spieler]:
+        Einmal_Dict[Spieler][Karte] = True
     E_Karte = Liste[0]
     Dings = Liste[1]
     Andere_Karte = None
@@ -2561,6 +2556,8 @@ def Ende():
     Liste.sort(reverse = True)
     for Num in Liste:
         Auswertung.update({Num:Vor[Num]})
+
+        
     #Screen
     screen.fill((255, 255, 255))
     Überschrift = get_Text("Auswertung", 70)

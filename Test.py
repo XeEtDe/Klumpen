@@ -1,3 +1,10 @@
-Liste = [1, 4, 5, 3, 7]
-Liste.sort(reverse = True)
-print(Liste)
+import Karten
+
+class Spieler:
+    def __init__(self, Name):
+        self.Name = Name
+
+First = Spieler("Spieler")
+
+First.A_0 = (Karten.Klumpi, Karten.Klumpi.Punkte, Karten.Klumpi.Lebensraum)
+print(First.A_0)
