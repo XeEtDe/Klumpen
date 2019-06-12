@@ -5,6 +5,7 @@ import Karten
 import string
 import textbox
 from SchriftMaxgröße import SchriftFunc as SMaxG
+from operator import itemgetter
 
 #Startbildschirm
 screen = pg.display.set_mode((1600, 900), pg.FULLSCREEN)
@@ -306,22 +307,28 @@ class Spieler_Klasse:
     #Listen sortieren: Lebewesen, Lebensraum, Element + gleiche nebeneinander
     def Sortieren():
         #Ablage
-        E = []
-        Lr = []
-        Lw = []
+        #Sortieren
+        Ablage = []
+        for K_Liste in [Karten.Alle_Lebewesen, Karten.Alle_Lebensraum, Karten.Alle_Elemente]:
+            S_Liste = []
+            for Pos in self.__dict__:
+                if "A" in Pos and self.__dict__[Pos] in K_Liste:
+                    S_Liste.append(self.__dict__[Pos])
+            S_Liste.sort(key = itemgetter[0].Name)
+            Ablage.append(S_Liste)
+        #neue Position
+        Start = 0
+        for Liste in Ablage:
+            for Num, Karte in enumerate(Liste, Start):
+                setattr(self, "A_" + str(Num), Karte)
+            Start += len(Liste)
+        #zu hohe löschen
         for Pos in self.__dict__:
-            if "A" in Pos and self.__dict__(Pos)[0] in Karten.Alle_Lebewesen:
-                Lw.append(self.__dict__[Pos])
-            elif "A" in Pos and self.__dict__(Pos)[0] in Karten.Alle_Lebensraum:
-                Lr.append(self.__dict__[Pos])
-            elif "A" in Pos and self.__dict__(Pos)[0] in Karten.Alle_Elemente:
-                E.append(self.__dict__[Pos])
-        Lw_ = Lw.copy()
-        Lw.clear()
-        for Karte in Lw_:
-            
-
-
+            Num_ = int(Pos[2])
+            if "A" in Pos and Num_ >= Start:
+                delattr(self, Pos)
+        #Feld
+        
 
 
 #Attr_Lw = [Karten.Karte, Punkte, Lebensraum, falls Drachenei: Counter/falls Extrafunktion: Counter]

@@ -7,7 +7,12 @@ First = Spieler("A")
 First.A_0 = ([0])
 First.A_1 = (1)
 
-Liste = [1, 2, 3, 4]
-for Num, Num_ in enumerate(Liste, 1):
-    if Num == Num_:
-        print("Ja")
+import Karten
+Liste = [[Karten.Klumpi, Karten.Klumpi.Punkte, Karten.Klumpi.Lebensraum], [Karten.Wald, Karten.Wald.Punkte, Karten.Wald.Punkte], [Karten.Drache]]
+def getkey(List):
+    return List[0].Name
+Liste.sort(key = getkey)
+print(Liste)
+
+[0, 1, 2] #3
+[3, 4, 5] #3 -> 6
