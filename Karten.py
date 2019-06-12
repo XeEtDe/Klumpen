@@ -314,7 +314,7 @@ Wolkenvogel = Lebewesen("Wolkenvogel", "Erschaffen von einem Mädchen, dessen Ha
 # -> Stufe 3 -> +5 #Pusteblume, Perle, Sternenstaub, Kristall, Dunkle Macht#
 Phönix = Lebewesen("Phönix", "Am Ende seines Lebenszyklus verbrennt er, um aus der Asche neu geboren zu werden", 13, 13, 13, ["Alle"], ["Rätselhafter Vogel+Pfingstrose"])
 # -> Stufe 4 -> +7 #Eis, Blut, Regenbogen, Engelshaar, Stein von Elyaris#
-Diebische_Elster = Lebewesen("Diebische Elster", "Kann 3 Mal das schlechteste Lebewesen eines gewählten Spielers für dich stehlen", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
+Diebische_Elster = Lebewesen("Diebische Elster", "Kann 3 Mal im Spiel das schlechteste Lebewesen eines gewählten Spielers für dich stehlen", 13, 15, 11, ["Alle"], ["Rätselhafter Vogel+Schleim", "Rätselhafter Vogel+Blitz"])
 
 #Weltenwanderer -> Gummikrieger + Fee ###
 Weltenwanderer = Lebewesen("Weltenwanderer", "Eine gesichtslose Gestalt, die hin und wieder in dieser Welt auftaucht", 10, 10, 10, ["Alle"], ["Gummikrieger+Fee"])
@@ -699,6 +699,18 @@ for Karte in Aussetzen_Karten:
 
 #Counter für Extrafunktion nicht nach jeder Runde zurücksetzen z.B. für Karten mit Funktion einmal pro Spiel
 Einmal_pro_Spiel = [Parasit, Friedensengel, Diebische_Elster, Urwolf, Schreier]
+
+#Karten mit beschränkter Extrafunktion
+Extrafunktion_Anzahl = {Parasit:1, Friedensengel:3, Diebische_Elster:3, Joker:1, Urwolf:1}
+for Karte in Werteverbesserung_Übersicht:
+    Extrafunktion_Anzahl.update({Karte:1})
+for Karte in Aussetzen_Karten:
+    if Karte == Schreier:
+        Extrafunktion_Anzahl.update({Karte:3})
+    else:
+        Extrafunktion_Anzahl.update({Karte:1})
+for Karte in Lr_Vergrößern:
+    Extrafunktion_Anzahl.update({Karte:1})
 
 #Statistik
 def Möglich(Karte_1, Karte_2): #Kombi möglich (zwei Karten)?, wenn ja: welche Karte wird daraus

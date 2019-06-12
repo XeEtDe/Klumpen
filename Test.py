@@ -7,5 +7,7 @@ First = Spieler("A")
 First.A_0 = ([0])
 First.A_1 = (1)
 
-for Num in range(0, 2):
-    print(Num)
+Liste = [1, 2, 3, 4]
+for Num, Num_ in enumerate(Liste, 1):
+    if Num == Num_:
+        print("Ja")
