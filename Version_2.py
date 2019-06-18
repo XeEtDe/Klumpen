@@ -415,7 +415,7 @@ def Verbesserung_durch_Lr(Spieler, Pos, State): #wenn State = Alt: Pos = Lw in a
             if "Magisch" in getattr(Spieler, Pos[0:3])[0].Name:
                 getattr(Spieler, Pos)[1] += 1 * Multi  
             #Stärker
-            if getattr(Spieler, Pos)[0] in Karten.Stärker_LR[getattr(Spieler, Pos[0:3])[0].Art:
+            if getattr(Spieler, Pos)[0] in Karten.Stärker_LR[getattr(Spieler, Pos[0:3])[0].Art]:
                 getattr(Spieler, Lw)[1] += 2 * Multi
 
 ###Buttons (self, Rect, Funktion, Bild = None, Text = None, Bild_2 = None, Füllung = None)###
@@ -814,18 +814,19 @@ def Aktion_Func(Aktion_, B):
             Info_Text("Wähle ein Lebewesen auf dem Feld, das du bewegen möchtest")
     else:
         Info_Text("Du hast deinen Zug bereits gemacht")
-Weißer_Hgrund = get_image("weißer_hgrund.png")
+#Weißer_Hgrund = get_image("weißer_hgrund.png")
+Weißer_Hgrund = pg.draw.rect(pg.Surface((230, 98)), (255, 255, 255), pg.Rect(0, 0, 230, 98))
 Blauer_Hgrund = get_image("blauer_hgrund.png")
-Kombi_Rect = pg.Rect(451, 801, 285.5, 98)
+Kombi_Rect = pg.Rect(451, 801, 230, 98)
 Kombi_Button = Button(Kombi_Rect, lambda: Aktion_Func("Kombi", Kombi_Button), Weißer_Hgrund, get_Text("Kombi", 30), Blauer_Hgrund)
 Lila_Hgrund = get_image("lila_hgrund.png")
-Extra_Rect = pg.Rect(738.5, 801, 285.5, 98)
+Extra_Rect = pg.Rect(680, 801, 230, 98)
 Extra_Button = Button(Extra_Rect, lambda: Aktion_Func("Extrafunktion", Extra_Button), Weißer_Hgrund, get_Text("Extrafunktion", 30), Lila_Hgrund)
 Gelber_Hgrund = get_image("gelber_hgrund.png")
-LR_Rect = pg.Rect(1026, 801, 285.5, 98)
+LR_Rect = pg.Rect(910, 801, 230, 98)
 LR_Button = Button(LR_Rect, lambda: Aktion_Func("Lebensraum platzieren", LR_Button), Weißer_Hgrund, get_Text("Lebensraum platzieren", 30), Gelber_Hgrund)
 Roter_Hgrund = get_image("roter_hgrund.png")
-LW_Rect = pg.Rect(1313.5, 801, 285.5, 98)
+LW_Rect = pg.Rect(1140, 801, 230, 98)
 LW_Button = Button(LW_Rect, lambda: Aktion_Func("Lebewesen bewegen", LW_Button), Weißer_Hgrund, get_Text("Lebewesen bewegen", 30), Roter_Hgrund)
 
 def Kombi_Func(Karten_Liste):
@@ -1712,7 +1713,7 @@ def Spiel_Screen():
         Bttn.Change()
     #Linien
     Start_Ende = [[(450, 0), (450, 900)], [(450, 100), (1600, 100)], [(450, 450), (1600, 450)], [(450, 750), (1600, 750)], 
-                  [(737.5, 750), (737.5, 900)], [(1025, 750), (1025, 900)], [(1312.5, 750), (1312.5, 900)], [(450, 800), (1600, 800)],
+                  [(680, 800), (737.5, 900)], [(910, 800), (1025, 900)], [(1140, 800), (1312.5, 900)], [(1370, 800), (1370, 900)], [(450, 800), (1600, 800)],
                   [(450, 130), (1600, 130)], [(450, 480), (1600, 480)], [(450, 180), (1600, 180)]]
     for Linie in Start_Ende:
         pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
