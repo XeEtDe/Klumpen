@@ -52,7 +52,7 @@ class Button:
                 Oberfläche.fill(self.Füllung)
             #Bild und Text in die Mitte des Buttons
             if not self.Bild == None:
-                Oberfläche.blit(self.Bild, (Oberfläche.get_width() / 2 - self.Bild.get_width() / 2, Oberfläche.get_height() / 2 - self.Bild.get_height() / 2))
+                Oberfläche.blit(self.Bild, (0, 0))
             if not self.Bild_2 == None:
                 self.Switch = False
             if not self.Text == None:
@@ -78,7 +78,7 @@ class Button:
         if not self.Füllung == None:
             Oberfläche.fill(self.Füllung)
         #anderes Bild und Text in die Mitte des Buttons
-        Oberfläche.blit(Change_Bild, (Oberfläche.get_width() / 2 - Change_Bild.get_width() / 2, Oberfläche.get_height() / 2 - Change_Bild.get_height() / 2))
+        Oberfläche.blit(Change_Bild, (0, 0))
         if not self.Text == None:
             Oberfläche.blit(self.Text, (Oberfläche.get_width() / 2 - self.Text.get_width() / 2, Oberfläche.get_height() / 2 - self.Text.get_height() / 2))
         pg.draw.rect(screen, (255, 255, 255), self.Rect)
@@ -311,6 +311,7 @@ class Spieler_Klasse:
         Aussetzen = self.Aussetzen
         del self.Aussetzen
         Test = len(self.__dict__)
+        print(self.__dict__)
         #Ablage
         #Sortieren
         Ablage = []
@@ -336,15 +337,15 @@ class Spieler_Klasse:
                     delattr(self, Pos)
         #Feld
         Feld = {}
-        for Pos in self.__dict__:
+        for Pos, Karte in self.__dict__.items():
             #Lr
             if "F" in Pos and len(Pos) <= 3:
-                Feld.update({tuple(self.__dict__[Pos]):[]})
+                Feld.update({tuple(Karte):[]})
                 #Lw dazu
-                for Pos_2 in self.__dict__:
+                for Pos_2, Karte_2 in self.__dict__.items():
                     if Pos_2[0:3] == Pos[0:3] and not Pos_2 == Pos:
-                        Feld[tuple(self.__dict__[Pos])].append(self.__dict__[Pos_2])
-                Feld[tuple(self.__dict__[Pos])].sort(key = lambda Dings: Dings[0].Name)
+                        Feld[tuple(self.__dict__[Pos])].append(Karte_2)
+                Feld[tuple(Karte)].sort(key = lambda Dings: Dings[0].Name)
         Sort_Lrs = sorted(Feld, key = lambda Dings: Dings[0].Name)
         #neue Positionen
         Ende = 0
@@ -374,6 +375,7 @@ class Spieler_Klasse:
                     delattr(self, Pos)
             else:
                 delattr(self, Pos)
+        print(self.__dict__)
         if not Test == len(self.__dict__):
             print("!fehlerfehlerfehler!")
         self.SP_Name = Name
@@ -410,7 +412,7 @@ def Verbesserung_durch_Lr(Spieler, Pos, State): #wenn State = Alt: Pos = Lw in a
             Multi = -1
         elif State == "Neu":
             Multi = 1
-        if not "A" in Alte_Pos or State == "Neu":
+        if not "A" in Pos or State == "Neu":
             #Magisch
             if "Magisch" in getattr(Spieler, Pos[0:3])[0].Name:
                 getattr(Spieler, Pos)[1] += 1 * Multi  
@@ -560,6 +562,8 @@ def Vor_Zug(Spieler_):
     for Bttn in Aktions_Buttons:
         if Bttn.Switch == False:
             Bttn.Change()
+    for Linie in [[(680, 800), (680, 900)], [(910, 800), (910, 900)], [(1140, 800), (1140, 900)]]:
+        pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
 Nächster_Bild = get_image("startklein.png")
 Nächster_Text = get_Text("Fertig", 40)
 Nächster_Button = Button(pg.Rect(1590 - Nächster_Bild.get_width(), 10, Nächster_Bild.get_width(), Nächster_Bild.get_height()), lambda: Nach_Zug(Spieler), Nächster_Bild, Nächster_Text)
@@ -709,11 +713,11 @@ def Karten_Func(Kategorie, Button_Num):
         elif Aktion == "Extrafunktion":
             Extra_List.append(Str)
             if len(Extra_List) == 1:
-                if Extra_List[0][0] == Karten.Joker:
+                if getattr(Spieler, Extra_List[0])[0] == Karten.Joker:
                     Info_Text("Wähle eine Kartenart, aus der zufällig eine Startkarte gewählt wird")
                     for Bttn in Joker_Buttons:
                         Bttn.create_button()
-                elif "Gift" in Extra_List[0][0].Name or Extra_List[0][0] in Karten.Gegner_Nötig:
+                elif "Gift" in getattr(Spieler, Extra_List[0])[0].Name or getattr(Spieler, Extra_List[0])[0] in Karten.Gegner_Nötig:
                     Info_Text("Wähle einen deiner Gegner")
                     global Gift_Karte
                     Gift_Karte = Extra_List[0]
@@ -814,20 +818,24 @@ def Aktion_Func(Aktion_, B):
             Info_Text("Wähle ein Lebewesen auf dem Feld, das du bewegen möchtest")
     else:
         Info_Text("Du hast deinen Zug bereits gemacht")
-#Weißer_Hgrund = get_image("weißer_hgrund.png")
-Weißer_Hgrund = pg.draw.rect(pg.Surface((230, 98)), (255, 255, 255), pg.Rect(0, 0, 230, 98))
-Blauer_Hgrund = get_image("blauer_hgrund.png")
-Kombi_Rect = pg.Rect(451, 801, 230, 98)
-Kombi_Button = Button(Kombi_Rect, lambda: Aktion_Func("Kombi", Kombi_Button), Weißer_Hgrund, get_Text("Kombi", 30), Blauer_Hgrund)
-Lila_Hgrund = get_image("lila_hgrund.png")
-Extra_Rect = pg.Rect(680, 801, 230, 98)
-Extra_Button = Button(Extra_Rect, lambda: Aktion_Func("Extrafunktion", Extra_Button), Weißer_Hgrund, get_Text("Extrafunktion", 30), Lila_Hgrund)
-Gelber_Hgrund = get_image("gelber_hgrund.png")
-LR_Rect = pg.Rect(910, 801, 230, 98)
-LR_Button = Button(LR_Rect, lambda: Aktion_Func("Lebensraum platzieren", LR_Button), Weißer_Hgrund, get_Text("Lebensraum platzieren", 30), Gelber_Hgrund)
-Roter_Hgrund = get_image("roter_hgrund.png")
-LW_Rect = pg.Rect(1140, 801, 230, 98)
-LW_Button = Button(LW_Rect, lambda: Aktion_Func("Lebewesen bewegen", LW_Button), Weißer_Hgrund, get_Text("Lebewesen bewegen", 30), Roter_Hgrund)
+Weißer_Hgrund = pg.Surface((230, 100))
+pg.draw.rect(Weißer_Hgrund, (255, 255, 255), pg.Rect(0, 0, 230, 100))
+Blauer_Hgrund = pg.Surface((230, 100))
+pg.draw.rect(Blauer_Hgrund, (200, 240, 230), pg.Rect(0, 0, 230, 100))
+Kombi_Rect = pg.Rect(451, 801, 230, 100)
+Kombi_Button = Button(Kombi_Rect, lambda: Aktion_Func("Kombi", Kombi_Button), Weißer_Hgrund, get_Text("Kombi", 29), Blauer_Hgrund)
+Lila_Hgrund = pg.Surface((230, 100))
+pg.draw.rect(Lila_Hgrund, (200, 160, 230), pg.Rect(0, 0, 230, 100))
+Extra_Rect = pg.Rect(680, 801, 230, 100)
+Extra_Button = Button(Extra_Rect, lambda: Aktion_Func("Extrafunktion", Extra_Button), Weißer_Hgrund, get_Text("Extrafunktion", 29), Lila_Hgrund)
+Gelber_Hgrund = pg.Surface((230, 100))
+pg.draw.rect(Gelber_Hgrund, (240, 220, 100), pg.Rect(0, 0, 230, 100))
+LR_Rect = pg.Rect(910, 801, 230, 100)
+LR_Button = Button(LR_Rect, lambda: Aktion_Func("Lebensraum platzieren", LR_Button), Weißer_Hgrund, get_Text("Lebensraum platzieren", 29), Gelber_Hgrund)
+Roter_Hgrund = pg.Surface((230, 100))
+pg.draw.rect(Roter_Hgrund, (240, 130, 100), pg.Rect(0, 0, 230, 100))
+LW_Rect = pg.Rect(1140, 801, 230, 100)
+LW_Button = Button(LW_Rect, lambda: Aktion_Func("Lebewesen bewegen", LW_Button), Weißer_Hgrund, get_Text("Lebewesen bewegen", 29), Roter_Hgrund)
 
 def Kombi_Func(Karten_Liste):
     #Karten_Liste = [Position Karte 1, Position Karte 2]
@@ -1424,6 +1432,8 @@ def Clear(Info = True):
         for Bttn in Aktions_Buttons:
             if Bttn.Switch == True and not Bttn == LW_Button:
                 Bttn.Change()
+        for Linie in [[(680, 800), (680, 900)], [(910, 800), (910, 900)], [(1140, 800), (1140, 900)]]:
+            pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
     if Info == True:
         Info_Surf.fill((255, 255, 255))
         screen.blit(Info_Surf, (0, 0))
@@ -1431,6 +1441,14 @@ def Clear(Info = True):
     screen.blit(Feld_Surf, (474, 182))
     Ausgabe(Spieler, Ablage_Surf)
     Ausgabe(Spieler, Feld_Übersicht_Surf)
+    #Punktestand anzeigen
+    PSurf = pg.Surface((229, 150))
+    PSurf.fill((255, 255, 255))
+    Text = SMaxG("Punktestand:", 200, 45)
+    PSurf.blit(Text, (115 - Text.get_width() / 2, 25))
+    Text = SMaxG(str(Punktezählen(Spieler)), 229, 50)
+    PSurf.blit(Text, (115 - Text.get_width() / 2, 80))
+    screen.blit(PSurf, (1371, 751))
 
 ##Ausgabefunktionen##
 #Ausgabe von: Feld, Ablage, Übersicht
@@ -1713,7 +1731,7 @@ def Spiel_Screen():
         Bttn.Change()
     #Linien
     Start_Ende = [[(450, 0), (450, 900)], [(450, 100), (1600, 100)], [(450, 450), (1600, 450)], [(450, 750), (1600, 750)], 
-                  [(680, 800), (737.5, 900)], [(910, 800), (1025, 900)], [(1140, 800), (1312.5, 900)], [(1370, 800), (1370, 900)], [(450, 800), (1600, 800)],
+                  [(680, 800), (680, 900)], [(910, 800), (910, 900)], [(1140, 800), (1140, 900)], [(1370, 750), (1370, 900)], [(450, 800), (1370, 800)],
                   [(450, 130), (1600, 130)], [(450, 480), (1600, 480)], [(450, 180), (1600, 180)]]
     for Linie in Start_Ende:
         pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
@@ -1755,6 +1773,7 @@ def Spiel():
     for Spieler in Alle_Spieler:
         #1. Ausgabe
         Erste_Ausgabe = [random.choice(Karten.Start_Lebewesen),
+                         Karten.Wald, Karten.Wald,
                          random.choice(Karten.Start_Lebensraum),
                          random.choice(Karten.Start_Elemente),
                          random.choice(random.choice(Karten.Nur)),
@@ -1774,21 +1793,21 @@ def Spiel():
 
 #Zeugsfunktionen
 #Aktion Abbrechen und Anzeige
-Aktion_Anzeige = pg.Surface((900, 48))
+Aktion_Anzeige = pg.Surface((700, 48))
 def Aktion_An(Aktion):
     Text = get_Text("Aktuelle Aktion: " + Aktion, 40)
     Aktion_Anzeige.fill((255, 255, 255))
-    Aktion_Anzeige.blit(Text, (450 - Text.get_width() / 2, 24 - Text.get_height() / 2))
+    Aktion_Anzeige.blit(Text, (350 - Text.get_width() / 2, 24 - Text.get_height() / 2))
     screen.blit(Aktion_Anzeige, (500, 751))
     Abbrechen_Button.create_button()
 def Aktion_Aus():
     Text = get_Text("Wähle eine Aktion:", 40)
     Aktion_Anzeige.fill((255, 255, 255))
-    Aktion_Anzeige.blit(Text, (450 - Text.get_width() / 2 + 75, 24 - Text.get_height() / 2))
+    Aktion_Anzeige.blit(Text, (350 - Text.get_width() / 2 + 75, 24 - Text.get_height() / 2))
     screen.blit(Aktion_Anzeige, (500, 751))
     Abbrechen_Button.delete_button()
-    pg.draw.rect(screen, (255, 255, 255), pg.Rect(1450, 751, 150, 48))
-Abbrechen_Rect = pg.Rect(1475, 755, 100, 40)
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(1200, 751, 150, 48))
+Abbrechen_Rect = pg.Rect(1220, 755, 100, 40)
 Abbrechen_Button = Button(Abbrechen_Rect, Clear, None, SMaxG("Abbrechen", 90, 35), None, (128, 0, 0))
 
 #"Wirklich Verlassen?" Fenster
@@ -2127,7 +2146,7 @@ Extrakarten_Func_Button = Button(pg.Rect(750, 810, 100, 70), Extrakarten_Ende, N
 
 def Punktezählen(Spieler):
     Score = 0
-    for Pos, Karte in Spieler.__dict__:
+    for Pos, Karte in Spieler.__dict__.items():
         if not Pos == "Aussetzen" and not Pos == "SP_Name":
             if len(Karte) > 2 and "F" in Pos:
                 Score += Karte[1]

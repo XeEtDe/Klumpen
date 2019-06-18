@@ -7,5 +7,7 @@ class Spieler():
 
 First = Spieler("A")
 
-First.A_0 = ([0])
-First.A_1 = (1)
+Test = "A"
+A ="B"
+if Test == "A" or A == "B":
+    print("Mm")
