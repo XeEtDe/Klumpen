@@ -283,9 +283,9 @@ class Button:
 # Start_Button.create_button()
 
 #Löschen wenn fertig:
-Einstellungen = ["Punkte", ["Spieler 1", "Spieler 2"], 3, 5]
+Einstellungen = ["Punkte", ["Delia", "Kumkum", "Nea"], 5, 4]
 Modus = Einstellungen[0]
-Alle_Spieler = Einstellungen[1]
+Alle_Spieler_ = Einstellungen[1]
 Züge = Einstellungen[2]
 Runden = Einstellungen[3]
 def Regeln():
@@ -305,16 +305,21 @@ class Spieler_Klasse:
         Alle_Spieler.append(self)
 
     #Listen sortieren: Lebewesen, Lebensraum, Element + gleiche nebeneinander
-    def Sortieren():
+    def Sortieren(self):
+        Name = self.SP_Name
+        del self.SP_Name
+        Aussetzen = self.Aussetzen
+        del self.Aussetzen
+        Test = len(self.__dict__)
         #Ablage
         #Sortieren
         Ablage = []
         for K_Liste in [Karten.Alle_Lebewesen, Karten.Alle_Lebensraum, Karten.Alle_Elemente]:
             S_Liste = []
-            for Pos in self.__dict__:
-                if "A" in Pos and self.__dict__[Pos] in K_Liste:
-                    S_Liste.append(self.__dict__[Pos])
-            S_Liste.sort(key = itemgetter[0].Name)
+            for Pos, Karte in self.__dict__.items():
+                if "A" in Pos and Karte[0] in K_Liste:
+                    S_Liste.append(Karte)
+            S_Liste.sort(key = lambda Dings: Dings[0].Name)
             Ablage.append(S_Liste)
         #neue Position
         Start = 0
@@ -323,27 +328,70 @@ class Spieler_Klasse:
                 setattr(self, "A_" + str(Num), Karte)
             Start += len(Liste)
         #zu hohe löschen
-        for Pos in self.__dict__:
-            Num_ = int(Pos[2])
-            if "A" in Pos and Num_ >= Start:
-                delattr(self, Pos)
+        Kopie = self.__dict__.copy()
+        for Pos in Kopie:
+            if len(Pos) >= 3:
+                Num_ = int(Pos[2])
+                if "A" in Pos and Num_ >= Start:
+                    delattr(self, Pos)
         #Feld
-        
-
+        Feld = {}
+        for Pos in self.__dict__:
+            #Lr
+            if "F" in Pos and len(Pos) <= 3:
+                Feld.update({tuple(self.__dict__[Pos]):[]})
+                #Lw dazu
+                for Pos_2 in self.__dict__:
+                    if Pos_2[0:3] == Pos[0:3] and not Pos_2 == Pos:
+                        Feld[tuple(self.__dict__[Pos])].append(self.__dict__[Pos_2])
+                Feld[tuple(self.__dict__[Pos])].sort(key = lambda Dings: Dings[0].Name)
+        Sort_Lrs = sorted(Feld, key = lambda Dings: Dings[0].Name)
+        #neue Positionen
+        Ende = 0
+        Ende_ = 0
+        for Num, Set in enumerate(Sort_Lrs):
+            setattr(self, "F_" + str(Num), list(Set))
+            for Num_2, Lw in enumerate(Feld[Set]):
+                setattr(self, "F_" + str(Num) + "_" + str(Num_2), Lw)
+                Ende = Num_2 + 1
+            #zu hohe Lw löschen
+            Kopie = self.__dict__.copy()
+            for Pos in Kopie:
+                if len(Pos) == 5:
+                    Dings = int(Pos[4])
+                    if "F_" + str(Num) in Pos and Dings >= Ende:
+                        delattr(self, Pos)
+                if len(Pos) == 4:
+                    delattr(self, Pos)
+            Ende = 0
+            Ende_ = Num + 1
+        #zu hohe löschen
+        Kopie = self.__dict__.copy()
+        for Pos in Kopie:
+            if len(Pos) >= 3:
+                Num = int(Pos[2])
+                if "F" in Pos and Num >= Ende_:
+                    delattr(self, Pos)
+            else:
+                delattr(self, Pos)
+        if not Test == len(self.__dict__):
+            print("!fehlerfehlerfehler!")
+        self.SP_Name = Name
+        self.Aussetzen = Aussetzen
 
 #Attr_Lw = [Karten.Karte, Punkte, Lebensraum, falls Drachenei: Counter/falls Extrafunktion: Counter]
 #Attr_Lr = [Karten.Karte, Punkte, Größe]
 #Attr_E = [Karten.Karte]
 
-First = Spieler_Klasse(self, Alle_Spieler_[0])
+First = Spieler_Klasse(Alle_Spieler_[0])
 if len(Alle_Spieler_) >= 2:
-    Second = Spieler_Klasse(self, Alle_Spieler_[1])
+    Second = Spieler_Klasse(Alle_Spieler_[1])
     if len(Alle_Spieler_) >= 3:
-        Third = Spieler_Klasse(self, Alle_Spieler_[2])
+        Third = Spieler_Klasse(Alle_Spieler_[2])
         if len(Alle_Spieler_) >= 4:
-            Fourth = Spieler_Klasse(self, Alle_Spieler_[3])
+            Fourth = Spieler_Klasse(Alle_Spieler_[3])
             if len(Alle_Spieler_) == 5:
-                Fifth = Spieler_Klasse(self, Alle_Spieler_[4])
+                Fifth = Spieler_Klasse(Alle_Spieler_[4])
 
 #Wie oft kann Extrafunktion benutzt werden/Dauer brüten bei Drachenei
 def Extra_Neue_Karte(Spieler, Pos):
@@ -355,6 +403,20 @@ def Extra_Neue_Karte(Spieler, Pos):
         while len(getattr(Spieler, Pos)) >= 4:
             getattr(Spieler, Pos).pop()
         getattr(Spieler, Pos).append(2)
+
+def Verbesserung_durch_Lr(Spieler, Pos, State): #wenn State = Alt: Pos = Lw in altem Lebensraum; wenn State = True: Pos = Lw in neuem Lebensraum
+    if getattr(Spieler, Pos)[0] in Karten.Alle_Lebewesen:
+        if State == "Alt":
+            Multi = -1
+        elif State == "Neu":
+            Multi = 1
+        if not "A" in Alte_Pos or State == "Neu":
+            #Magisch
+            if "Magisch" in getattr(Spieler, Pos[0:3])[0].Name:
+                getattr(Spieler, Pos)[1] += 1 * Multi  
+            #Stärker
+            if getattr(Spieler, Pos)[0] in Karten.Stärker_LR[getattr(Spieler, Pos[0:3])[0].Art:
+                getattr(Spieler, Lw)[1] += 2 * Multi
 
 ###Buttons (self, Rect, Funktion, Bild = None, Text = None, Bild_2 = None, Füllung = None)###
 
@@ -408,14 +470,17 @@ def Nach_Zug(Spieler, Aussetzen = False):
         #Drachenei brüten
         #Werte minus 1 und Drachenei in Drachen nach einem Zug
         for Attr in Spieler.__dict__:
-            if Karten.Drachenei == getattr(Spieler, Attr)[0]:
-                getattr(Spieler, Attr)[-1] -= 1
-                if getattr(Spieler, Attr)[-1] == 0:
-                    getattr(Spieler, Attr) = [Karten.Drache, Karten.Drache.Punkte, Karten.Drache.Lebensraum]
+            if not Attr == "Aussetzen" and "F" in Attr:
+                if Karten.Drachenei == getattr(Spieler, Attr)[0]:
+                    getattr(Spieler, Attr)[-1] -= 1
+                    if getattr(Spieler, Attr)[-1] == 0:
+                        setattr(Spieler, Attr, [Karten.Drache, Karten.Drache.Punkte, Karten.Drache.Lebensraum])
         #Verbesserung nicht kleiner 0
-        for Karte in Spieler.__dict__.values():
-            if Karte[1] < 0:
-                Karte[1] = 0
+        for Key, Karte in Spieler.__dict__.items():
+            if not (Key == "SP_Name" or Key == "Aussetzen"):
+                if len(Karte) > 1:
+                    if Karte[1] < 0:
+                        Spieler.__dict__[Karte][1] = 0
     #letzter Spieler -> ##Züge aufgebraucht -> Auswahl oder Ende## oder ##nächster Spieler##
     #Extrazüge
     if Ex_Zü == True:
@@ -429,9 +494,10 @@ def Nach_Zug(Spieler, Aussetzen = False):
             Extrazüge_Dict.clear()
             for Spieler_ in Alle_Spieler:
                 Liste = []
-                for Karte in Spieler_.__dict__.values():
-                    if Karte[0] in Karten.Extrazüge:
-                        Liste.append(Karte)
+                for Pos, Karte in Spieler_.__dict__.items():
+                    if not Pos == "Aussetzen":
+                        if Karte[0] in Karten.Extrazüge:
+                            Liste.append(Karte)
                 if not Liste == []:
                     Extrazüge_Dict.update({Spieler_:Liste})
             Extrazüge()
@@ -543,8 +609,7 @@ def Nach_Extrazügen():
     else:
         #Werteverbesserungskarten pro Runde
         for Spieler_ in Alle_Spieler:
-            for Pos in Spieler_.__dict__:
-                Karte = Spieler.__dict__[Pos]
+            for Pos, Karte in Spieler_.__dict__.items():
                 if "F" in Pos:
                     if Karte[0] in Karten.Extrafunktion_Anzahl and not Karte[0] in Karten.Einmal_pro_Spiel:
                         getattr(Spieler, Pos)[-1] = Karten.Extrafunktion_Anzahl[Karte[0]]
@@ -624,7 +689,7 @@ def Karten_Func(Kategorie, Button_Num):
         Rects = Karten_Feld_Übersicht_Rects
     try:
         Karte = getattr(Spieler, Str)
-    except AtrributeError:
+    except AttributeError:
         pass
     else:
         #Leuchtrand
@@ -661,7 +726,7 @@ def Karten_Func(Kategorie, Button_Num):
         elif Aktion == "Lebensraum platzieren":
             if Karte[0] in Karten.Alle_Lebensraum:
                 if "A" in Str:
-                    Spieler.F = Karte
+                    setattr(Spieler, "F_", Karte)
                     delattr(Spieler, Str)
                     Spieler.Sortieren()
                     Spieler_Zug = True
@@ -695,17 +760,17 @@ def Karten_Func(Kategorie, Button_Num):
                         Voll_Test = False
                         Alte_LW = []
                         for Pos in Spieler.__dict__:
-                            if Pos[2] == LR_Karte[2]:
+                            if Pos[0:3] == LR_Karte[0:3] and not Pos == LR_Karte:
                                 Alte_LW.append(Pos)
-                        Größe = Spieler.LR_Karte[2]                
+                        Größe = getattr(Spieler, LR_Karte)[2]                
                         if len(Alte_LW) < Größe:
                             Voll_Test = True
                         else:
                             Info_Text("Dieser Lebensraum ist bereits voll")
                         #Art
                         Art_Test = False
-                        for Lr in Spieler.LW_Karte[2]:
-                            if Lr == Spieler.LR_Karte[3] or Lr == "Alle":
+                        for Lr in getattr(Spieler, LW_Karte)[2]:
+                            if Lr == getattr(Spieler, LR_Karte)[0].Art or Lr == "Alle":
                                 Art_Test = True
                                 break
                         if Art_Test == False:
@@ -714,10 +779,12 @@ def Karten_Func(Kategorie, Button_Num):
                         if Voll_Test == True and Art_Test == True:
                             if "A" in LW_Karte:
                                 Spieler_Zug = True
-                            Karte = Spieler.LW_Karte
                             Attr = "F_" + LR_Karte[2] + "_"
-                            setattr(Spieler, Attr, Karte)
+                            setattr(Spieler, Attr, getattr(Spieler, LW_Karte))
+                            Verbesserung_durch_Lr(Spieler, LW_Karte, "Alt")
+                            Verbesserung_durch_Lr(Spieler, Attr, "Neu")
                             delattr(Spieler, LW_Karte)
+                            Spieler.Sortieren()
                     else:
                         Info_Text("Der Lebensraum muss sich auf dem Feld befinden")
                     Clear(False)
@@ -726,8 +793,8 @@ def Karten_Func(Kategorie, Button_Num):
         #normal Text am Rand ausgeben
         else:
             if Kategorie == "Feld_Übersicht":
-                Ausgabe(Spieler, Feld_Surf, range(0, 6), Num)
-            Info_Text(Karte[0].Name + "\n" + Karte[0].Beschreibung + "\n" + "Punkte: " + str(Karte[1]))
+                Ausgabe(Spieler, Feld_Surf, range(0, 6), Feld_Übersicht_Alt_Range[Button_Num])
+            Info_Text(Karte[0].Name + "\n" + Karte[0].Beschreibung + "\n" + ("Punkte: " + str(Karte[1]) if not Karte[0] in Karten.Alle_Elemente else ""))
 
 ##Spielfunktionen Buttons##
 Aktion = None
@@ -765,6 +832,9 @@ def Kombi_Func(Karten_Liste):
     #Karten_Liste = [Position Karte 1, Position Karte 2]
     global Spieler_Zug
     Neue_Karte = False
+    #Verbesserung durch Lebensraum nicht weitergeben
+    Verbesserung_durch_Lr(Spieler, Karten_Liste[0], "Alt")
+    Verbesserung_durch_Lr(Spieler, Karten_Liste[1], "Alt")
     #Verbesserung für später, Differenz zu Original-Werten
     Add_Größe = 0
     Add_Punkte = 0
@@ -788,25 +858,32 @@ def Kombi_Func(Karten_Liste):
             if getattr(Spieler, Karten_Liste[0])[0] in Karten.Alle_Lebensraum or getattr(Spieler, Karten_Liste[1])[0] in Karten.Alle_Lebensraum:
                 if getattr(Spieler, Karten_Liste[0])[0] in Karten.Alle_Lebensraum:
                     LR_Karte = getattr(Spieler, Karten_Liste[0])
-                    LR_Pos = Karten_Liste[0]
-                    Andere_Karte = getattr(Spieler, Karten_Liste[1])[0]
+                    Lr_Pos = Karten_Liste[0]
+                    Andere_Karte = getattr(Spieler, Karten_Liste[1])
                     Andere_Pos = Karten_Liste[1]
                 else:
                     Andere_Karte = getattr(Spieler, Karten_Liste[0])
                     Andere_Pos = Karten_Liste[0]
-                    LR_Karte = getattr(Spieler, Karten_Liste[1])[0]
-                    LR_Pos = Karten_Liste[1]
+                    LR_Karte = getattr(Spieler, Karten_Liste[1])
+                    Lr_Pos = Karten_Liste[1]
                 #Lr + Lr
                 if Andere_Karte[0] in Karten.Alle_Lebensraum:
+                    Verbesserung = []
                     #beide Feld oder beide Ablage
-                    if ("F" in LR_Pos and "F" in Andere_Pos) or ("A" in LR_Pos and "A" in Andere_Pos):
-                        for Num, Pos in enumerate(Spieler.__dict__):
-                            if Pos[2] == LR_Pos[2] or Pos[2] == Andere_Pos[2]:
-                                setattr(Spieler, LR_Pos + "_" + str(Num), Spieler.__dict__[Pos])
-                                delattr(Spieler, Pos)
+                    if ("F" in Lr_Pos and "F" in Andere_Pos) or ("A" in Lr_Pos and "A" in Andere_Pos):
+                        #Lebewesen in neuen Lebensraum wenn Feld
+                        if "F" in Lr_Pos:
+                            for Num, Pos in enumerate(Spieler.__dict__):
+                                if (Pos[2] == Lr_Pos[2] or Pos[2] == Andere_Pos[2]) and "F" in Pos and len(Pos) > 3:
+                                    setattr(Spieler, Lr_Pos + "_" + str(Num), Spieler.__dict__[Pos])
+                                    Verbesserung.append(Lr_Pos + "_" + str(Num))
+                                    Verbesserung_durch_Lr(Spieler, Pos, "Alt")
+                                    delattr(Spieler, Pos)
                         delattr(Spieler, Andere_Pos)
-                        setattr(Spieler, LR_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe])
-                        Neue_Pos = LR_Pos
+                        setattr(Spieler, Lr_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe])
+                        for Lw in Verbesserung:
+                            Verbesserung_durch_Lr(Spieler, Lw, "Neu")
+                        Neue_Pos = Lr_Pos
                         Spieler_Zug = True
                         break
                     else:
@@ -814,48 +891,55 @@ def Kombi_Func(Karten_Liste):
                         break
                 #Lr + E
                 elif Andere_Karte[0] in Karten.Alle_Elemente:
-                    for Num, Pos in enumerate(Spieler.__dict__):
-                        if Pos[2] == LR_Pos[2]:
-                            setattr(Spieler, LR_Pos + "_" + str(Num), Spieler.__dict__[Pos])
-                            delattr(Spieler, Pos)
-                        delattr(Spieler, Andere_Pos)
-                        setattr(Spieler, LR_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe])
-                        Neue_Pos = LR_Pos
-                        Spieler_Zug = True
-                        break
+                    Verbesserung = []
+                    if "F" in Lr_Pos:
+                        for Num, Pos in enumerate(Spieler.__dict__):
+                            if Pos[2] == Lr_Pos[2] and "F" in Pos and len(Pos) > 3:
+                                setattr(Spieler, Lr_Pos + "_" + str(Num), Spieler.__dict__[Pos])
+                                Verbesserung.append(Lr_Pos + "_" + str(Num))
+                                Verbesserung_durch_Lr(Spieler, Pos, "Alt")
+                                delattr(Spieler, Pos)
+                    delattr(Spieler, Andere_Pos)
+                    setattr(Spieler, Lr_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe])
+                    for Lw in Verbesserung:
+                        Verbesserung_durch_Lr(Spieler, Lw, "Neu")
+                    Neue_Pos = Lr_Pos
+                    Spieler_Zug = True
+                    break
             #Lw
             if getattr(Spieler, Karten_Liste[0])[0] in Karten.Alle_Lebewesen or getattr(Spieler, Karten_Liste[1])[0] in Karten.Alle_Lebewesen:
                 if getattr(Spieler, Karten_Liste[0])[0] in Karten.Alle_Lebewesen:
                     LW_Karte = getattr(Spieler, Karten_Liste[0])
                     LW_Pos = Karten_Liste[0]
-                    Andere_Karte = getattr(Spieler, Karten_Liste[1])[0]
+                    Andere_Karte = getattr(Spieler, Karten_Liste[1])
                     Andere_Pos = Karten_Liste[1]
                 else:
                     Andere_Karte = getattr(Spieler, Karten_Liste[0])
                     Andere_Pos = Karten_Liste[0]
-                    LW_Karte = getattr(Spieler, Karten_Liste[1])[0]
+                    LW_Karte = getattr(Spieler, Karten_Liste[1])
                     LW_Pos = Karten_Liste[1]
                 #Lw + Lw
                 if Andere_Karte[0] in Karten.Alle_Lebewesen:
                     #beide Ablage oder beide selber Lr
                     if "F" in LW_Pos and "F" in Andere_Pos:
                         #geeigneter Lebensraum?
-                        for Lr in Neue_Karte.Lebensraum:
-                            if Lr == getattr(Spieler, LW_Pos[0:2])[3]:
-                                delattr(Spieler, Andere_Pos)
-                                setattr(Spieler, LW_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
-                                Neue_Pos = LW_Pos
-                                Spieler_Zug = True
-                                break
-                            elif Lr == getattr(Spieler, Andere_Pos[0:2])[3]:
-                                delattr(Spieler, LW_Pos)
-                                setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
-                                Neue_Pos = Andere_Pos
-                                Spieler_Zug = True
-                                break
-                            else:
-                                Info_Text("Keiner der beiden Lebensräume ist geeignet für das neue Lebewesen")
-                                break
+                        if getattr(Spieler, LW_Pos[0:2])[0].Art in Neue_Karte.Lebensraum or getattr(Spieler, LW_Pos[0:2])[0].Art in Add_Lebensräume:
+                            delattr(Spieler, Andere_Pos)
+                            setattr(Spieler, LW_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
+                            Verbesserung_durch_Lr(Spieler, LW_Pos, "Neu")
+                            Neue_Pos = LW_Pos
+                            Spieler_Zug = True
+                            break
+                        elif getattr(Spieler, Andere_Pos[0:2])[0].Art in Neue_Karte.Lebensraum or getattr(Spieler, Andere_Pos[0:2])[0].Art in Add_Lebensräume:
+                            delattr(Spieler, LW_Pos)
+                            setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
+                            Verbesserung_durch_Lr(Spieler, Andere_Pos, "Neu")
+                            Neue_Pos = Andere_Pos
+                            Spieler_Zug = True
+                            break
+                        else:
+                            Info_Text("Keiner der beiden Lebensräume ist geeignet für das neue Lebewesen")
+                            break
                     elif "A" in LW_Pos and "A" in Andere_Pos:
                         delattr(Spieler, Andere_Pos)
                         setattr(Spieler, LW_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
@@ -869,16 +953,16 @@ def Kombi_Func(Karten_Liste):
                 elif Andere_Karte[0] in Karten.Alle_Elemente:
                     if "F" in LW_Pos:
                         #geeigneter Lebensraum?
-                        for Lr in Neue_Karte.Lebensraum:
-                            if Lr == getattr(Spieler, LW_Pos[0:2])[3]:
-                                delattr(Spieler, Andere_Pos)
-                                setattr(Spieler, LW_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
-                                Neue_Pos = LW_Pos
-                                Spieler_Zug = True
-                                break
-                            else:
-                                Info_Text("Der Lebensraum ist nicht geeignet für das neue Lebewesen")
-                                break
+                        if getattr(Spieler, LW_Pos[0:3])[0].Art in Neue_Karte.Lebensraum or getattr(Spieler, LW_Pos[0:3])[0].Art in Add_Lebensräume:
+                            delattr(Spieler, Andere_Pos)
+                            setattr(Spieler, LW_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
+                            Verbesserung_durch_Lr(Spieler, LW_Pos, "Neu")
+                            Neue_Pos = LW_Pos
+                            Spieler_Zug = True
+                            break
+                        else:
+                            Info_Text("Der Lebensraum ist nicht geeignet für das neue Lebewesen")
+                            break
                     elif "A" in LW_Pos:
                         delattr(Spieler, Andere_Pos)
                         setattr(Spieler, LW_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum])
@@ -893,7 +977,7 @@ def Kombi_Func(Karten_Liste):
                 Spieler_Zug = True
                 break
         #Keine Kombi möglich
-        elif Counter_Add == len(Karten.Alle_Karten):
+        elif Counter_Add == len(Karten.Alle_Karten) - 1:
             Info_Text("Diese Karten lassen sich nicht kombinieren")
     #Verbesserungen
     if Spieler_Zug == True:
@@ -952,10 +1036,8 @@ def Extra_Func(Karten_Liste):
                         else:
                             Neue_Karte = Karten.Wonderland
                     for Num, Pos in enumerate(Spieler.__dict__):
-                        if Pos[2] == Karten_Liste[1][2]:
+                        if Pos[2] == Karten_Liste[1][2] and "F" in Pos:
                                 setattr(Spieler, Karten_Liste[1] + "_" + str(Num), Spieler.__dict__[Pos])
-                                if "Magisch" in Neue_Karte.Name:
-                                    getattr(Spieler, Karten_Liste[1] + "_" + str(Num))[1] += 1
                                 delattr(Spieler, Pos)
                         delattr(Spieler, Karten_Liste[0])
                         setattr(Spieler, Karten_Liste[1], [Neue_Karte, Neue_Karte.Punkte + Add_Punkte, Neue_Karte.Größe + Add_Größe])
@@ -1081,10 +1163,8 @@ def Extra_Func(Karten_Liste):
                     else:
                         Neue_Karte = Karten.Wonderland
                 for Num, Pos in enumerate(Spieler.__dict__):
-                    if Pos[2] == Andere_Pos[2]:
+                    if Pos[2] == Andere_Pos[2] and "F" in Pos:
                         setattr(Spieler, Andere_Pos + "_" + str(Num), Spieler.__dict__[Pos])
-                        if "Magisch" in Neue_Karte.Name:
-                            getattr(Spieler, Andere_Pos + "_" + str(Num))[1] += 1
                         delattr(Spieler, Pos)
                 getattr(Spieler, E_Pos)[-1] -= 1
                 setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte + Add_Punkte, Neue_Karte.Größe + Add_Größe])
@@ -1132,11 +1212,8 @@ def Extra_Func(Karten_Liste):
                 if Andere_Karte[1] > Karten.Werwolf.Punkte:
                     Info_Text("Die Karte ist bereits besser als eine Werwolf-Karte")
                     Weiter = False
-                if not "A" in Andere_Pos:
-                    if not getattr(Spieler, Andere_Pos[0:3])[0].Art == "Wald":
-                        Info_Text("Der Lebensraum ist für einen Werwolf nicht geeignet - Wähle ein Lebewesen in einem Wald oder in der Ablage")
-                        Weiter = False
                 if Weiter == True:
+                    Safe = getattr(Spieler, Andere_Pos)
                     Add_Punkte = getattr(Spieler, Andere_Pos)[1] - getattr(Spieler, Andere_Pos)[0].Punkte
                     Add_Lebensräume = []
                     for Lr in getattr(Spieler, Andere_Pos)[2]:
@@ -1148,9 +1225,16 @@ def Extra_Func(Karten_Liste):
                             getattr(Spieler, Neue_Pos)[2].append(Lr)
                     if "Wald" in getattr(Spieler, Neue_Pos)[2] and "Berge" in getattr(Spieler, Neue_Pos)[2] and "See" in getattr(Spieler, Neue_Pos)[2] and "Wüste" in getattr(Spieler, Neue_Pos)[2]:
                         getattr(Spieler, Neue_Pos)[2] = ["Alle"]
+                if not "A" in Andere_Pos:
+                    if not getattr(Spieler, Andere_Pos[0:3])[0].Art in getattr(Spieler, Andere_Pos)[2] and not getattr(Spieler, Andere_Pos)[2] == "Alle":
+                        Info_Text("Der Lebensraum ist für einen Werwolf nicht geeignet - Wähle ein Lebewesen in einem Wald oder in der Ablage")
+                        Weiter = False
+                if Weiter == True:
                     Spieler_Zug = True
                     getattr(Spieler, E_Pos)[-1] -= 1
                     Info_Text(Andere_Karte[0].Name + " in Werwolf verwandelt")
+                else:
+                    setattr(Spieler, Andere_Pos, Safe)
             else:
                 Info_Text("Kann nur einmal im Spiel angewandt werden, Karte muss auf dem Feld platziert sein")
         else:
@@ -1231,6 +1315,8 @@ def Extra_Func(Karten_Liste):
                 Info_Text("Lebewesen " + Name + " des Spielers " + Gegner.SP_Name + " wurde zerstört")
             elif E_Karte[0] == Karten.Diebische_Elster:
                 if E_Karte[-1] > 0:
+                    #Verbesserung durch Lebensraum nicht weitergeben
+                    Verbesserung_durch_Lr(Gegner, Löschen_Karte, "Alt")
                     setattr(Spieler, "A_", getattr(Gegner, Löschen_Karte))
                     delattr(Gegner, Löschen_Karte)
                     Spieler_Zug = True
@@ -1285,6 +1371,8 @@ def Extra_Func(Karten_Liste):
             Info_Text("Wähle ein Lebewesen oder einen Lebensraum")
     else:
         Info_Text("Diese Karte hat keine Extrafunktion")
+    if Spieler_Zug == True:
+        Spieler.Sortieren()
     Clear(False)
 
 #Extrabuttons für Extrafunktionen
@@ -1356,9 +1444,10 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
             y_Surf = 482
             x_Surf = 452
             #Liste aus Objekten
-            for Num, Pos in enumerate(Spieler.__dict__):
-                if Pos == "A_" + str(Num):
-                    List.append(Pos)
+            for Num in range(0, len(Spieler.__dict__)):
+                for Pos in Spieler.__dict__:
+                    if Pos == "A_" + str(Num):
+                        List.append(Pos)
             #für Buttons
             global Ablage_Alt_Range
             Ablage_Alt_Range = Range
@@ -1369,7 +1458,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
             else:
                 if Ablage_Hoch_Button.Switch == True:
                     Ablage_Hoch_Button.Change()
-            if len(Ablage[Spieler]) > ((Range[-1]) + 1):
+            if len(List) > ((Range[-1]) + 1):
                 if Ablage_Runter_Button.Switch == False:
                     Ablage_Runter_Button.Change()
             else:
@@ -1381,9 +1470,10 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
             x_Surf = 452
             #Liste aus Objekten
             Lr_Num = Feld_Übersicht_Alt_Range[LR_Pos]
-            for Num, Pos in Spieler.__dict__:
-                if Pos == "F_" + str(Lr_Num) + str(Num):
-                    List.append(Pos)
+            for Num in range(0, len(Spieler.__dict__)):
+                for Pos in Spieler.__dict__:
+                    if Pos == "F_" + str(Lr_Num) + "_" + str(Num):
+                        List.append(Pos)
             #für Buttons
             global Feld_Alt_Range
             Feld_Alt_Range = Range
@@ -1396,7 +1486,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
             else:
                 if Feld_Hoch_Button.Switch == True:
                     Feld_Hoch_Button.Change()
-            if (len(Feld[Spieler][Lr]) > (Range[-1]) + 1):
+            if len(List) > (Range[-1]) + 1:
                 if Feld_Runter_Button.Switch == False:
                     Feld_Runter_Button.Change()
             else:
@@ -1413,13 +1503,13 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
     elif Surf == Feld_Übersicht_Surf:
         y_Surf = 131
         x_Surf = 520
-        global Feld_Übersicht_Alt_Range
-        Feld_Übersicht_Alt_Range = Range
+        Feld_Übersicht_Alt_Range = range(Range[0], Range[0] + 8)
         Range_1 = range(Range[0], Range[0] + 8)
         #Liste aus Objekten
-        for Num, Pos in Spieler.__dict__:
-            if Pos == "F_" + str(Num):
-                List.append(Pos)
+        for Num in range(0, len(Spieler.__dict__)):
+            for Pos in Spieler.__dict__:
+                if Pos == "F_" + str(Num):
+                    List.append(Pos)
         #Surface zusammensetzen
         Dings_a = 90
         Dings = pg.Surface((Dings_a, 42))
@@ -1430,9 +1520,9 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
                 Lr = getattr(Spieler, List[Num])[0]
                 Verbrauchte_Lr = 0
                 for Pos in Spieler.__dict__:
-                    if "F_" + Str(Num) + "_" in Pos:
+                    if "F_" + str(Num) + "_" in Pos:
                         Verbrauchte_Lr += 1
-                Mod_Größe = getattr(Spieler, Lr)[2]
+                Mod_Größe = getattr(Spieler, List[Num])[2]
                 if Lr.Art == "Wald":
                     Hintergrund = (190, 240, 50)
                 elif Lr.Art == "Wüste":
@@ -1457,7 +1547,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
         else:
             if Feld_Übersicht_Links_Button.Switch == True:
                 Feld_Übersicht_Links_Button.Change()
-        if (len(Feld[Spieler]) > (Range_1[-1]) + 1):
+        if len(List) > (Range_1[-1]) + 1:
             if Feld_Übersicht_Rechts_Button.Switch == False:
                 Feld_Übersicht_Rechts_Button.Change()
         else:
@@ -1469,7 +1559,14 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
 #einzelne Karte ausgeben
 def Druck(Karte_, Spieler, Auswahl = False):
     Surf = pg.Surface((150, 250))
-    Karte = getattr(Spieler, Karte_)
+    if Karte_ in Karten.Alle_Lebewesen:
+        Karte = [Karte_, Karte_.Punkte, Karte_.Lebensraum]
+    elif Karte_ in Karten.Alle_Lebensraum:
+        Karte = [Karte_, Karte_.Punkte, Karte_.Größe]
+    elif Karte_ in Karten.Alle_Elemente:
+        Karte = [Karte_]
+    else:
+        Karte = getattr(Spieler, Karte_)
     #Hintergrund und Art
     if Karte[0] in Karten.Alle_Lebewesen:
         Hintergrund = get_image("lw_hintergrund.png")
@@ -1484,7 +1581,7 @@ def Druck(Karte_, Spieler, Auswahl = False):
     Surf.blit(Cap, (150 / 2 - Cap.get_width() / 2, 5))
     #Name
     if " " in Karte[0].Name:
-        Namen_Liste = Karte.Name.split()
+        Namen_Liste = Karte[0].Name.split()
         Name_1 = get_Text(Namen_Liste[0], 58)
         if Name_1.get_width() > 150:
             Name_1 = SMaxG(Namen_Liste[0], 150)
@@ -1494,9 +1591,9 @@ def Druck(Karte_, Spieler, Auswahl = False):
         Surf.blit(Name_1, (150 / 2 - Name_1.get_width() / 2, 35))
         Surf.blit(Name_2, (150 / 2 - Name_2.get_width() / 2, 80))
     else:
-        Name = get_Text(Karte.Name, 58)
+        Name = get_Text(Karte[0].Name, 58)
         if Name.get_width() > 150:
-            Name = SMaxG(Karte.Name, 150)
+            Name = SMaxG(Karte[0].Name, 150)
         Surf.blit(Name, (150 / 2 - Name.get_width() / 2, 35))
     #Lebewesen: LRs, Punkte/Kampf, Verteidigung 
     if Karte[0] in Karten.Alle_Lebewesen:
@@ -1644,9 +1741,9 @@ def Spiel_Screen():
     Text = SMaxG(Züge_String, None, 30)
     screen.blit(Text, (620 + (415 / 2 - Text.get_width() / 2), 60))
     if Spieler.SP_Name[-1] == "s" or Spieler.SP_Name[-1] == "S" or Spieler.SP_Name[-1] == "X" or Spieler.SP_Name[-1] == "x":
-        Text = SMaxG(Spieler + "\' Zug", 300, 50)
+        Text = SMaxG(Spieler.SP_Name + "\' Zug", 300, 50)
     else:
-        Text = SMaxG(Spieler + "s Zug", 300, 50)
+        Text = SMaxG(Spieler.SP_Name + "s Zug", 300, 50)
     screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
     Clear()
 
@@ -1661,7 +1758,7 @@ def Spiel():
                          random.choice(Karten.Start_Elemente),
                          random.choice(random.choice(Karten.Nur)),
                          random.choice(random.choice(Karten.Alle_Start_Karten))]
-        for Num, Karte in Erste_Ausgabe:
+        for Num, Karte in enumerate(Erste_Ausgabe):
             if Karte in Karten.Alle_Lebewesen:
                 Neu = [Karte, Karte.Punkte, Karte.Lebensraum]
             elif Karte in Karten.Alle_Lebensraum:
@@ -1669,6 +1766,8 @@ def Spiel():
             else:
                 Neu = [Karte]
             setattr(Spieler, "A_" + str(Num), Neu)
+            Extra_Neue_Karte(Spieler, "A_" + str(Num))
+        Spieler.Sortieren()
     Spieler = Alle_Spieler[0]
     Spiel_Screen()
 
@@ -1753,17 +1852,12 @@ Auswahl_Button_11 = Button(Karten_Auswahl_Rects[11], lambda: Auswahl_Karten_Func
 def Auswahl_Karten_Func(Button_Num):
     Num = Auswahl_Alt_Range[Button_Num]
     if Num <= (len(Auswahl_List) - 1):
-        Counter = 0
-        for Dings in Auswahl_List:
-            if Counter == Num:
-                Karte = Dings
-                break
-            Counter += 1
-        #Beschreibung als Info
-        Info_Text(Karte.Name + "\n" + Karte.Beschreibung)
+        Karte = Auswahl_List[Num]
         #Leuchtrand
         Ausgabe_Auswahl(Auswahl_Alt_Range)
         pg.draw.rect(screen, Leuchtrand_Farbe, Karten_Auswahl_Rects[Num], 3)
+        #Beschreibung als Info
+        Info_Text(Karte.Name + "\n" + Karte.Beschreibung)
         #Karte merken
         global Letzte_Auswahl_Karte
         Letzte_Auswahl_Karte = Karte
@@ -1818,7 +1912,19 @@ def Auswahl_Auswählen():
         Alter_Spieler = Spieler
         global Letzte_Auswahl_Karte
         #Karte hinzufügen
-        Ablage[Spieler].append(Letzte_Auswahl_Karte)
+        Höchst = 0
+        for Pos in Spieler.__dict__:
+            if "A" in Pos and not Pos == "Aussetzen" and not Pos == "SP_Name":
+                if int(Pos[2]) > Höchst:
+                    Höchst = int(Pos[2])
+        if Letzte_Auswahl_Karte in Karten.Alle_Lebewesen:
+            Neu = [Letzte_Auswahl_Karte, Letzte_Auswahl_Karte.Punkte, Letzte_Auswahl_Karte.Lebensraum]
+        elif Letzte_Auswahl_Karte in Karten.Alle_Lebensraum:
+            Neu = [Letzte_Auswahl_Karte, Letzte_Auswahl_Karte.Punkte, Letzte_Auswahl_Karte.Größe]
+        else:
+            Neu = [Letzte_Auswahl_Karte]
+        setattr(Spieler, "A_" + str(Höchst + 1), Neu)
+        Extra_Neue_Karte(Spieler, "A_" + str(Höchst + 1))
         Auswahl_List.remove(Letzte_Auswahl_Karte)
         #Nächster Spieler
         for N in range(0, len(Reihenfolge)):
@@ -1831,7 +1937,7 @@ def Auswahl_Auswählen():
         Ausgabe_Auswahl()
         #Überschrift anpassen
         pg.draw.rect(screen, (255, 255, 255), pg.Rect(452, 52, 1146, 48))
-        Text = SMaxG(Spieler + ": Wähle eine Karte", None, 30)
+        Text = SMaxG(Spieler.SP_Name + ": Wähle eine Karte", None, 30)
         screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 60))
         #Button ausschalten
         Letzte_Auswahl_Karte = None
@@ -1875,19 +1981,33 @@ def Auswahlstapel():
         while Anzahl_Auswahl_Karten > 0:
             Auswahl_List.append(random.choice(random.choice(Karten.Alle_Start_Karten)))
             Anzahl_Auswahl_Karten -= 1
-        Sortieren(Auswahl_List)
+        E = []
+        Lw = []
+        Lr = []
+        for Karte in Auswahl_List:
+            if Karte in Karten.Alle_Lebensraum:
+                Lr.append(Karte)
+            elif Karte in Karten.Alle_Lebewesen:
+                Lw.append(Karte)
+            elif Karte in Karten.Alle_Elemente:
+                E.append(Karte)
+        Auswahl_List.clear()
+        Sort = [Lw, Lr, E]
+        for Liste in Sort:
+            Liste.sort(key = lambda Dings: Dings.Name)
+            for Karte in Liste:
+                Auswahl_List.append(Karte)
         #zufällige Reihenfolge
         Alle_Spieler_Kopie = Alle_Spieler.copy()
         global Reihenfolge
         Reihenfolge = []
         #Marienkäfer Extrafunktion
         Marienkäfer_Dict = {}
+        Counter = 0
         for Spieler_ in Alle_Spieler:
-            Counter = 0
-            Feld_Spieler = Feld[Spieler_]
-            for Lr in Feld[Spieler_]:
-                for Lw in Feld_Spieler[Lr]:
-                    if Lw.Name == "Marienkäfer":
+            for Pos, Karte in Spieler_.__dict__.items():
+                if not Pos == "Aussetzen":
+                    if Karte[0] == Karten.Marienkäfer and "F" in Pos:
                         Counter += 1
             if not Counter == 0:
                 Marienkäfer_Dict.update({Spieler_:Counter})
@@ -1901,9 +2021,10 @@ def Auswahlstapel():
             for Spieler_ in Marienkäfer_Dict:
                 if Marienkäfer_Dict[Spieler_] == Wert:
                     Liste.append(Spieler_)
-            S = random.choice(Liste)
-            Reihenfolge.append(S)
-            Alle_Spieler_Kopie.remove(S)
+            while len(Liste) > 0:
+                S = random.choice(Liste)
+                Reihenfolge.append(S)
+                Alle_Spieler_Kopie.remove(S)
         while len(Alle_Spieler_Kopie) > 0:
             Sp = random.choice(Alle_Spieler_Kopie)
             Reihenfolge.append(Sp)
@@ -1935,7 +2056,7 @@ def Auswahlstapel():
     #Überschrift
     Text = SMaxG("Auswahlstapel", None, 40)
     screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 10))
-    Text = SMaxG(Spieler + ": Wähle eine Karte", None, 30)
+    Text = SMaxG(Spieler.SP_Name + ": Wähle eine Karte", None, 30)
     screen.blit(Text, (450 + (1150 / 2 - Text.get_width() / 2), 60))
     Auswahl_Bool = True
     Ausgabe_Auswahl()
@@ -1947,13 +2068,15 @@ def Extrakarten_Func():
     Extrakarten = {}
     for Spieler in Alle_Spieler:
         Liste = []
-        for Lr in Feld[Spieler]:
-            for Lw in Feld[Spieler][Lr]:
-                if Lw in Karten.Extrakarten:
-                    Liste.append(Lw)
+        for Pos, Karte in Spieler.__dict__.items():
+            if not Pos == "Aussetzen":
+                if Karte[0] in Karten.Extrakarten and "F" in Pos:
+                    Liste.append(Karte[0])
         if not Liste == []:
             Extrakarten.update({Spieler:Liste})
     if Extrakarten == {}:
+        for Spieler in Alle_Spieler:
+            Spieler.Sortieren()
         Spiel_Screen()
         Vor_Zug(Alle_Spieler[0])
         return
@@ -1966,14 +2089,26 @@ def Extrakarten_Func():
     for Spieler in Extrakarten:
         Surf = pg.Surface((Surf_Width, 650))
         Surf.fill((255, 255, 255))
-        Spieler_Überschrift = get_Text(Spieler, 50)
+        Spieler_Überschrift = get_Text(Spieler.SP_Name, 50)
         Surf.blit(Spieler_Überschrift, (Surf_Width / 2 - Spieler_Überschrift.get_width() / 2, 10))
         Height = 550 / (len(Extrakarten[Spieler]) + 15)
         for Lw in Extrakarten[Spieler]:
             Neues = random.choice(Karten.Extrakarten[Lw])
             Text = SMaxG(Lw.Name + ": " + Neues.Name, Surf_Width - 20, Height if Height <= 25 else 25)
             if Extrakarten_Bool == False:
-                Ablage[Spieler].append(Neues)
+                Höchst = 0
+                for Pos in Spieler.__dict__:
+                    if "A" in Pos and not Pos == "Aussetzen" and not Pos == "SP_Name":
+                        if int(Pos[2]) > Höchst:
+                            Höchst = int(Pos[2])
+                if Neues in Karten.Alle_Lebewesen:
+                    Neu = [Neues, Neues.Punkte, Neues.Lebensraum]
+                elif Neues in Karten.Alle_Lebensraum:
+                    Neu = [Neues, Neues.Punkte, Neues.Größe]
+                else:
+                    Neu = [Neues]
+                setattr(Spieler, "A_" + str(Höchst + 1), Neu)
+                Extra_Neue_Karte(Spieler, "A_" + str(Höchst + 1))
             a = 80
             Surf.blit(Text, (Surf_Width / 2 - Text.get_width() / 2, a))
             a += Text.get_height() + 15
@@ -1983,85 +2118,35 @@ def Extrakarten_Func():
 
 def Extrakarten_Ende():
     Extrakarten_Func_Button.delete_button()
+    for Spieler in Alle_Spieler:
+        Spieler.Sortieren()
     Spiel_Screen()
     Vor_Zug(Alle_Spieler[0])
 Extrakarten_Func_Button = Button(pg.Rect(750, 810, 100, 70), Extrakarten_Ende, None, SMaxG("Okay", 90, 60, (255, 255, 255)), None, (76, 117, 28))
 
 def Punktezählen(Spieler):
+    Score = 0
+    for Pos, Karte in Spieler.__dict__:
+        if not Pos == "Aussetzen" and not Pos == "SP_Name":
+            if len(Karte) > 2 and "F" in Pos:
+                Score += Karte[1]
     return Score
-    # Auswertung = {}
-    # for Spieler in Alle_Spieler:
-    #     Auswertung.update({Spieler:0})
-    #     #Verbesserung durch Lr
-    #     for Karte in Magisch_Dict[Spieler]:
-    #         Magisch_Dict[Spieler][Karte] = 0
-    #     for Karte in Stärker_Dict[Spieler]:
-    #         Stärker_Dict[Spieler][Karte] = 0
-    #     for Lr in Feld_Spieler:
-    #         for Lw in Feld_Spieler[Lr]:
-    #             if "Magisch" in Lr.Name:
-    #                 if Lw in Magisch_Dict[Spieler]:
-    #                     Magisch_Dict[Spieler][Lw] += 1
-    #                 else:
-    #                     Magisch_Dict[Spieler].update({Lw:1})
-    #             if Lw in Stärker_LR[Lr.Art]:
-    #                 if not Lw in Stärker_Dict[Spieler]:
-    #                     Stärker_Dict[Spieler].update({Lw:1})
-    #                 else:
-    #                     Stärker_Dict[Spieler][Lw] += 1                
-    #     #Lebensraum
-    #     for Lr in Feld_Spieler:
-    #         Auswertung[Spieler] += Lr.Punkte
-    #         #Lebewesen darin
-    #         for Lw in Feld_Spieler[Lr]:
-    #             Ende_Punkte = Lw.Punkte
-    #             if Lw in Verbesserung_Spieler:
-    #                 Add_Punkte = Verbesserung_Spieler[Lw]["Punkte"]
-    #                 if Add_Punkte < 0:
-    #                     Add_Punkte = 0
-    #                 Ende_Punkte += Add_Punkte
-    #                 Verbesserung[Spieler].remove(Lw)
-    #             if Lw in Magisch_Dict[Spieler]:
-    #                 if Magisch_Dict[Spieler] > 0:
-    #                     Ende_Punkte += 1
-    #                     Magisch_Dict[Spieler] -= 1
-    #             if Lw in Stärker_Dict[Spieler]:
-    #                 if Stärker_Dict[Spieler] > 0:
-    #                     Ende_Punkte += 2
-    #                     Stärker_Dict[Spieler] -= 1
-    #             Auswertung[Spieler] += Ende_Punkte
-    # #Sortieren
-    # Werte = []
-    # for Spieler in Auswertung:
-    #     if not Auswertung[Spieler] in Werte:
-    #         Werte.append(Auswertung[Spieler])
-    # Werte.sort(reverse = True)
-    # Counter = 0
-    # #Ausgeben
-    # for Wert in Werte:
 
 #Nach letzter Runde
 def Ende():
     Auswertung = {}
-    Vor = {}
-    Liste = []
     for Spieler in Alle_Spieler:
-        Punkte = Punktezählen(Spieler)
-        Liste.append(Punkte)
-        if not Punkte in Vor:
-            Vor.update({Punkte:[Spieler]})
+        Score = Punktezählen(Spieler)
+        if not Score in Auswertung:
+            Auswertung.update({Score:[Spieler.SP_Name]})
         else:
-            Vor[Punkte].append(Spieler)
-    Liste.sort(reverse = True)
-    for Num in Liste:
-        Auswertung.update({Num:Vor[Num]})
-
-        
+            Auswertung[Score].append(Spieler.SP_Name)
+    Werte = Auswertung.sorted(reverse = True)        
     #Screen
     screen.fill((255, 255, 255))
     Überschrift = get_Text("Auswertung", 70)
     screen.blit(Überschrift, (800 - Überschrift.get_width() / 2, 50))
-    for Num, Wert in enumerate(Auswertung):
+    for Num, Wert in enumerate(Werte):
         if Num == 0:
             Str = "erster.png"
             Zahl = "1."
@@ -2088,15 +2173,14 @@ def Ende():
             Name = get_Text(Spieler + " - " + Dings, 60)
             Surf.blit(Name, (200, 50 - Name.get_height() / 2))
             screen.blit(Surf, (300, 150 + (Num + Num_) * 150))
-        
+
 #Events
 Spieler_Zug = False #Zug Ende
 Aus = True #Ausgabe nach Zugende ja oder nein
 Input = False #Input Box Einstellungen
 done = False
 ########Löschen wenn fertig###############
-#Spiel()
-Ende()
+Spiel()
 ##########################################
 while done == False:
     for event in pg.event.get():
