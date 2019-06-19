@@ -7,7 +7,8 @@ class Spieler():
 
 First = Spieler("A")
 
-Test = "A"
-A ="B"
-if Test == "A" or A == "B":
-    print("Mm")
+Dict = {"A":1, "B":2, "C":3}
+for Num, (Pos, Karte) in enumerate(Dict.items()):
+    print(Num)
+    print(Pos)
+    print(Karte)
