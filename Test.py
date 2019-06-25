@@ -7,8 +7,5 @@ class Spieler():
 
 First = Spieler("A")
 
-Dict = {"A":1, "B":2, "C":3}
-for Num, (Pos, Karte) in enumerate(Dict.items()):
-    print(Num)
-    print(Pos)
-    print(Karte)
+Str = "0123456"
+print(Str[3:])

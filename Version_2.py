@@ -415,7 +415,7 @@ def Verbesserung_durch_Lr(Spieler, Pos, State): #wenn State = Alt: Pos = Lw in a
             Multi = -1
         elif State == "Neu":
             Multi = 1
-        if not "A" in Pos or State == "Neu":
+        if not "A" in Pos:
             #Magisch
             if "Magisch" in getattr(Spieler, Pos[0:3])[0].Name:
                 getattr(Spieler, Pos)[1] += 1 * Multi  
@@ -457,7 +457,6 @@ Feld_Hoch_Button = Button(F_Hoch_Rect, lambda: Ausgabe(Spieler, Feld_Surf, range
 #Runter
 F_Runter_Rect = pg.Rect(1590 - Pfeil_Runter.get_width(), 440 - Pfeil_Runter.get_height(), Pfeil_Runter.get_width(), Pfeil_Runter.get_height())
 Feld_Runter_Button = Button(F_Runter_Rect, lambda: Ausgabe(Spieler, Feld_Surf, range(Feld_Alt_Range[0] + 6, Feld_Alt_Range[0] + 12), Alt_LR_Pos), Pfeil_Runter_Blass, None, Pfeil_Runter)
-
 
 ##Regeln und Nächster##
 #Regeln
@@ -708,11 +707,15 @@ def Karten_Func(Kategorie, Button_Num):
         pg.draw.rect(screen, Leuchtrand_Farbe, Rects[Button_Num], 3)
         #Funktionen, Kombi, etc
         if Aktion == "Kombi":
-            Extra_List.append(Str)
-            if len(Extra_List) == 1:
+            if len(Extra_List) == 0:
+                Extra_List.append(Str)
                 Info_Text("Kombi:\n" + Karte[0].Name + " + ?\nWähle eine weitere Karte")
-            elif len(Extra_List) == 2:
-                Kombi_Func(Extra_List)
+            elif len(Extra_List) == 1:
+                if getattr(Spieler, Extra_List[0])[0] in Karten.Alle_Lebewesen and getattr(Spieler, Str)[0] in Karten.Alle_Lebensraum:
+                    Ausgabe(Spieler, Feld_Surf, range(0, 6), Feld_Übersicht_Alt_Range[Button_Num])
+                else:
+                    Extra_List.append(Str)
+                    Kombi_Func(Extra_List)
         elif Aktion == "Extrafunktion":
             Extra_List.append(Str)
             if len(Extra_List) == 1:
@@ -802,6 +805,8 @@ def Karten_Func(Kategorie, Button_Num):
             if Kategorie == "Feld_Übersicht":
                 Ausgabe(Spieler, Feld_Surf, range(0, 6), Feld_Übersicht_Alt_Range[Button_Num])
             Info_Text(Karte[0].Name + "\n" + Karte[0].Beschreibung + "\n" + ("Punkte: " + str(Karte[1]) if not Karte[0] in Karten.Alle_Elemente else ""))
+            MK_Anfang_Button.create_button()
+            MK_Anfang_Button.Funktion = lambda: Mögliche_Kombi(Spieler, Str)
 
 ##Spielfunktionen Buttons##
 Aktion = None
@@ -858,7 +863,6 @@ def Kombi_Func(Karten_Liste):
     for Posi in range(0, 2):
         if getattr(Spieler, Karten_Liste[Posi])[0] in Karten.Alle_Lebensraum:
             Add_Größe += getattr(Spieler, Karten_Liste[Posi])[2] - getattr(Spieler, Karten_Liste[Posi])[0].Größe
-            Add_Punkte += getattr(Spieler, Karten_Liste[Posi])[1] - getattr(Spieler, Karten_Liste[Posi])[0].Punkte
         elif getattr(Spieler, Karten_Liste[Posi])[0] in Karten.Alle_Lebewesen:
             Add_Punkte += getattr(Spieler, Karten_Liste[Posi])[1] - getattr(Spieler, Karten_Liste[Posi])[0].Punkte
             for Lr in getattr(Spieler, Karten_Liste[Posi])[2]:
@@ -1002,7 +1006,6 @@ def Kombi_Func(Karten_Liste):
         Info_Text("Neue Karte: " + Neue_Karte.Name)
         #Weitergabe Verbesserungen
         if getattr(Spieler, Neue_Pos)[0] in Karten.Alle_Lebensraum:
-            getattr(Spieler, Neue_Pos)[1] += Add_Punkte
             getattr(Spieler, Neue_Pos)[2] += Add_Größe
         elif getattr(Spieler, Neue_Pos)[0] in Karten.Alle_Lebewesen:
             getattr(Spieler, Neue_Pos)[1] += Add_Punkte
@@ -1037,7 +1040,6 @@ def Extra_Func(Karten_Liste):
                 #Duftender Trank
                 elif E_Karte[0] == Karten.Duftender_Trank:
                     Add_Größe = getattr(Spieler, Andere_Pos)[2] - getattr(Spieler, Andere_Pos)[0].Größe
-                    Add_Punkte = getattr(Spieler, Andere_Pos)[1] - getattr(Spieler, Andere_Pos)[0].Punkte
                     if "Klein" in Andere_Karte[0].Name:
                         if "Magisch" in Andere_Karte[0].Name:
                             Neue_Karte = Karten.Magisches_Kleines_Wonderland
@@ -1058,7 +1060,7 @@ def Extra_Func(Karten_Liste):
                                 setattr(Spieler, Karten_Liste[1] + "_" + str(Num), Spieler.__dict__[Pos])
                                 delattr(Spieler, Pos)
                         delattr(Spieler, Karten_Liste[0])
-                        setattr(Spieler, Karten_Liste[1], [Neue_Karte, Neue_Karte.Punkte + Add_Punkte, Neue_Karte.Größe + Add_Größe])
+                        setattr(Spieler, Karten_Liste[1], [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe + Add_Größe])
                     Spieler_Zug = True
                     Info_Text(Andere_Karte[0].Name + " durch " + Neue_Karte.Name + " ersetzt")
             else:
@@ -1164,7 +1166,6 @@ def Extra_Func(Karten_Liste):
         if Andere_Karte[0] in Karten.Alle_Lebensraum:
             if E_Karte[-1] > 0:
                 Add_Größe = getattr(Spieler, Andere_Pos)[2] - getattr(Spieler, Andere_Pos)[0].Größe
-                Add_Punkte = getattr(Spieler, Andere_Pos)[1] - getattr(Spieler, Andere_Pos)[0].Punkte
                 if "Klein" in Andere_Karte[0].Name:
                     if "Magisch" in Andere_Karte[0].Name:
                         Neue_Karte = Karten.Magisches_Kleines_Wonderland
@@ -1185,7 +1186,7 @@ def Extra_Func(Karten_Liste):
                         setattr(Spieler, Andere_Pos + "_" + str(Num), Spieler.__dict__[Pos])
                         delattr(Spieler, Pos)
                 getattr(Spieler, E_Pos)[-1] -= 1
-                setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte + Add_Punkte, Neue_Karte.Größe + Add_Größe])
+                setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe + Add_Größe])
                 Spieler_Zug = True
                 Info_Text(Andere_Karte[0].Name + " durch " + Neue_Karte.Name + " ersetzt")
             else:
@@ -1434,6 +1435,7 @@ def Clear(Info = True):
     global Aktion
     for Bttn in Extra_Buttons:
         Bttn.delete_button()
+    MK_Anfang_Button.delete_button()
     Extra_List.clear()
     Aktion = None
     Aktion_Aus()
@@ -1585,7 +1587,7 @@ def Ausgabe(Spieler, Surf, Range = range(0, 6), LR_Pos = None):
     screen.blit(Surf, (x_Surf, y_Surf))
 
 #einzelne Karte ausgeben
-def Druck(Karte_, Spieler, Auswahl = False):
+def Druck(Karte_, Spieler):
     Surf = pg.Surface((150, 250))
     if Karte_ in Karten.Alle_Lebewesen:
         Karte = [Karte_, Karte_.Punkte, Karte_.Lebensraum]
@@ -1593,6 +1595,8 @@ def Druck(Karte_, Spieler, Auswahl = False):
         Karte = [Karte_, Karte_.Punkte, Karte_.Größe]
     elif Karte_ in Karten.Alle_Elemente:
         Karte = [Karte_]
+    elif Karte_[0] in Karten.Alle_Karten:
+        Karte = Karte_
     else:
         Karte = getattr(Spieler, Karte_)
     #Hintergrund und Art
@@ -1662,6 +1666,7 @@ def Druck(Karte_, Spieler, Auswahl = False):
 
 #Text auf Infosurf ausgeben
 def Info_Text(Text_Raw):
+    MK_Anfang_Button.delete_button()
     Info_Surf.fill((255, 255, 255))
     y = 20
     if "\n" in Text_Raw:
@@ -1800,31 +1805,13 @@ def Spiel():
     Spiel_Screen()
 
 #Zeugsfunktionen
-#Aktion Abbrechen und Anzeige
-Aktion_Anzeige = pg.Surface((700, 48))
-def Aktion_An(Aktion):
-    Text = get_Text("Aktuelle Aktion: " + Aktion, 40)
-    Aktion_Anzeige.fill((255, 255, 255))
-    Aktion_Anzeige.blit(Text, (350 - Text.get_width() / 2, 24 - Text.get_height() / 2))
-    screen.blit(Aktion_Anzeige, (500, 751))
-    Abbrechen_Button.create_button()
-def Aktion_Aus():
-    Text = get_Text("Wähle eine Aktion:", 40)
-    Aktion_Anzeige.fill((255, 255, 255))
-    Aktion_Anzeige.blit(Text, (350 - Text.get_width() / 2 + 75, 24 - Text.get_height() / 2))
-    screen.blit(Aktion_Anzeige, (500, 751))
-    Abbrechen_Button.delete_button()
-    pg.draw.rect(screen, (255, 255, 255), pg.Rect(1200, 751, 150, 48))
-Abbrechen_Rect = pg.Rect(1220, 755, 100, 40)
-Abbrechen_Button = Button(Abbrechen_Rect, Clear, None, SMaxG("Abbrechen", 90, 35), None, (128, 0, 0))
-
 #"Wirklich Verlassen?" Fenster
 def Verlassen():
     global done
     done = True
 def Nicht_Verlassen():
-    Verlassen_Button.delete_button()
-    Nicht_Verlassen_Button.delete_button()
+    while len(Buttons) > 0:
+        Buttons[0].delete_button()
     if Auswahl_Bool == True:
         Auswahlstapel()
     elif Extrakarten_Bool == True:
@@ -1849,6 +1836,186 @@ def Wirklich_Verlassen():
         Nicht_Verlassen_Button.create_button()
     else:
         done = True
+
+#Mögliche Kombis mit eigenen Karten anzeigen
+Mögliche_Kombi_Ende_Button = Button(pg.Rect(1330, 150 - get_image("kreuz.png").get_height() / 2, get_image("kreuz.png").get_width(), get_image("kreuz.png").get_height()), Nicht_Verlassen, get_image("kreuz.png"))
+MK_Anfang_Button = Button(pg.Rect(125, 740, 200, 100), None, None, SMaxG("Kombis mit dieser Karte", 180, 80), None, (255, 114, 86))
+MK_Links_Rect = pg.Rect(210, 200 + (200 - get_image("pfeilrunter.png").get_width() / 2), get_image("pfeilrunter.png").get_width(), get_image("pfeilrunter.png").get_height())
+MK_Links_Button = Button(MK_Links_Rect, lambda: MK_Ausgabe(Spieler, range(MK_Alt_Range[0] - 5, MK_Alt_Range[0])), pg.transform.rotate(get_image("pfeilrunterblass.png"), -90), None, pg.transform.rotate(get_image("pfeilrunter.png"), -90))
+MK_Rechts_Rect = pg.Rect(1390 - get_image("pfeilrunter.png").get_width(), 200 + (200 - get_image("pfeilrunter.png").get_width() / 2), get_image("pfeilrunter.png").get_width(), get_image("pfeilrunter.png").get_height())
+MK_Rechts_Button = Button(MK_Rechts_Rect, lambda: MK_Ausgabe(Spieler, range(MK_Alt_Range[0] + 5, MK_Alt_Range[0] + 10)), pg.transform.rotate(get_image("pfeilrunterblass.png"), 90), None, pg.transform.rotate(get_image("pfeilrunter.png"), 90))
+def MK_Ausgabe(Spieler, Range = range(0, 5)):
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(282, 202, 1036, 396))
+    #wenn keine Kombis möglich
+    if Karten_List == []:
+        Text = get_Text("Keine Kombis möglich", 30)
+        screen.blit(Text, (800 - Text.get_width() / 2, 300))
+    #Ausgabe
+    x = 300
+    for Num in Range:
+        if len(Karten_List) >= Num + 1:
+            #Name der Karte mit der Kombi
+            if " " in Karten_List[Num][0]:
+                Namen_Liste = Karten_List[Num][0].split(" ")
+                while len(Namen_Liste) > 2:
+                    Namen_Liste[0] = Namen_Liste[0] + " " + Namen_Liste[1]
+                    del Namen_Liste[1]
+                    if len(Namen_Liste) > 2:
+                        Namen_Liste[-1] = Namen_Liste[-2] + " " + Namen_Liste[-1]
+                        del Namen_Liste[-2]
+                h = 210
+                for Name in Namen_Liste:
+                    Text = SMaxG(Name, 180, 30)
+                    screen.blit(Text, (x + (200 / 2) - Text.get_width() / 2, h))
+                    h += 20
+            else:
+                Text = SMaxG(Karten_List[Num][0], 180, 30)
+                screen.blit(Text, (x + (200 / 2) - Text.get_width() / 2, 220))
+            #Neue Karte
+            screen.blit(Druck(Karten_List[Num][1], Spieler), (x + 25, 330))
+            x += 200
+    #für Buttons
+    global MK_Alt_Range
+    MK_Alt_Range = Range
+    #Links
+    if Range[0] > 0:
+        if MK_Links_Button.Switch == False:
+            MK_Links_Button.Change()
+    else:
+        if MK_Links_Button.Switch == True:
+            MK_Links_Button.Change()
+    #Rechts
+    if len(Karten_List) > Range[-1] + 1:
+        if MK_Rechts_Button.Switch == False:
+            MK_Rechts_Button.Change()
+    else:
+        if MK_Rechts_Button.Switch == True:
+            MK_Rechts_Button.Change()
+
+Karten_MK_Rects = []
+x = 325
+for Num in range(0, 5):
+    Rect = pg.Rect(x, 330, 151, 251)
+    Karten_MK_Rects.append(Rect)
+    x += 200
+
+MK_Button_0 = Button(Karten_MK_Rects[0], lambda: MK_Kartenfunktion(0))
+MK_Button_1 = Button(Karten_MK_Rects[1], lambda: MK_Kartenfunktion(1))
+MK_Button_2 = Button(Karten_MK_Rects[2], lambda: MK_Kartenfunktion(2))
+MK_Button_3 = Button(Karten_MK_Rects[3], lambda: MK_Kartenfunktion(3))
+MK_Button_4 = Button(Karten_MK_Rects[4], lambda: MK_Kartenfunktion(4))
+
+def MK_Kartenfunktion(Button_Num):
+    Num = MK_Alt_Range[Button_Num]
+    if len(Karten_List) >= Num + 1:
+        pg.draw.rect(screen, (255, 255, 255), pg.Rect(202, 602, 1196, 96))
+        #Beschreibung
+        Text = Karten_List[Num][1][0].Beschreibung
+        Liste = Text.split(" ")
+        if len(Liste) > 6:
+            Erste = ""
+            Zweite = ""
+            for Wort in Liste[:len(Liste) // 2]:
+                Erste += " " + Wort
+            for Wort in Liste[len(Liste) // 2:]:
+                Zweite += " " + Wort
+            Erste.strip(" ")
+            Zweite.strip(" ")
+            Line = SMaxG(Erste, 1100, 25)
+            screen.blit(Line, (200 + (600 - Line.get_width() / 2), 620))
+            Line = SMaxG(Zweite, 1100, 25)
+            screen.blit(Line, (200 + (600 - Line.get_width() / 2), 655))
+        else:
+            Line = SMaxG(Text, 1100, 25)
+            screen.blit(Line, (200 + (600 - Line.get_width() / 2), 640))
+        #Leuchtrand
+        MK_Ausgabe(Spieler, MK_Alt_Range)
+        pg.draw.rect(screen, Leuchtrand_Farbe, Karten_MK_Rects[Button_Num], 3)
+
+def Mögliche_Kombi(Spieler, Karte_):
+    global Karten_List
+    #ohne Verbesserung durch Lebensraum
+    Verbesserung_durch_Lr(Spieler, Karte_, "Alt")
+    Karte = getattr(Spieler, Karte_)
+    Verbesserung_durch_Lr(Spieler, Karte_, "Neu")
+    #Restliche Verbesserung
+    Add_Größe = 0
+    Add_Punkte = 0
+    Add_Lebensräume = []
+    if Karte[0] in Karten.Alle_Lebensraum:
+        Add_Größe += Karte[2] - Karte[0].Größe
+    elif Karte[0] in Karten.Alle_Lebewesen:
+        Add_Punkte += Karte[1] - Karte[0].Punkte
+        for Lr in Karte[2]:
+            if (not Lr in Karte[0].Lebensraum) and (not Lr in Add_Lebensräume):
+                Add_Lebensräume.append(Lr)
+    Karten_List = [] #Listen mit [Name der Karte mit der kombiniert, [Neue Karte]]
+    for Pos, Karte_2 in Spieler.__dict__.items():
+        if not Pos == "Aussetzen" and not Pos == "SP_Name" and not Pos == Karte_:
+            Kombi_1 = Karte[0].Name + "+" + Karte_2[0].Name
+            Kombi_2 = Karte_2[0].Name + "+" + Karte[0].Name
+            Neue_ = None
+            for Neue_Karte in Karten.Alle_Karten:
+                if Kombi_1 in Neue_Karte.Kombi or Kombi_2 in Neue_Karte.Kombi:
+                    Neue_ = Neue_Karte
+                    break
+            if not Neue_ == None:
+                if Neue_ in Karten.Alle_Lebewesen:
+                    Neue = [Neue_, Neue_.Punkte + Add_Punkte, Neue_.Lebensraum]
+                    for Lr in Add_Lebensräume:
+                        if not Lr in Neue[2] and not "Alle" in Neue[2]:
+                            Neue[2].append(Lr)
+                    if "Wald" in Neue[2] and "Berge" in Neue[2] and "See" in Neue[2] and "Wüste" in Neue[2]:
+                        Neue[2] = ["Alle"]
+                elif Neue_ in Karten.Alle_Lebensraum:
+                    Neue = [Neue_, Neue_.Punkte, Neue_.Größe + Add_Größe]
+                elif Neue_ in Karten.Alle_Elemente:
+                    Neue = [Neue_]
+                if not [Karte_2[0].Name, Neue] in Karten_List:
+                    Karten_List.append([Karte_2[0].Name, Neue])
+    #Screen
+    while len(Buttons) > 0:
+        Buttons[0].delete_button()
+    screen.blit(get_image("transparenter_hintergrund.png"), (0, 0))
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(200, 100, 1200, 600))
+    #Überschrift
+    Üschrift = SMaxG("Mögliche Kombis mit der Karte: " + Karte[0].Name, 1000, 30)
+    screen.blit(Üschrift, (200 + (600 - Üschrift.get_width() / 2), 120))
+    Info = SMaxG("(Verbesserungen eingerechnet)", None, 20)
+    screen.blit(Info, (200 + (600 - Info.get_width() / 2), 160))
+    #Linien
+    Start_Ende = [[(200, 100), (1400, 100)], [(200, 200), (1400, 200)], [(200, 600), (1400, 600)], [(200, 700), (1400, 700)],
+                  [(200, 100), (200, 700)], [(1400, 100), (1400, 700)]]
+    for Linie in Start_Ende:
+        pg.draw.line(screen, (0, 0, 0), Linie[0], Linie[1], 1)
+    #Buttons
+    Mögliche_Kombi_Ende_Button.create_button()
+    MK_Rechts_Button.create_button()
+    MK_Links_Button.create_button()
+    MK_Button_0.create_button()
+    MK_Button_1.create_button()
+    MK_Button_2.create_button()
+    MK_Button_3.create_button()
+    MK_Button_4.create_button()
+    MK_Ausgabe(Spieler)
+
+#Aktion Abbrechen und Anzeige
+Aktion_Anzeige = pg.Surface((700, 48))
+def Aktion_An(Aktion):
+    Text = get_Text("Aktuelle Aktion: " + Aktion, 40)
+    Aktion_Anzeige.fill((255, 255, 255))
+    Aktion_Anzeige.blit(Text, (350 - Text.get_width() / 2, 24 - Text.get_height() / 2))
+    screen.blit(Aktion_Anzeige, (500, 751))
+    Abbrechen_Button.create_button()
+def Aktion_Aus():
+    Text = get_Text("Wähle eine Aktion:", 40)
+    Aktion_Anzeige.fill((255, 255, 255))
+    Aktion_Anzeige.blit(Text, (350 - Text.get_width() / 2 + 75, 24 - Text.get_height() / 2))
+    screen.blit(Aktion_Anzeige, (500, 751))
+    Abbrechen_Button.delete_button()
+    pg.draw.rect(screen, (255, 255, 255), pg.Rect(1200, 751, 150, 48))
+Abbrechen_Rect = pg.Rect(1220, 755, 100, 40)
+Abbrechen_Button = Button(Abbrechen_Rect, Clear, None, SMaxG("Abbrechen", 90, 35), None, (128, 0, 0))
 
 #Auswahlstapel nach fertigen Runden
 #Buttons - Karten anklicken
@@ -1901,7 +2068,7 @@ def Ausgabe_Auswahl(Range = range(0, 12)):
     Height = 170
     for Num in Range:
         if len(Auswahl_List) >= (Num + 1):
-            screen.blit(Druck(Auswahl_List[Num], None, True), (Width, Height))
+            screen.blit(Druck(Auswahl_List[Num], None), (Width, Height))
             if Num == 5:
                 Width = 482.5
                 Height = 480
