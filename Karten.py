@@ -95,8 +95,7 @@ Starker_Gütiger_Krieger = Lebewesen("Starker Gütiger Krieger", "Ermöglicht di
 Klumpi = Lebewesen("Klumpi", "Ein sehr anpassungsfähiges Lebewesen mit viel Potential zur Weiterentwicklung", 1, ["Alle"], [], True)
 # -> Doppel ###
 # -> Stufe 1 -> +1 #Feuer, Wasser, Luft#
-Gräberling = Lebewesen("Gräberling", "Ein selten gesehenes Lebewesen, das unterirdisch weit verzweigte Tunnelsysteme gräbt; gibt dir auf dem Feld platiert eine weitere Elementkarte pro Runde", 2, ["Wald"], ["Klumpi+Erde"])
-
+Gräberling = Lebewesen("Gräberling", "Gräbt unterirdisch weit verzweigte Tunnelsysteme; gibt dir auf dem Feld platiert eine weitere Elementkarte pro Runde", 2, ["Wald"], ["Klumpi+Erde"])
 Zauberer = Lebewesen("Zauberer", "Verwandelt Elemente in Zaubertränke", 2, ["Alle"], ["Klumpi+Magie"])
 # -> Stufe 2 -> +3
 Koi = Lebewesen("Koi", "Eine chinesische Zuchtform des Karpfen, die sich der Legende nach in einen Drachen verwandeln kann; kann Lebensräume um einen Platz vergrößern", 4, ["See"], ["Klumpi+Wölkchen", "Klumpi+Beere"])

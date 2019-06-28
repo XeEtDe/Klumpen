@@ -478,13 +478,18 @@ def Nach_Zug(Spieler, Aussetzen = False):
                 if Karten.Drachenei == getattr(Spieler, Attr)[0]:
                     getattr(Spieler, Attr)[-1] -= 1
                     if getattr(Spieler, Attr)[-1] == 0:
-                        setattr(Spieler, Attr, [Karten.Drache, Karten.Drache.Punkte, Karten.Drache.Lebensraum])
-        #Verbesserung nicht kleiner 0
-        for Key, Karte in Spieler.__dict__.items():
-            if not (Key == "SP_Name" or Key == "Aussetzen"):
-                if len(Karte) > 1:
-                    if Karte[1] < 0:
-                        Spieler.__dict__[Karte][1] = 0
+                        #Verbesserung weitergeben
+                        Add_Punkte = getattr(Spieler, Attr)[1] - Karten.Drachenei.Punkte
+                        Add_Lebensräume = []
+                        for Lr in getattr(Spieler, Attr)[2]:
+                            if (not Lr in Karten.Drachenei.Lebensraum) and (not Lr in Add_Lebensräume):
+                                Add_Lebensräume.append(Lr)
+                        setattr(Spieler, Attr, [Karten.Drache, Karten.Drache.Punkte + Add_Punkte, Karten.Drache.Lebensraum])
+                        for Lr in Add_Lebensräume:
+                            if not Lr in getattr(Spieler, Attr)[2] and not "Alle" in getattr(Spieler, Attr)[2]:
+                                getattr(Spieler, Attr)[2].append(Lr)
+                        if ("Wald" in getattr(Spieler, Attr)[2] and "Berge" in getattr(Spieler, Attr)[2] and "See" in getattr(Spieler, Attr)[2] and "Wüste" in getattr(Spieler, Attr)[2]) or "Alle" in getattr(Spieler, Attr)[2]:
+                            getattr(Spieler, Attr)[2] = ["Alle", "Wonderland"]
     #letzter Spieler -> ##Züge aufgebraucht -> Auswahl oder Ende## oder ##nächster Spieler##
     #Extrazüge
     if Ex_Zü == True:
@@ -516,26 +521,10 @@ def Nach_Zug(Spieler, Aussetzen = False):
         Vor_Zug(Neuer_Spieler)
 
 def Vor_Zug(Spieler_):
+    global Spieler_Zug
     global Spieler
     Spieler = Spieler_
     Clear()
-    #Aussetzen
-    if Spieler.Aussetzen > 0:
-        Spieler.Aussetzen -= 1
-        #Buttons
-        while len(Buttons) > 0:
-            Buttons[0].delete_button()
-        #Grafik
-        screen.blit(get_image("transparenter_hintergrund.png"), (0, 0))
-        pg.draw.rect(screen, (255, 255, 255), pg.Rect(500, 350, 600, 200))
-        pg.draw.rect(screen, (0, 0, 0), pg.Rect(500, 350, 600, 200), 3)
-        Text = get_Text("Du musst diesen Zug aussetzen", 40)
-        screen.blit(Text, (800 - Text.get_width() / 2, 370))
-        if Spieler.Aussetzen > 0:
-            Text = get_Text("Du setzt noch einen weiteren Zug aus" if Spieler.Aussetzen == 1 else "Du setzt noch " + str(Spieler.Aussetzen) + " Züge aus", 30)
-            screen.blit(Text, (800 - Text.get_width() / 2, 410))    
-        Aussetzen_Button.create_button()
-        return  
     #Überschrift
     pg.draw.rect(screen, (255, 255, 255), pg.Rect(622, 0, 800, 89))
     if Ex_Zü == True:
@@ -558,8 +547,25 @@ def Vor_Zug(Spieler_):
     else:
         Text = SMaxG(Spieler.SP_Name + "s Zug", 300, 50)
     screen.blit(Text, (1025 + (415 / 2 - Text.get_width() / 2), 50 - Text.get_height() / 2))
+    #Aussetzen
+    if Spieler.Aussetzen > 0:
+        Spieler_Zug = True
+        Spieler.Aussetzen -= 1
+        #Buttons
+        while len(Buttons) > 0:
+            Buttons[0].delete_button()
+        #Grafik
+        screen.blit(get_image("transparenter_hintergrund.png"), (0, 0))
+        pg.draw.rect(screen, (255, 255, 255), pg.Rect(500, 350, 600, 200))
+        pg.draw.rect(screen, (0, 0, 0), pg.Rect(500, 350, 600, 200), 3)
+        Text = get_Text("Du musst diesen Zug aussetzen", 40)
+        screen.blit(Text, (800 - Text.get_width() / 2, 370))
+        if Spieler.Aussetzen > 0:
+            Text = get_Text("Du setzt noch einen weiteren Zug aus" if Spieler.Aussetzen == 1 else "Du setzt noch " + str(Spieler.Aussetzen) + " Züge aus", 30)
+            screen.blit(Text, (800 - Text.get_width() / 2, 410))    
+        Aussetzen_Button.create_button()
+        return  
     #weiter
-    global Spieler_Zug
     Spieler_Zug = False
     for Bttn in Aktions_Buttons:
         if Bttn.Switch == False:
@@ -570,7 +576,7 @@ Nächster_Bild = get_image("startklein.png")
 Nächster_Text = get_Text("Fertig", 40)
 Nächster_Button = Button(pg.Rect(1590 - Nächster_Bild.get_width(), 10, Nächster_Bild.get_width(), Nächster_Bild.get_height()), lambda: Nach_Zug(Spieler), Nächster_Bild, Nächster_Text)
 
-Aussetzen_Button = Button(pg.Rect(800 - Nächster_Bild.get_width() / 2, 450, Nächster_Bild.get_width(), Nächster_Bild.get_height()), lambda: Nach_Zug(Spieler, True), Nächster_Bild, get_Text("Okay", 40))
+Aussetzen_Button = Button(pg.Rect(800 - Nächster_Bild.get_width() / 2, 450, Nächster_Bild.get_width(), Nächster_Bild.get_height()), lambda: (Spiel_Screen(), lambda: Nach_Zug(Spieler, True)), Nächster_Bild, get_Text("Okay", 40))
 
 Extrazüge_Dict = {}
 Gemachte_Extrazüge = 0
@@ -1012,8 +1018,8 @@ def Kombi_Func(Karten_Liste):
             for Lr in Add_Lebensräume:
                 if not Lr in getattr(Spieler, Neue_Pos)[2] and not "Alle" in getattr(Spieler, Neue_Pos)[2]:
                     getattr(Spieler, Neue_Pos)[2].append(Lr)
-            if "Wald" in getattr(Spieler, Neue_Pos)[2] and "Berge" in getattr(Spieler, Neue_Pos)[2] and "See" in getattr(Spieler, Neue_Pos)[2] and "Wüste" in getattr(Spieler, Neue_Pos)[2]:
-                getattr(Spieler, Neue_Pos)[2] = ["Alle"]
+            if ("Wald" in getattr(Spieler, Neue_Pos)[2] and "Berge" in getattr(Spieler, Neue_Pos)[2] and "See" in getattr(Spieler, Neue_Pos)[2] and "Wüste" in getattr(Spieler, Neue_Pos)[2]) or "Alle" in getattr(Spieler, Neue_Pos)[2]:
+                getattr(Spieler, Neue_Pos)[2] = ["Alle", "Wonderland"]
         #Extrafunktion Counter
         Extra_Neue_Karte(Spieler, Neue_Pos)
         Spieler.Sortieren()
@@ -1022,26 +1028,242 @@ def Kombi_Func(Karten_Liste):
 def Extra_Func(Karten_Liste):
     global Spieler_Zug
     Neue_Karte = False
-    try:
-        E_Karte = getattr(Spieler, Karten_Liste[0])
-    except TypeError:
-        pass
-    Andere_Karte = getattr(Spieler, Karten_Liste[1])
     E_Pos = Karten_Liste[0]
     Andere_Pos = Karten_Liste[1]
-    #Tränke
-    if "Trank" in E_Karte[0].Name:
-        #Lebensraum-Tränke
-        if "Lebensraum" in E_Karte[0].Beschreibung or E_Karte[0] == Karten.Duftender_Trank:
-            if Andere_Karte[0] in Karten.Alle_Lebensraum:
-                #Vergrößerungs-Trank
-                if E_Karte[0] == Karten.Vergrößerungs_Trank:
-                    getattr(Spieler, Andere_Pos)[2] += 1
+    E_Karte = getattr(Spieler, Karten_Liste[0])
+    #Andere Karte oder Gegner?
+    try:
+        Andere_Karte = getattr(Spieler, Karten_Liste[1])
+    #keine Karte sondern Gegner
+    except TypeError:
+        Andere_Karte = Karten_Liste[1]
+        #Gifte bzw Gefrorener Trank oder Diebische Elster
+        if "Gift" in E_Karte[0].Name or E_Karte[0] == Karten.Gefrorener_Trank or E_Karte[0] == Karten.Schwarzer_Trank or E_Karte[0] == Karten.Diebische_Elster:
+            Werte_Gifte = {Karten.Elementares_Gift:3, Karten.Pampiges_Gift:5, Karten.Schwarzer_Trank:5, Karten.Trügerisches_Gift:7, Karten.Blutiges_Gift:10}
+            Aussetzen_Gifte = {Karten.Magisches_Gift:1, Karten.Lähmendes_Gift:3, Karten.Gefrorener_Trank:3, Karten.Eisiges_Gift:5}
+            Zerstörungs_Gifte = [Karten.Reines_Gift, Karten.Gift_des_Vergessens]
+            Gegner = Andere_Karte
+            #Werte Gifte
+            if E_Karte[0] in Werte_Gifte:
+                #Lw zufällig wählen
+                Gegner_LW = []
+                for Pos in Gegner.__dict__:
+                    if not Pos == "Aussetzen" and not Pos == "SP_Name":
+                        if Gegner.__dict__[Pos][0] in Karten.Alle_Lebewesen:
+                            Gegner_LW.append(Pos)
+                Gewähltes_Lw = random.choice(Gegner_LW)
+                #Werte verschlechtern
+                getattr(Gegner, Gewähltes_Lw)[1] -= Werte_Gifte[E_Karte[0]]
+                delattr(Spieler, E_Pos)
+                Spieler_Zug = True
+                Info_Text("Die Karte " + getattr(Gegner, Gewähltes_Lw)[0].Name + " des Spielers " + Gegner.SP_Name + " um " + str(Werte_Gifte[E_Karte[0]]) + " verschlechtert")
+            #Aussetzen Gifte
+            elif E_Karte[0] in Aussetzen_Gifte:
+                Gegner.Aussetzen += Aussetzen_Gifte[E_Karte[0]]
+                delattr(Spieler, E_Pos)
+                Spieler_Zug = True
+                Info_Text(Gegner.SP_Name + " setzt " + ("einen Zug" if Aussetzen_Gifte[E_Karte[0]] == 1 else (str(Aussetzen_Gifte[E_Karte[0]]) + " Züge")) + " aus")
+            #Zerstörungs Gifte
+            elif E_Karte[0] in Zerstörungs_Gifte or E_Karte[0] == Karten.Diebische_Elster:
+                #Lebewesen nach Werten (Punkten) ordnen
+                Gegner_LW = {}
+                Werte_Liste = []
+                for Pos in Gegner.__dict__:
+                    if not Pos == "Aussetzen" and not Pos == "SP_Name":
+                        if getattr(Gegner, Pos)[0] in Karten.Alle_Lebewesen:
+                            Werte_Liste.append(getattr(Gegner, Pos)[1])
+                            if not getattr(Gegner, Pos)[1] in Gegner_LW:
+                                Gegner_LW.update({getattr(Gegner, Pos)[1]:[Pos]})
+                            else:
+                                Gegner_LW[getattr(Gegner, Pos)[1]].append(Pos)
+                if Gegner_LW == {}:
+                    Info_Text("Dieser Gegner besitzt keine Lebewesen")
+                    Clear(False)
+                    return
+                #Lebewesen für Trank auswählen
+                Werte_Liste.sort()
+                if E_Karte[0] == Karten.Reines_Gift or E_Karte[0] == Karten.Diebische_Elster:
+                    Löschen_Karte = random.choice(Gegner_LW[Werte_Liste[0]])
+                elif E_Karte[0] == Karten.Gift_des_Vergessens:
+                    Löschen_Karte = random.choice(Gegner_LW[Werte_Liste[-1]])
+                #Ausführen
+                Name = getattr(Gegner, Löschen_Karte)[0].Name
+                if E_Karte[0] in Zerstörungs_Gifte:
+                    delattr(Gegner, Löschen_Karte)
                     delattr(Spieler, E_Pos)
                     Spieler_Zug = True
-                    Info_Text("Größe des Lebensraums " + Andere_Karte[0].Name + " um 1 verbessert")
-                #Duftender Trank
-                elif E_Karte[0] == Karten.Duftender_Trank:
+                    Info_Text("Lebewesen " + Name + " des Spielers " + Gegner.SP_Name + " wurde zerstört")
+                elif E_Karte[0] == Karten.Diebische_Elster:
+                    if E_Karte[-1] > 0:
+                        #Verbesserung durch Lebensraum nicht weitergeben
+                        Verbesserung_durch_Lr(Gegner, Löschen_Karte, "Alt")
+                        setattr(Spieler, "A_", getattr(Gegner, Löschen_Karte))
+                        delattr(Gegner, Löschen_Karte)
+                        Spieler_Zug = True
+                        Extra_Neue_Karte(Spieler, "A_")
+                        getattr(Spieler, E_Pos)[-1] -= 1
+                        Info_Text("Lebewesen " + Name + " vom Spieler " + Gegner.SP_Name + " gestohlen")
+                    else:
+                        Info_Text("Fähigkeit kann nur 3 Mal angewandt werden, Diebische Elster muss auf dem Feld platziert sein")
+        #Aussetzen
+        elif E_Karte[0] in Karten.Aussetzen_Karten:
+            if E_Karte[-1] > 0:
+                Gegner = Andere_Karte
+                Gegner.Aussetzen += Karten.Aussetzen_Karten[E_Karte[0]]       
+                Spieler_Zug = True
+                getattr(Spieler, E_Pos)[-1] -= 1
+                Info_Text(Gegner + " setzt " + ("einen Zug" if Wert == 1 else str(Wert) + " Züge") + " aus")
+            else:
+                Info_Text("Extrafunktion kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein")
+        if Spieler_Zug == True:
+            Gegner.Sortieren()
+            #Verbesserung nicht kleiner 0
+            for Key, Karte in Gegner.__dict__.items():
+                if not Key == "SP_Name" and not Key == "Aussetzen":
+                    if len(Karte) > 1:
+                        if Karte[1] < 0:
+                            Karte[1] = 0
+    #Karte
+    else:
+        #Tränke
+        if "Trank" in E_Karte[0].Name:
+            #Lebensraum-Tränke
+            if "Lebensraum" in E_Karte[0].Beschreibung or E_Karte[0] == Karten.Duftender_Trank:
+                if Andere_Karte[0] in Karten.Alle_Lebensraum:
+                    #Vergrößerungs-Trank
+                    if E_Karte[0] == Karten.Vergrößerungs_Trank:
+                        getattr(Spieler, Andere_Pos)[2] += 1
+                        delattr(Spieler, E_Pos)
+                        Spieler_Zug = True
+                        Info_Text("Größe des Lebensraums " + Andere_Karte[0].Name + " um 1 verbessert")
+                    #Duftender Trank
+                    elif E_Karte[0] == Karten.Duftender_Trank:
+                        Add_Größe = getattr(Spieler, Andere_Pos)[2] - getattr(Spieler, Andere_Pos)[0].Größe
+                        if "Klein" in Andere_Karte[0].Name:
+                            if "Magisch" in Andere_Karte[0].Name:
+                                Neue_Karte = Karten.Magisches_Kleines_Wonderland
+                            else:
+                                Neue_Karte = Karten.Kleines_Wonderland
+                        elif "Groß" in Andere_Karte[0].Name:
+                            if "Magisch" in Andere_Karte[0].Name:
+                                Neue_Karte = Karten.Magisches_Großes_Wonderland
+                            else:
+                                Neue_Karte = Karten.Großes_Wonderland
+                        else:
+                            if "Magisch" in Andere_Karte[0].Name:
+                                Neue_Karte = Karten.Magisches_Wonderland
+                            else:
+                                Neue_Karte = Karten.Wonderland
+                        for Num, (Pos, Karte) in enumerate(Spieler.__dict__.copy().items()):
+                            if Pos[2] == Andere_Pos[2] and "F" in Pos and not Pos == Andere_Pos:
+                                    setattr(Spieler, Andere_Pos + "_" + str(Num), Karte)
+                                    delattr(Spieler, Pos)
+                        delattr(Spieler, E_Pos)
+                        setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe + Add_Größe])
+                        Spieler_Zug = True
+                        Info_Text(Andere_Karte[0].Name + " durch " + Neue_Karte.Name + " ersetzt")
+                else:
+                    Info_Text("Du kannst diesen Trank nur auf Lebensräume anwenden")
+            #Lebewesen-Tränke     
+            elif "Lebewesen" in E_Karte[0].Beschreibung:
+                if Andere_Karte[0] in Karten.Alle_Lebewesen:
+                    Mehr_LRs_Tränke = {Karten.Heißer_Trank:"Wüste", Karten.Wässriger_Trank:"See", Karten.Matschiger_Trank:"Wald", Karten.Blubbernder_Trank:"Berge", Karten.Verkohlter_Trank:"Alle"}
+                    Werte_Tränke = {Karten.Güldener_Trank:3, Karten.Level_Up_Trank:5, Karten.Glitzernder_Trank:7, Karten.Himmlischer_Trank:10}
+                    #Mehr Lr Tränke
+                    if E_Karte[0] in Mehr_LRs_Tränke:
+                        Lr = Mehr_LRs_Tränke[E_Karte[0]]
+                        if not Lr in Andere_Karte[2] and not "Alle" in Andere_Karte[2]:
+                            if Lr == "Alle":
+                                getattr(Spieler, Andere_Pos)[2] = ["Alle", "Wonderland"]
+                            else:
+                                getattr(Spieler, Andere_Pos)[2].append(Lr)
+                                if "Wald" in getattr(Spieler, Andere_Pos)[2] and "Berge" in getattr(Spieler, Andere_Pos)[2] and "See" in getattr(Spieler, Andere_Pos)[2] and "Wüste" in getattr(Spieler, Andere_Pos)[2]:
+                                    getattr(Spieler, Andere_Pos)[2] = ["Alle", "Wonderland"]
+                            delattr(Spieler, E_Pos)
+                            Spieler_Zug = True
+                            if Lr == "Alle":
+                                Lr = "Alle Lebensräume"
+                            Info_Text(Andere_Karte[0].Name + " kann jetzt hier leben: " + Lr)
+                        else:
+                            Info_Text("Das Lebewesen " + Andere_Karte[0].Name + " kann in dem Lebensraum bereits leben")
+                    #Werte Tränke
+                    elif E_Karte[0] in Werte_Tränke:
+                        getattr(Spieler, Andere_Pos)[1] += Werte_Tränke[E_Karte[0]]
+                        delattr(Spieler, E_Pos)
+                        Spieler_Zug = True
+                        Info_Text("Punkte der Karte " + Andere_Karte[0].Name + " um " + str(Werte_Tränke[E_Karte[0]]) + " verbessert")
+                    #Dolly Trank
+                    elif E_Karte[0] == Karten.Dolly_Trank:
+                        setattr(Spieler, "A_", Andere_Karte)
+                        delattr(Spieler, E_Pos)
+                        Spieler_Zug = True
+                        Extra_Neue_Karte(Spieler, "A_")
+                        Info_Text("Neue Karte: " + Andere_Karte[0].Name)
+                else:
+                    Info_Text("Du kannst diesen Trank nur auf Lebenwesen anwenden")
+        #Parasit
+        elif E_Karte[0] == Karten.Parasit:
+            if Andere_Karte[0] in Karten.Alle_Lebewesen:
+                if E_Karte[-1] > 0:
+                    getattr(Spieler, E_Pos)[1] += Andere_Karte[1]
+                    getattr(Spieler, Andere_Pos)[1] -= 4
+                    getattr(Spieler, E_Pos)[-1] -= 1
+                    Spieler_Zug = True
+                    Info_Text("Parasit um die Punkte der Karte " + Andere_Karte[0].Name + " verbessert, " + Andere_Karte[0].Name + " um 4 verschlechtert")
+                else:
+                    Info_Text("Fähigkeit kann nur einmal angewandt werden, Parasit muss auf dem Feld platziert sein")
+            else:
+                Info_Text("Kann nur die Werte von Lebewesen aufnehmen")
+        #Werteverbesserungskarte
+        elif E_Karte[0] in Karten.Werteverbesserung_Übersicht:
+            if Andere_Karte[0] in Karten.Alle_Lebewesen:
+                if E_Karte[-1] > 0:
+                    getattr(Spieler, Andere_Pos)[1] += Karten.Werteverbesserung_Übersicht[E_Karte[0]]
+                    getattr(Spieler, E_Pos)[-1] -= 1
+                    Spieler_Zug = True
+                    Info_Text("Alle Werte der Karte " + Andere_Karte[0].Name + " um " + str(Wert) + "verbessert")
+                else:
+                    Info_Text("Fähigkeit kann nur einmal angewandt werden, Karte muss auf dem Feld platziert sein")
+            else:
+                Info_Text("Kann nur die Werte von Lebewesen verbessern")
+        #Mehr Lebensräume
+        elif E_Karte[0] in Karten.ExtraLRs:
+            if Andere_Karte[0] in Karten.Alle_Lebewesen:
+                if not "A" in E_Pos:
+                    #Alle?
+                    if "Alle" in Andere_Karte[2]:
+                        Info_Text("Dieses Lebewesen kann bereits in allen Lebensräumen leben")
+                    else:
+                        #Zufall
+                        Spieler_Zug = True
+                        Tets = True
+                        if Karten.ExtraLRs[E_Karte[0]] == "Zufall":
+                            LRs_Kopie = Karten.LRs.copy()
+                            for Lr in Andere_Karte[2]:
+                                if not Lr == "Wonderland" and Lr in LRs_Kopie:
+                                    LRs_Kopie.remove(Lr)
+                            Neu = random.choice(LRs_Kopie)
+                        else:
+                            Neu = Karten.ExtraLRs[E_Karte[0]]
+                            if Neu in Andere_Karte[2]:
+                                Info_Text("Dieses Lebewesen kann in dem Lebensraum " + Neu + " bereits leben")
+                                Test = False
+                        if Test == True:
+                            getattr(Spieler, Andere_Pos)[2].append(Neu)
+                            if ("Wald" in getattr(Spieler, Andere_Pos)[2] and "Berge" in getattr(Spieler, Andere_Pos)[2] and "See" in getattr(Spieler, Andere_Pos)[2] and "Wüste" in getattr(Spieler, Andere_Pos)[2]) or "Alle" in getattr(Spieler, Andere_Pos)[2]:
+                                getattr(Spieler, Andere_Pos)[2] = ["Alle", "Wonderland"]
+                                Neu = "Alle Lebensräume"
+                            if Neu == "Alle":
+                                Neu = "Alle Lebensräume"                                 
+                        Info_Text("Die Karte " + Andere_Karte[0].Name + " kann jetzt hier leben: " + Neu)
+                else:
+                    Info_Text("Platziere Lebewesen auf dem Feld, um ihre Extrafunktion zu nutzen")
+            else:
+                Info_Text("Kann nur auf Lebewesen angewandt werden")
+        #Friedensengel
+        elif E_Karte[0] == Karten.Friedensengel:
+            if Andere_Karte[0] in Karten.Alle_Lebensraum:
+                if E_Karte[-1] > 0:
                     Add_Größe = getattr(Spieler, Andere_Pos)[2] - getattr(Spieler, Andere_Pos)[0].Größe
                     if "Klein" in Andere_Karte[0].Name:
                         if "Magisch" in Andere_Karte[0].Name:
@@ -1058,343 +1280,147 @@ def Extra_Func(Karten_Liste):
                             Neue_Karte = Karten.Magisches_Wonderland
                         else:
                             Neue_Karte = Karten.Wonderland
-                    for Num, Pos in enumerate(Spieler.__dict__):
-                        if Pos[2] == Karten_Liste[1][2] and "F" in Pos:
-                                setattr(Spieler, Karten_Liste[1] + "_" + str(Num), Spieler.__dict__[Pos])
-                                delattr(Spieler, Pos)
-                        delattr(Spieler, Karten_Liste[0])
-                        setattr(Spieler, Karten_Liste[1], [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe + Add_Größe])
+                    for Num, (Pos, Karte) in enumerate(Spieler.__dict__.copy().items()):
+                        if Pos[2] == Andere_Pos[2] and "F" in Pos and not Pos == Andere_Pos:
+                            setattr(Spieler, Andere_Pos + "_" + str(Num), Karte)
+                            delattr(Spieler, Pos)
+                    getattr(Spieler, E_Pos)[-1] -= 1
+                    setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe + Add_Größe])
                     Spieler_Zug = True
                     Info_Text(Andere_Karte[0].Name + " durch " + Neue_Karte.Name + " ersetzt")
+                else:
+                    Info_Text("Muss auf dem Feld platziert sein und kann nur 3 Mal angewandt werden")
             else:
-                Info_Text("Du kannst diesen Trank nur auf Lebensräume anwenden")
-        #Lebewesen-Tränke     
-        elif "Lebewesen" in E_Karte[0].Beschreibung:
+                Info_Text("Extrafunktion kann nur auf Lebensräume angewandt werden")
+        #Zauberer
+        elif E_Karte[0] == Karten.Zauberer:
+            if Andere_Karte[0] in Karten.Alle_Elemente:
+                if not "A" in E_Pos:
+                    for Trank in Karten.Tränke_Kombi:
+                        if Andere_Karte[0] in Karten.Tränke_Kombi[Trank]:
+                            Neue_Karte = Trank
+                            break
+                    setattr(Spieler, Andere_Pos, [Neue_Karte])
+                    Spieler_Zug = True
+                    Info_Text("Neue Karte: " + Neue_Karte.Name)
+                else:
+                    Info_Text("Platziere den Zauberer im Feld um seine Funktion zu nutzen")
+            else:
+                Info_Text("Zauberer kann nur Elemente in Tränke verwandeln")
+        #Dunkler Magier
+        elif E_Karte[0] == Karten.Dunkler_Magier:
+            if Andere_Karte[0] in Karten.Alle_Elemente:
+                if not "A" in E_Pos:
+                    for Gift in Karten.Gifte_Kombi:
+                        if Andere_Karte[0] in Karten.Gifte_Kombi[Gift]:
+                            Neue_Karte = Gift
+                            break
+                    setattr(Spieler, Andere_Pos, [Neue_Karte])
+                    Spieler_Zug = True
+                    Info_Text("Neue Karte: " + Neue_Karte.Name)
+                else:
+                    Info_Text("Platziere den Dunklen Magier im Feld um seine Funktion zu nutzen")
+            else:
+                Info_Text("Dunkler Magier kann nur Elemente in Gifte verwandeln")
+        #Urwolf
+        elif E_Karte[0] == Karten.Urwolf:
             if Andere_Karte[0] in Karten.Alle_Lebewesen:
-                Mehr_LRs_Tränke = {Karten.Heißer_Trank:"Wüste", Karten.Wässriger_Trank:"See", Karten.Matschiger_Trank:"Wald", Karten.Blubbernder_Trank:"Berge", Karten.Verkohlter_Trank:"Alle"}
-                Werte_Tränke = {Karten.Güldener_Trank:3, Karten.Level_Up_Trank:5, Karten.Glitzernder_Trank:7, Karten.Himmlischer_Trank:10}
-                #Mehr Lr Tränke
-                if E_Karte[0] in Mehr_LRs_Tränke:
-                    Lr = Mehr_LRs_Tränke[E_Karte[0]]
-                    if not Lr in Andere_Karte[2]:
-                        if Lr == "Alle":
-                            getattr(Spieler, Andere_Pos)[2] = ["Alle"]
-                        else:
-                            getattr(Spieler, Andere_Pos)[2].append(Lr)
-                            if "Wald" in getattr(Spieler, Andere_Pos)[2] and "Berge" in getattr(Spieler, Andere_Pos)[2] and "See" in getattr(Spieler, Andere_Pos)[2] and "Wüste" in getattr(Spieler, Andere_Pos)[2]:
-                                getattr(Spieler, Andere_Pos)[2] = ["Alle"]
-                        delattr(Spieler, E_Pos)
-                        Spieler_Zug = True
-                        if Lr == "Alle":
-                            Lr = "Alle Lebensräume"
-                        Info_Text(Andere_Karte[0].Name + " kann jetzt hier leben: " + Lr)
-                    else:
-                        Info_Text("Das Lebewesen " + Andere_Karte[0].Name + " kann in dem Lebensraum bereits leben")
-                #Werte Tränke
-                elif E_Karte[0] in Werte_Tränke:
-                    getattr(Spieler, Andere_Pos)[1] += Werte_Tränke[E_Karte[0]]
-                    delattr(Spieler, E_Pos)
-                    Spieler_Zug = True
-                    Info_Text("Punkte der Karte " + Andere_Karte.Name + " um " + str(Wert) + " verbessert")
-                #Dolly Trank
-                elif E_Karte[0] == Karten.Dolly_Trank:
-                    setattr(Spieler, "A_", Andere_Karte)
-                    delattr(Spieler, E_Pos)
-                    Spieler_Zug = True
-                    Extra_Neue_Karte(Spieler, "A_")
-                    Info_Text("Neue Karte: " + Andere_Karte[0].Name)
-            else:
-                Info_Text("Du kannst diesen Trank nur auf Lebenwesen anwenden")
-    #Parasit
-    elif E_Karte[0] == Karten.Parasit:
-        if Andere_Karte[0] in Karten.Alle_Lebewesen:
-            if E_Karte[-1] > 0:
-                getattr(Spieler, E_Pos)[1] += Andere_Karte[1]
-                getattr(Spieler, Andere_Pos)[1] -= 4
-                getattr(Spieler, E_Pos)[-1] -= 1
-                Spieler_Zug = True
-                Info_Text("Parasit um die Punkte der Karte " + Andere_Karte[0].Name + " verbessert, " + Andere_Karte[0].Name + " um 4 verschlechtert")
-            else:
-                Info_Text("Fähigkeit kann nur einmal angewandt werden, Parasit muss auf dem Feld platziert sein")
-        else:
-            Info_Text("Kann nur die Werte von Lebewesen aufnehmen")
-    #Werteverbesserungskarte
-    elif E_Karte[0] in Karten.Werteverbesserung_Übersicht:
-        if Andere_Karte[0] in Karten.Alle_Lebewesen:
-            if E_Karte[-1] > 0:
-                getattr(Spieler, Andere_Pos)[1] += Karten.Werteverbesserung_Übersicht[E_Karte[0]]
-                getattr(Spieler, E_Pos)[-1] -= 1
-                Spieler_Zug = True
-                Info_Text("Alle Werte der Karte " + Andere_Karte[0].Name + " um " + str(Wert) + "verbessert")
-            else:
-                Info_Text("Fähigkeit kann nur einmal angewandt werden, Karte muss auf dem Feld platziert sein")
-        else:
-            Info_Text("Kann nur die Werte von Lebewesen verbessern")
-    #Mehr Lebensräume
-    elif E_Karte[0] in Karten.ExtraLRs:
-        if Andere_Karte[0] in Karten.Alle_Lebewesen:
-            if not "A" in E_Pos:
-                #Alle?
-                if "Alle" in Andere_Karte[2]:
-                    Info_Text("Dieses Lebewesen kann bereits in allen Lebensräumen leben")
-                else:
-                    #Zufall
-                    Spieler_Zug = True
-                    Tets = True
-                    if Karten.ExtraLRs[E_Karte[0]] == "Zufall":
-                        LRs_Kopie = Karten.LRs.copy()
-                        for Lr in Andere_Karte[2]:
-                            if not Lr == "Wonderland" and Lr in LRs_Kopie:
-                                LRs_Kopie.remove(Lr)
-                        Neu = random.choice(LRs_Kopie)
-                    else:
-                        Neu = Karten.ExtraLRs[E_Karte[0]]
-                        if Neu in Andere_Karte[2]:
-                            Info_Text("Dieses Lebewesen kann in dem Lebensraum " + Neu + " bereits leben")
-                            Test = False
-                    if Test == True:
-                        getattr(Spieler, Andere_Pos)[2].append(Neu)
-                        if "Wald" in getattr(Spieler, Andere_Pos)[2] and "Berge" in getattr(Spieler, Andere_Pos)[2] and "See" in getattr(Spieler, Andere_Pos)[2] and "Wüste" in getattr(Spieler, Andere_Pos)[2]:
-                            getattr(Spieler, Andere_Pos)[2] = ["Alle"]
-                            Neu = "Alle Lebensräume"
-                        if Neu == "Alle":
-                            Neu = "Alle Lebensräume"                                 
-                    Info_Text("Die Karte " + Andere_Karte[0].Name + " kann jetzt hier leben: " + Neu)
-            else:
-                Info_Text("Platziere Lebewesen auf dem Feld, um ihre Extrafunktion zu nutzen")
-        else:
-            Info_Text("Kann nur auf Lebewesen angewandt werden")
-    #Friedensengel
-    elif E_Karte[0] == Karten.Friedensengel:
-        if Andere_Karte[0] in Karten.Alle_Lebensraum:
-            if E_Karte[-1] > 0:
-                Add_Größe = getattr(Spieler, Andere_Pos)[2] - getattr(Spieler, Andere_Pos)[0].Größe
-                if "Klein" in Andere_Karte[0].Name:
-                    if "Magisch" in Andere_Karte[0].Name:
-                        Neue_Karte = Karten.Magisches_Kleines_Wonderland
-                    else:
-                        Neue_Karte = Karten.Kleines_Wonderland
-                elif "Groß" in Andere_Karte[0].Name:
-                    if "Magisch" in Andere_Karte[0].Name:
-                        Neue_Karte = Karten.Magisches_Großes_Wonderland
-                    else:
-                        Neue_Karte = Karten.Großes_Wonderland
-                else:
-                    if "Magisch" in Andere_Karte[0].Name:
-                        Neue_Karte = Karten.Magisches_Wonderland
-                    else:
-                        Neue_Karte = Karten.Wonderland
-                for Num, Pos in enumerate(Spieler.__dict__):
-                    if Pos[2] == Andere_Pos[2] and "F" in Pos:
-                        setattr(Spieler, Andere_Pos + "_" + str(Num), Spieler.__dict__[Pos])
-                        delattr(Spieler, Pos)
-                getattr(Spieler, E_Pos)[-1] -= 1
-                setattr(Spieler, Andere_Pos, [Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe + Add_Größe])
-                Spieler_Zug = True
-                Info_Text(Andere_Karte[0].Name + " durch " + Neue_Karte.Name + " ersetzt")
-            else:
-                Info_Text("Muss auf dem Feld platziert sein und kann nur 3 Mal angewandt werden")
-        else:
-            Info_Text("Extrafunktion kann nur auf Lebensräume angewandt werden")
-    #Zauberer
-    elif E_Karte[0] == Karten.Zauberer:
-        if Andere_Karte[0] in Karten.Alle_Elemente:
-            if not "A" in E_Pos:
-                for Trank in Karten.Tränke_Kombi:
-                    if Andere_Karte[0] in Karten.Tränke_Kombi[Trank]:
-                        Neue_Karte = Trank
-                        break
-                setattr(Spieler, Andere_Pos, [Neue_Karte])
-                Spieler_Zug = True
-                Info_Text("Neue Karte: " + Neue_Karte.Name)
-            else:
-                Info_Text("Platziere den Zauberer im Feld um seine Funktion zu nutzen")
-        else:
-            Info_Text("Zauberer kann nur Elemente in Tränke verwandeln")
-    #Dunkler Magier
-    elif E_Karte[0] == Karten.Dunkler_Magier:
-        if Andere_Karte[0] in Karten.Alle_Elemente:
-            if not "A" in E_Pos:
-                for Gift in Karten.Gifte_Kombi:
-                    if Andere_Karte[0] in Karten.Gifte_Kombi[Gift]:
-                        Neue_Karte = Gift
-                        break
-                setattr(Spieler, Andere_Pos, [Neue_Karte])
-                Spieler_Zug = True
-                Info_Text("Neue Karte: " + Neue_Karte.Name)
-            else:
-                Info_Text("Platziere den Dunklen Magier im Feld um seine Funktion zu nutzen")
-        else:
-            Info_Text("Dunkler Magier kann nur Elemente in Gifte verwandeln")
-    #Urwolf
-    elif E_Karte[0] == Karten.Urwolf:
-        if Andere_Karte[0] in Karten.Alle_Lebewesen:
-            if E_Karte[-1] > 0:
-                Weiter = True
-                if Andere_Karte[1] > Karten.Werwolf.Punkte:
-                    Info_Text("Die Karte ist bereits besser als eine Werwolf-Karte")
-                    Weiter = False
-                if Weiter == True:
-                    Safe = getattr(Spieler, Andere_Pos)
-                    Add_Punkte = getattr(Spieler, Andere_Pos)[1] - getattr(Spieler, Andere_Pos)[0].Punkte
-                    Add_Lebensräume = []
-                    for Lr in getattr(Spieler, Andere_Pos)[2]:
-                        if (not Lr in getattr(Spieler, Andere_Pos)[0].Lebensraum) and (not Lr in Add_Lebensräume):
-                            Add_Lebensräume.append(Lr)
-                    setattr(Spieler, Andere_Pos, [Karten.Werwolf, Werwolf.Punkte + Add_Punkte, Werwolf.Lebensraum])
-                    for Lr in Add_Lebensräume:
-                        if not Lr in getattr(Spieler, Andere_Pos)[2] and not "Alle" in getattr(Spieler, Andere_Pos)[2]:
-                            getattr(Spieler, Neue_Pos)[2].append(Lr)
-                    if "Wald" in getattr(Spieler, Neue_Pos)[2] and "Berge" in getattr(Spieler, Neue_Pos)[2] and "See" in getattr(Spieler, Neue_Pos)[2] and "Wüste" in getattr(Spieler, Neue_Pos)[2]:
-                        getattr(Spieler, Neue_Pos)[2] = ["Alle"]
-                if not "A" in Andere_Pos:
-                    if not getattr(Spieler, Andere_Pos[0:3])[0].Art in getattr(Spieler, Andere_Pos)[2] and not getattr(Spieler, Andere_Pos)[2] == "Alle":
-                        Info_Text("Der Lebensraum ist für einen Werwolf nicht geeignet - Wähle ein Lebewesen in einem Wald oder in der Ablage")
-                        Weiter = False
-                if Weiter == True:
-                    Spieler_Zug = True
-                    getattr(Spieler, E_Pos)[-1] -= 1
-                    Info_Text(Andere_Karte[0].Name + " in Werwolf verwandelt")
-                else:
-                    setattr(Spieler, Andere_Pos, Safe)
-            else:
-                Info_Text("Kann nur einmal im Spiel angewandt werden, Karte muss auf dem Feld platziert sein")
-        else:
-            Info_Text("Kann nur auf Lebewesen angewandt werden")
-    #Joker
-    elif E_Karte[0] == Karten.Joker:
-        if E_Karte[-1] > 0:
-            Neue_Karte = None
-            if Andere_Karte == "Lw":
-                Neue_Karte = random.choice(Karten.Start_Lebewesen)
-                Karte = [Karten.Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum]
-            elif Andere_Karte == "Lr":
-                Neue_Karte = random.choice(Karten.Start_Lebensraum)
-                Karte = [Karten.Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe]
-            elif Andere_Karte == "E":
-                Neue_Karte = random.choice(Karten.Start_Elemente)
-                Karte = [Karten.Neue_Karte]
-            setattr(Spieler, "A_", Karte)
-            Spieler_Zug = True
-            Extra_Neue_Karte(Spieler, "A_")
-            getattr(Spieler, E_Pos)[-1] -= 1
-            Info_Text("Neue Karte: " + Neue_Karte.Name)
-        else:
-            Info_Text("Kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein")
-    #Gifte bzw Gefrorener Trank oder Diebische Elster
-    elif "Gift" in E_Karte[0].Name or E_Karte[0] == Karten.Gefrorener_Trank or E_Karte[0] == Karten.Schwarzer_Trank or E_Karte[0] == Karten.Diebische_Elster:
-        Werte_Gifte = {Karten.Elementares_Gift:3, Karten.Pampiges_Gift:5, Karten.Schwarzer_Trank:5, Karten.Trügerisches_Gift:7, Karten.Blutiges_Gift:10}
-        Aussetzen_Gifte = {Karten.Magisches_Gift:1, Karten.Lähmendes_Gift:3, Karten.Gefrorener_Trank:3, Karten.Eisiges_Gift:5}
-        Zerstörungs_Gifte = [Karten.Reines_Gift, Karten.Gift_des_Vergessens]
-        Gegner = Andere_Karte
-        #Werte Gifte
-        if E_Karte[0] in Werte_Gifte:
-            #Lw zufällig wählen
-            Gegner_LW = []
-            for Pos in Gegner.__dict__:
-                if Gegner.__dict__[Pos][0] in Karten.Alle_Lebewesen:
-                    Gegner_LW.appen(Pos)
-            Gewähltes_Lw = random.choice(Gegner_LW)
-            #Werte verschlechtern
-            getattr(Gegner, Gewähltes_Lw)[1] -= Werte_Gifte[E_Karte[0]]
-            delattr(Spieler, E_Pos)
-            Spieler_Zug = True
-            Info_Text("Die Karte " + getattr(Gegner, Gewähltes_Lw)[0].Name + " des Spielers " + Gegner.SP_Name + " um " + str(Werte_Gifte[E_Karte[0]]) + " verschlechtert")
-        #Aussetzen Gifte
-        elif E_Karte[0] in Aussetzen_Gifte:
-            Gegner.Aussetzen += Aussetzen_Gifte[E_Karte[0]]
-            delattr(Spieler, E_Pos)
-            Spieler_Zug = True
-            Info_Text(Gegner.SP_Name + " setzt " + ("einen Zug" if Aussetzen_Gifte[E_Karte[0]] == 1 else (str(Aussetzen_Gifte[E_Karte[0]]) + " Züge")) + " aus")
-        #Zerstörungs Gifte
-        elif E_Karte[0] in Zerstörungs_Gifte or E_Karte[0] == Karten.Diebische_Elster:
-            #Lebewesen nach Werten (Punkten) ordnen
-            Gegner_LW = {}
-            Werte_Liste = []
-            for Pos in Gegner.__dict__:
-                if getattr(Gegner, Pos)[0] in Karten.Alle_Lebewesen:
-                    Werte_Liste.append(getattr(Gegner, Pos)[1])
-                    if not getattr(Gegner, Pos)[1] in Gegner_LW:
-                        Gegner_LW.update({getattr(Gegner, Pos)[1]:[Pos]})
-                    else:
-                        Gegner_LW[getattr(Gegner, Pos)[1]].append(Pos)
-            if Gegner_LW == {}:
-                Info_Text("Dieser Gegner besitzt keine Lebewesen")
-                Clear(False)
-                return
-            #Lebewesen für Trank auswählen
-            Werte_Liste.sort()
-            if E_Karte[0] == Karten.Reines_Gift or E_Karte[0] == Karten.Diebische_Elster:
-                Löschen_Karte = random.choice(Gegner_LW[Werte_Liste[0]])
-            elif E_Karte[0] == Karten.Gift_des_Vergessens:
-                Löschen_Karte = random.choice(Gegner_LW[Werte_Liste[-1]])
-            #Ausführen
-            Name = getattr(Gegner, Löschen_Karte)[0].Name
-            if E_Karte[0] in Zerstörungs_Gifte:
-                delattr(Gegner, Löschen_Karte)
-                delattr(Spieler, E_Pos)
-                Spieler_Zug = True
-                Info_Text("Lebewesen " + Name + " des Spielers " + Gegner.SP_Name + " wurde zerstört")
-            elif E_Karte[0] == Karten.Diebische_Elster:
                 if E_Karte[-1] > 0:
-                    #Verbesserung durch Lebensraum nicht weitergeben
-                    Verbesserung_durch_Lr(Gegner, Löschen_Karte, "Alt")
-                    setattr(Spieler, "A_", getattr(Gegner, Löschen_Karte))
-                    delattr(Gegner, Löschen_Karte)
-                    Spieler_Zug = True
-                    Extra_Neue_Karte(Spieler, "A_")
-                    getattr(Spieler, E_Pos)[-1] -= 1
-                    Info_Text("Lebewesen " + Name + " vom Spieler " + Gegner.SP_Name + " gestohlen")
+                    Weiter = True
+                    if Andere_Karte[1] > Karten.Werwolf.Punkte:
+                        Info_Text("Die Karte ist bereits besser als eine Werwolf-Karte")
+                        Weiter = False
+                    if Weiter == True:
+                        Safe = getattr(Spieler, Andere_Pos)
+                        Add_Punkte = getattr(Spieler, Andere_Pos)[1] - getattr(Spieler, Andere_Pos)[0].Punkte
+                        Add_Lebensräume = []
+                        for Lr in getattr(Spieler, Andere_Pos)[2]:
+                            if (not Lr in getattr(Spieler, Andere_Pos)[0].Lebensraum) and (not Lr in Add_Lebensräume):
+                                Add_Lebensräume.append(Lr)
+                        setattr(Spieler, Andere_Pos, [Karten.Werwolf, Werwolf.Punkte + Add_Punkte, Werwolf.Lebensraum])
+                        for Lr in Add_Lebensräume:
+                            if not Lr in getattr(Spieler, Andere_Pos)[2] and not "Alle" in getattr(Spieler, Andere_Pos)[2]:
+                                getattr(Spieler, Neue_Pos)[2].append(Lr)
+                        if ("Wald" in getattr(Spieler, Neue_Pos)[2] and "Berge" in getattr(Spieler, Neue_Pos)[2] and "See" in getattr(Spieler, Neue_Pos)[2] and "Wüste" in getattr(Spieler, Neue_Pos)[2]) or "Alle" in getattr(Spieler, Neue_Pos)[2]:
+                            getattr(Spieler, Neue_Pos)[2] = ["Alle", "Wonderland"]
+                    if not "A" in Andere_Pos:
+                        if not getattr(Spieler, Andere_Pos[0:3])[0].Art in getattr(Spieler, Andere_Pos)[2] and not getattr(Spieler, Andere_Pos)[2] == "Alle":
+                            Info_Text("Der Lebensraum ist für einen Werwolf nicht geeignet - Wähle ein Lebewesen in einem Wald oder in der Ablage")
+                            Weiter = False
+                    if Weiter == True:
+                        Spieler_Zug = True
+                        getattr(Spieler, E_Pos)[-1] -= 1
+                        Info_Text(Andere_Karte[0].Name + " in Werwolf verwandelt")
+                    else:
+                        setattr(Spieler, Andere_Pos, Safe)
                 else:
-                    Info_Text("Fähigkeit kann nur 3 Mal angewandt werden, Diebische Elster muss auf dem Feld platziert sein")
-    #Aussetzen
-    elif E_Karte[0] in Karten.Aussetzen_Karten:
-        if E_Karte[-1] > 0:
-            Gegner = Andere_Karte
-            Gegner.Aussetzen += Karten.Aussetzen_Karten[E_Karte[0]]       
-            Spieler_Zug = True
-            getattr(Spieler, E_Pos)[-1] -= 1
-            Info_Text(Gegner + " setzt " + ("einen Zug" if Wert == 1 else str(Wert) + " Züge") + " aus")
-        else:
-            Info_Text("Extrafunktion kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein")
-    #Lebensraum vergrößern
-    elif E_Karte[0] in Karten.Lr_Vergrößern:
-        if E_Karte[-1] > 0:
-            if Andere_Karte[0] in Karten.Alle_Lebensraum:
-                getattr(Spieler, Andere_Pos)[2] += Karten.Lr_Vergrößern[E_Karte[0]]
+                    Info_Text("Kann nur einmal im Spiel angewandt werden, Karte muss auf dem Feld platziert sein")
+            else:
+                Info_Text("Kann nur auf Lebewesen angewandt werden")
+        #Joker
+        elif E_Karte[0] == Karten.Joker:
+            if E_Karte[-1] > 0:
+                Neue_Karte = None
+                if Andere_Karte == "Lw":
+                    Neue_Karte = random.choice(Karten.Start_Lebewesen)
+                    Karte = [Karten.Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Lebensraum]
+                elif Andere_Karte == "Lr":
+                    Neue_Karte = random.choice(Karten.Start_Lebensraum)
+                    Karte = [Karten.Neue_Karte, Neue_Karte.Punkte, Neue_Karte.Größe]
+                elif Andere_Karte == "E":
+                    Neue_Karte = random.choice(Karten.Start_Elemente)
+                    Karte = [Karten.Neue_Karte]
+                setattr(Spieler, "A_", Karte)
                 Spieler_Zug = True
+                Extra_Neue_Karte(Spieler, "A_")
                 getattr(Spieler, E_Pos)[-1] -= 1
-                Info_Text("Größe des Lebensraums " + Andere_Karte[0].Name + " um " + str(Karten.Lr_Vergrößern[E_Karte[0]]) + " verbessert")
+                Info_Text("Neue Karte: " + Neue_Karte.Name)
             else:
-                Info_Text("Kann nur auf Lebensräume angewandt werden")
+                Info_Text("Kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein")
+        #Lebensraum vergrößern
+        elif E_Karte[0] in Karten.Lr_Vergrößern:
+            if E_Karte[-1] > 0:
+                if Andere_Karte[0] in Karten.Alle_Lebensraum:
+                    getattr(Spieler, Andere_Pos)[2] += Karten.Lr_Vergrößern[E_Karte[0]]
+                    Spieler_Zug = True
+                    getattr(Spieler, E_Pos)[-1] -= 1
+                    Info_Text("Größe des Lebensraums " + Andere_Karte[0].Name + " um " + str(Karten.Lr_Vergrößern[E_Karte[0]]) + " verbessert")
+                else:
+                    Info_Text("Kann nur auf Lebensräume angewandt werden")
+            else:
+                Info_Text("Extrafunktion kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein")
+        #Goldstück oder Goldkessel von Verrückter Gnom bzw. Kobold
+        elif E_Karte[0] == Karten.Goldstück or E_Karte[0] == Karten.Kessel_voller_Gold:
+            if Andere_Karte[0] in Karten.Alle_Lebewesen:
+                if E_Karte[0] == Karten.Goldstück:
+                    Wert = 3
+                else:
+                    Wert = 5
+                getattr(Spieler, Andere_Pos)[1] += Wert
+                Spieler_Zug = True
+                delattr(Spieler, E_Pos)
+                Info_Text("Lebewesen " + Andere_Karte[0].Name + " um " + str(Wert) + " verbessert")
+            elif Andere_Karte[0] in Karten.Alle_Lebensraum:
+                if E_Karte[0] == Karten.Goldstück:
+                    Wert = 1
+                else:
+                    Wert = 3
+                getattr(Spieler, Andere_Pos)[2] += Wert
+                Spieler_Zug = True
+                delattr(Spieler, E_Pos)
+                Info_Text("Lebensraum " + Andere_Karte[0].Name + " um " + str(Wert) + " verbessert")
+            else:
+                Info_Text("Wähle ein Lebewesen oder einen Lebensraum")
         else:
-            Info_Text("Extrafunktion kann nur einmal pro Runde angewandt werden, Karte muss auf dem Feld platziert sein")
-    #Goldstück oder Goldkessel von Verrückter Gnom bzw. Kobold
-    elif E_Karte[0] == Karten.Goldstück or E_Karte[0] == Karten.Kessel_voller_Gold:
-        if Andere_Karte[0] in Karten.Alle_Lebewesen:
-            if E_Karte[0] == Karten.Goldstück:
-                Wert = 3
-            else:
-                Wert = 5
-            getattr(Spieler, Andere_Pos)[1] += Wert
-            Spieler_Zug = True
-            delattr(Spieler, E_Pos)
-            Info_Text("Lebewesen " + Andere_Karte[0].Name + " um " + str(Wert) + " verbessert")
-        elif Andere_Karte[0] in Karten.Alle_Lebensraum:
-            if E_Karte[0] == Karten.Goldstück:
-                Wert = 1
-            else:
-                Wert = 3
-            getattr(Spieler, Andere_Pos)[2] += Wert
-            Spieler_Zug = True
-            delattr(Spieler, E_Pos)
-            Info_Text("Lebensraum " + Andere_Karte[0].Name + " um " + str(Wert) + " verbessert")
-        else:
-            Info_Text("Wähle ein Lebewesen oder einen Lebensraum")
-    else:
-        Info_Text("Diese Karte hat keine Extrafunktion")
+            Info_Text("Diese Karte hat keine Extrafunktion")
     if Spieler_Zug == True:
         Spieler.Sortieren()
+        #Verbesserung nicht kleiner 0
+        for Key, Karte in Spieler.__dict__.items():
+            if not Key == "SP_Name" and not Key == "Aussetzen":
+                if len(Karte) > 1:
+                    if Karte[1] < 0:
+                        Karte[1] = 0
     Clear(False)
 
 #Extrabuttons für Extrafunktionen
@@ -1415,7 +1441,7 @@ def Gegner_Bild(Num):
         return None
 def Gegner_Text(Num):
     if len(Alle_Spieler) >= (Num + 1):
-        return SMaxG(Alle_Spieler[Num].SP_Name, 110, 45)
+        return SMaxG(Alle_Spieler[Num].SP_Name, 200, 40)
     else:
         return None
 def Gegner_wählen(Num):
@@ -1423,11 +1449,11 @@ def Gegner_wählen(Num):
         Extra_Func([Gift_Karte, Alle_Spieler[Num]])
     else:
         pass
-Gegner_1_Button = Button(pg.Rect(175, 100, 120, 50), lambda: Gegner_wählen(0), Gegner_Bild(0), Gegner_Text(0))
-Gegner_2_Button = Button(pg.Rect(175, 170, 120, 50), lambda: Gegner_wählen(1), Gegner_Bild(1), Gegner_Text(1))
-Gegner_3_Button = Button(pg.Rect(175, 240, 120, 50), lambda: Gegner_wählen(2), Gegner_Bild(2), Gegner_Text(2))
-Gegner_4_Button = Button(pg.Rect(175, 310, 120, 50), lambda: Gegner_wählen(3), Gegner_Bild(3), Gegner_Text(3))
-Gegner_5_Button = Button(pg.Rect(175, 380, 120, 50), lambda: Gegner_wählen(4), Gegner_Bild(4), Gegner_Text(4))
+Gegner_1_Button = Button(pg.Rect(75, 100, 300, 100), lambda: Gegner_wählen(0), Gegner_Bild(0), Gegner_Text(0))
+Gegner_2_Button = Button(pg.Rect(75, 230, 300, 100), lambda: Gegner_wählen(1), Gegner_Bild(1), Gegner_Text(1))
+Gegner_3_Button = Button(pg.Rect(75, 360, 300, 100), lambda: Gegner_wählen(2), Gegner_Bild(2), Gegner_Text(2))
+Gegner_4_Button = Button(pg.Rect(75, 490, 300, 100), lambda: Gegner_wählen(3), Gegner_Bild(3), Gegner_Text(3))
+Gegner_5_Button = Button(pg.Rect(75, 620, 300, 100), lambda: Gegner_wählen(4), Gegner_Bild(4), Gegner_Text(4))
 Gegner_Buttons = [Gegner_1_Button, Gegner_2_Button, Gegner_3_Button, Gegner_4_Button, Gegner_5_Button]
 for Bttn in Gegner_Buttons:
     Extra_Buttons.append(Bttn)
@@ -1803,6 +1829,11 @@ def Spiel():
                 Neu = [Karte]
             setattr(Spieler, "A_" + str(Num), Neu)
             Extra_Neue_Karte(Spieler, "A_" + str(Num))
+        #für Tests - später löschen
+        Test_Karten = {"A_":[Karten.Dolly_Trank]}
+        for Pos, Karte in Test_Karten.items():
+            setattr(Spieler, Pos, Karte)
+            Extra_Neue_Karte(Spieler, Pos)
         Spieler.Sortieren()
     Spieler = Alle_Spieler[0]
     Spiel_Screen()
@@ -1968,8 +1999,8 @@ def Mögliche_Kombi(Spieler, Karte_):
                     for Lr in Add_Lebensräume:
                         if not Lr in Neue[2] and not "Alle" in Neue[2]:
                             Neue[2].append(Lr)
-                    if "Wald" in Neue[2] and "Berge" in Neue[2] and "See" in Neue[2] and "Wüste" in Neue[2]:
-                        Neue[2] = ["Alle"]
+                    if ("Wald" in Neue[2] and "Berge" in Neue[2] and "See" in Neue[2] and "Wüste" in Neue[2]) or "Alle" in Neue[2]:
+                        Neue[2] = ["Alle", "Wonderland"]
                 elif Neue_ in Karten.Alle_Lebensraum:
                     Neue = [Neue_, Neue_.Punkte, Neue_.Größe + Add_Größe]
                 elif Neue_ in Karten.Alle_Elemente:
