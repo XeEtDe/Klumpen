@@ -107,7 +107,7 @@ Parasit = Lebewesen("Parasit", "Kann einmal im Spiel die Werte eines beliebigen 
 Sphinx = Lebewesen("Sphinx", "\"So, als wären sie jeden Augenblick im Begriff zu verschwinden, und würden gleichzeitig aus sich selbst heraus neu erschaffen\"; gibt dir auf dem Feld platziert pro Runde einen Extrazug", 5, ["Wüste"], ["Klumpi+Zeit"])
 # -> Stufe 3 -> +6
 Verrückter_Gnom = Lebewesen("Verrückter Gnom", "An manchen Tagen hallt das Lachen diesen kleinen Männchens durch den Wald; gibt dir pro Runde ein Goldstück, wenn er auf dem Feld platziert ist", 7, ["Wald"], ["Klumpi+Pusteblume"])
-Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; können pro Runde die Werte eines Lebewesens um 2 erhöhen", 7, ["See"], ["Klumpi+Perle"])
+Sea_People = Lebewesen("Sea People", "Sind Teil der Wellen des Meeres und weisen Schiffen den Weg; können pro Runde die Werte eines Lebewesens um 3 erhöhen", 7, ["See"], ["Klumpi+Perle"])
 Dunkler_Magier = Lebewesen("Dunkler Magier", "Stellt aus Elementen Gifte her, die du auf andere Spieler anwenden kannst", 7, ["Alle"], ["Klumpi+Dunkle Macht"])
 Marienkäfer = Lebewesen("Marienkäfer", "Bei der Zugreihenfolge des Auswahlstapels bist du vor den anderen Spielern an der Reihe, solange der Käfer auf dem Feld platziert ist", 7, ["Alle"], ["Klumpi+Pfingstrose"])
 Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei der du entscheidest ob sie ein Element, Lebewesen oder Lebensraum sein soll", 7, ["Alle"], ["Klumpi+Sternenstaub", "Klumpi+Kristall"])
@@ -115,7 +115,6 @@ Joker = Lebewesen("Joker", "Kann dir einmal pro Runde eine Startkarte geben, bei
 Kobold = Lebewesen("Kobold", "Gibt dir pro Runde einen Kessel voller Gold, wenn er auf dem Feld platziert ist", 9, ["Alle"], ["Klumpi+Regenbogen"])
 Schreier = Lebewesen("Schreier", "Sein greller Schrei hallt noch Tage in den Ohren derer, die ihn hörten; kann drei Mal im Spiel einen Spieler drei Züge aussetzen lassen", 9, ["Alle"], ["Klumpi+Eis", "Klumpi+Blitz"])
 Vampir = Lebewesen("Vampir", "Kann pro Runde einmal die Punkte eines zufälligen gegnerischen Lebewesens aufsaugen", 9, ["Alle"], ["Klumpi+Blut"])
-
 
 #Drachen
 Drachenei = Lebewesen("Drachenei", "Benötigt einen Zug zum Schlüpfen, nachdem es im Lebensraum platziert wurde", 0, ["Berge"], [], True)
@@ -519,9 +518,9 @@ for Num_1, Lewe in enumerate(Alle_Lebewesen):
             if Karte.Name == Kom.split("+")[1]:
                 Lewe_E = Karte
         if Lewe_E == None:
-            Lewe_Lw = Lewe
+            continue
     else:
-        Lewe_Lw = Lewe
+        continue
     #für alle Lebewesen, Kombis möglich mit Lewe?
     for Lw in Alle_Lebewesen[Num_1:]:
         #Lw in Lebewesen und Element aus Kombi trennen, wenn möglich, sonst weiter mit Lw
@@ -551,19 +550,16 @@ for Num_1, Lewe in enumerate(Alle_Lebewesen):
                         Zwischen_Lw = Karte
                         break
                 for Karte in Alle_Elemente:
-                    if Lewe_E == None:
-                        Zwischen_E = Lw_E
-                    else:
-                        if Lewe_E.Name + "+" + Lw_E.Name in Karte.Kombi or Lw_E.Name + "+" + Lewe_E.Name in Karte.Kombi:
-                            Zwischen_E = Karte
-                            break
+                    if Lewe_E.Name + "+" + Lw_E.Name in Karte.Kombi or Lw_E.Name + "+" + Lewe_E.Name in Karte.Kombi:
+                        Zwischen_E = Karte
+                        break
                 if not Zwischen_Lw == None and not Zwischen_E == None:
                     for Karte in Alle_Lebewesen:
                         if Zwischen_Lw.Name + "+" + Zwischen_E.Name in Karte.Kombi:
                             if (not Lewe.Name + "+" + Lw.Name in Karte.Neue_Kombis) and (not Lw.Name + "+" + Lewe.Name in Karte.Neue_Kombis):
                                 Karte.Neue_Kombis.append(Lewe.Name + "+" + Lw.Name)
                             break
-        elif (Lw.Kombi == [] or Test == True) and not Lewe_E == None:
+        elif Lw.Kombi == [] or Test == True:
             #beide Lebewesen kombinieren + Element, Karte deren neue Kombi: Lewe+Lw
             Zwischen_Lw = None
             for Karte in Alle_Lebewesen:
@@ -579,13 +575,10 @@ for Num_1, Lewe in enumerate(Alle_Lebewesen):
     #für alle Elemente, Kombis möglich mit Lewe?
     for E in Alle_Elemente:
         Zwischen_E = None
-        if Lewe_E == None:
-            Zwischen_E = E
-        else:
-            for Karte in Alle_Elemente:
-                if Lewe_E.Name + "+" + E.Name in Karte.Kombi or E.Name + "+" + Lewe_E.Name in Karte.Kombi:
-                    Zwischen_E = Karte
-                    break
+        for Karte in Alle_Elemente:
+            if Lewe_E.Name + "+" + E.Name in Karte.Kombi or E.Name + "+" + Lewe_E.Name in Karte.Kombi:
+                Zwischen_E = Karte
+                break
         if not Zwischen_E == None:
             for Karte in Alle_Lebewesen:
                 if Lewe_Lw.Name + "+" + Zwischen_E.Name in Karte.Kombi:
@@ -596,7 +589,6 @@ for Lw in Alle_Lebewesen:
     for Kom in Lw.Neue_Kombis:
         if not Kom in Lw.Kombi:
             Lw.Kombi.append(Kom)
-Drache.Kombi.append("Koi+Koi")
 
 #Doppelte Kombis Check
 Alle_Kombis = []
@@ -613,6 +605,7 @@ for Karte in Alle_Karten:
         if not Kombi_2 in Alle_Kombis:
             Alle_Kombis.append(Kombi_2)
 
+
 #LW stärker in LR
 Stärker_LR = {"Wald":[], "See":[], "Wüste":[], "Berge":[], "Wonderland":[]}
 for Karte in Alle_Lebewesen:
@@ -627,7 +620,7 @@ for Karte in Alle_Lebewesen:
 
 #Extra-LRs
 LRs = ["Wald", "Wüste", "Berge", "See"]
-ExtraLRs = {Wetterfee:"Zufall", Kleiner_Wirbelwind:"Zufall", Schimmerfee:"Alle", Wetter_Feenkönigin:"Alle"}
+ExtraLRs = {Wetterfee:"Zufall", Schimmerfee:"Alle", Wetter_Feenkönigin:"Alle"}
 
 #Extrakarten - {Karte : Liste, aus der gewählt wird}
 Extrakarten = {Traumdrache:random.choice(Alle_Start_Karten), #Startkarten
@@ -682,7 +675,7 @@ for Karte in Aussetzen_Karten:
 Einmal_pro_Spiel = [Parasit, Friedensengel, Diebische_Elster, Urwolf, Schreier]
 
 #Karten mit beschränkter Extrafunktion
-Extrafunktion_Anzahl = {Parasit:1, Friedensengel:3, Diebische_Elster:3, Joker:1, Urwolf:1, Kleiner_Wirbelwind:1}
+Extrafunktion_Anzahl = {Parasit:1, Friedensengel:3, Diebische_Elster:3, Joker:1, Urwolf:1}
 for Karte in Werteverbesserung_Übersicht:
     Extrafunktion_Anzahl.update({Karte:1})
 for Karte in Aussetzen_Karten:
@@ -692,13 +685,6 @@ for Karte in Aussetzen_Karten:
         Extrafunktion_Anzahl.update({Karte:1})
 for Karte in Lr_Vergrößern:
     Extrafunktion_Anzahl.update({Karte:1})
-
-#Lebewesen als Ziel von Extrafunktion: wenn Lr auf Feld gewählt, wird der aufgeklappt
-Lw_Ziel = [Heißer_Trank, Wässriger_Trank, Matschiger_Trank, Blubbernder_Trank, Verkohlter_Trank, Güldener_Trank, Level_Up_Trank, Glitzernder_Trank, Himmlischer_Trank, #Tränke
-           Parasit, Urwolf]
-for Liste in [ExtraLRs, Werteverbesserung_Übersicht]:
-    for Karte in Liste.keys():
-        Lw_Ziel.append(Karte)
 
 #Statistik
 def Möglich(Karte_1, Karte_2): #Kombi möglich (zwei Karten)?, wenn ja: welche Karte wird daraus
