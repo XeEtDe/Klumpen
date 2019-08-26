@@ -306,84 +306,62 @@ class Spieler_Klasse:
 
     #Listen sortieren: Lebewesen, Lebensraum, Element + gleiche nebeneinander
     def Sortieren(self):
-        Name = self.SP_Name
-        del self.SP_Name
-        Aussetzen = self.Aussetzen
-        del self.Aussetzen
         Test = len(self.__dict__)
-        #Ablage
-        #Sortieren
-        Ablage = []
-        for K_Liste in [Karten.Alle_Lebewesen, Karten.Alle_Lebensraum, Karten.Alle_Elemente]:
-            S_Liste = []
-            for Pos, Karte in self.__dict__.items():
-                if "A" in Pos and Karte[0] in K_Liste:
-                    S_Liste.append(Karte)
-            S_Liste.sort(key = lambda Dings: Dings[0].Name)
-            Ablage.append(S_Liste)
-        #neue Position
-        Start = 0
-        for Liste in Ablage:
-            for Num, Karte in enumerate(Liste, Start):
-                setattr(self, "A_" + str(Num), Karte)
-            Start += len(Liste)
-        #zu hohe löschen
-        Kopie = self.__dict__.copy()
-        for Pos in Kopie:
-            if len(Pos) >= 3:
-                Num_ = int(Pos[2])
-                if "A" in Pos and Num_ >= Start:
-                    delattr(self, Pos)
-        #Feld
-        Feld = {}
+        #Positionen aus __dict__, als Listen [F/A, Nummer, Nummer wenn Lw (Platz im Lr)]
+        Positionen = {}
+        Neue_Positionen = {}
+        Store = {} #später zum Löschen
         for Pos, Karte in self.__dict__.items():
-            #Lr
-            if "F" in Pos and len(Pos.split("_")) <= 2:
-                while tuple(Karte) in Feld:
-                    Karte.append(" ")
-                Feld.update({tuple(Karte):[]})
-                #Lw dazu
-                for Pos_2, Karte_2 in self.__dict__.items():
-                    if Pos_2[0:3] == Pos[0:3] and not Pos_2 == Pos:
-                        Feld[tuple(self.__dict__[Pos])].append(Karte_2)
-                Feld[tuple(Karte)].sort(key = lambda Dings: Dings[0].Name)
-        Sort_Lrs = sorted(Feld, key = lambda Dings: Dings[0].Name)
-        #neue Positionen
-        Ende = 0
-        Ende_ = 0
-        for Num, Set in enumerate(Sort_Lrs):
-            Karte = list(Set)
-            while " " == Karte[-1]:
-                del Karte[-1]
-            setattr(self, "F_" + str(Num), Karte)
-            for Num_2, Lw in enumerate(Feld[Set]):
-                setattr(self, "F_" + str(Num) + "_" + str(Num_2), Lw)
-                Ende = Num_2 + 1
-            #zu hohe Lw löschen
-            Kopie = self.__dict__.copy()
-            for Pos in Kopie:
-                if len(Pos.split("_")) == 3:
-                    print(Pos)
-                    Dings = int(Pos.split("_")[2])
-                    if "F_" + str(Num) in Pos and Dings >= Ende:
-                        delattr(self, Pos)
-                if len(Pos.split("_")) == 2 and Pos[-1] == "_":
-                    delattr(self, Pos)
-            Ende = 0
-            Ende_ = Num + 1
-        #zu hohe löschen
-        Kopie = self.__dict__.copy()
-        for Pos in Kopie:
-            if len(Pos.split("_")) == 2:
-                Num = int(Pos.split("_")[1])
-                if "F" in Pos and Num >= Ende_:
-                    delattr(self, Pos)
-            if len(Pos.split("_")) < 2 or Pos[-1] == "_":
-                delattr(self, Pos)
+            if not Pos == "SP_Name" and not Pos == "Aussetzen":
+                Store.update({Pos:Karte})
+                Pos = Pos.split("_")
+                Positionen.update({tuple(Pos):Karte})
+        #Ablage sortieren
+        Num = 0
+        for Art_Liste in [Karten.Alle_Lebewesen, Karten.Alle_Lebensraum, Karten.Alle_Elemente]:
+            Liste = []
+            for Pos, Karte in Positionen.items():
+                if Karte[0] in Art_Liste and "A" in Pos:
+                    Liste.append(Karte)
+            Liste.sort(key = lambda Dings: Dings[0].Name)
+            for Karte in Liste:
+                Neue_Positionen.update({"A_" + str(Num):Karte})
+                Num += 1
+        for Pos in Positionen.copy():
+            if "A" in Pos:
+                del Positionen[Pos]
+        #Feld sortieren
+        Lrs = {}
+        #Lrs sortieren in eigenem Dict
+        for Pos, Karte in Positionen.copy().items():
+            if len(Pos) <= 2:
+                Lrs.update({Pos:Karte})
+                del Positionen[Pos]
+        Sortierte_Karten = sorted(Lrs.values(), key = lambda Dings: Dings[0].Name)
+        #nach values sortieren ist doof
+        Neue_Lrs = {}
+        for Karte in Sortierte_Karten:
+            for Pos, Karte_ in Lrs.items():
+                if Karte == Karte_:
+                    Neue_Lrs.update({Pos:Karte})
+                    del Lrs[Pos]
+                    break
+        #Lrs und Lws dazu in Neue_Positionen
+        for Lr_Num, (Pos, Karte) in enumerate(Neue_Lrs.items()):
+            Neue_Positionen.update({"F_" + str(Lr_Num):Karte})
+            Lw_Num = 0
+            for Pos_Lw, Karte_Lw in Positionen.items():
+                if Pos[1] == Pos_Lw[1]:
+                    Neue_Positionen.update({"F_" + str(Lr_Num) + "_" + str(Lw_Num):Karte_Lw})
+                    Lw_Num += 1
+        #Fertig
+        Löschen = set(Store.keys()).difference(set(Neue_Positionen.keys()))
+        for Pos in Löschen:
+            delattr(self, Pos)
+        for Pos, Karte in Neue_Positionen.items():
+            setattr(self, Pos, Karte)
         if not Test == len(self.__dict__):
             print("!fehlerfehlerfehler!")
-        self.SP_Name = Name
-        self.Aussetzen = Aussetzen
 
 #Attr_Lw = [Karten.Karte, Punkte, Lebensraum, falls Drachenei: Counter/falls Extrafunktion: Counter]
 #Attr_Lr = [Karten.Karte, Punkte, Größe]
@@ -1838,13 +1816,6 @@ def Spiel():
                          random.choice(Karten.Start_Lebensraum),
                          random.choice(Karten.Start_Elemente),
                          random.choice(random.choice(Karten.Nur)),
-                         Karten.Wald, Karten.Zottel, Karten.Zottel, Karten.Magie, Karten.Zottel,
-                         random.choice(random.choice(Karten.Alle_Start_Karten)),
-                            random.choice(Karten.Start_Lebewesen),
-                         random.choice(Karten.Start_Lebensraum),
-                         random.choice(Karten.Start_Elemente),
-                         random.choice(random.choice(Karten.Nur)),
-                         Karten.Wald, Karten.Zottel, Karten.Zottel, Karten.Magie, Karten.Zottel,
                          random.choice(random.choice(Karten.Alle_Start_Karten))]
         for Num, Karte in enumerate(Erste_Ausgabe):
             if Karte in Karten.Alle_Lebewesen:
