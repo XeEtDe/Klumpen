@@ -1,0 +1,6 @@
+Es gibt folgende drei Kartenarten: Lebensraum, Lebewesen und Elemente.
+
+Lebensräume und Lebewesen geben dir Punkte. Wer am Ende des Spiels die meisten Punkte gesammelt hat, gewinnt!
+Die Lebewesen können in Lebensräumen platziert werden. Achte dazu darauf, dass die Art des Lebensraums (Wald, See, Wüste, Berge) für das Lebewesen geeignet ist. Die Größe eines Lebensraums bestimmt, wie viele Lebewesen dort leben können. Zu der Funktion von Elementen später mehr.
+
+Zu jeder Karte wird am rechten Rand eine Info angezeigt, wenn du sie anklickst.

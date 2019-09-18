@@ -1,0 +1,4 @@
+Mit der Aktion "Kombi" kannst du zwei Karten zu einer Besseren kombinieren. Erschaffe größere Lebensräume und stärkere Lebewesen mit mehr Punkten und möglicherweise anderen Lebensräumen. Elemente kannst du zu mächtigeren Elementen machen, um sie später mit Lebewesen zu kombinieren.
+
+Wenn du alle Kombis sehen möchtest, die mit einer bestimmten Karte und allen anderen Karten, die du besitzt, möglich sind, benutze den Button "Kombis mit dieser Karte" der unten links erscheint, wenn du eine Karte anklickst.
+Beachte, dass Kombis nur innerhalb der Ablage oder innerhalb des Feldes möglich sind! Davon ausgenommen sind Elemente, die sich immer in der Ablage befinden, aber auch mit Karten auf dem Feld kombinieren lassen.

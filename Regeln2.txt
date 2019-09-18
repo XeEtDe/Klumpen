@@ -1,0 +1,5 @@
+Die zufälligen Startkarten, die du am Anfang erhälst, befinden sich in der Ablage. Damit ihre Punkte gewertet werden, musst du sie im Feld platzieren.
+
+Nutze dazu zuerst die Aktion "Lebensraum platzieren". Ein von dir gewählter Lebensraum befindet sich jetzt auf dem Feld. Nun kannst du mit der Aktion "Lebewesen bewegen" Lebewesen in diesem Lebensraum platzieren. Beachte dabei die Größe und Art des Lebensraums.
+
+Wenn du eine Aktion auswählst, werden dir am linken Rand weitere Anweisungen angezeigt. Pro Zug kannst du eine Aktion ausführen. Ausnahme: Bereits auf dem Feld platzierte Lebewesen kannst du mit "Lebewesen bewegen" beliebig oft zwischen Lebensräumen verschieben. Sind für eine Runde alle Züge aufgebraucht, beginnt eine neue Runde und alle Spieler wählen in zufälliger Reihenfolge mehr Startkarten.

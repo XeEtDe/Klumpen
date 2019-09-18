@@ -656,9 +656,9 @@ Extrazüge = {Sphinx:1,
 
 #Werteverbesserung - {Karte : wie viel}, einmal pro Runde möglich
 Werteverbesserung_Übersicht = {Feenkönigin:1,
+                               Sea_People:2,
                                Dunkelfee:3,
                                Himmelszottel:3,
-                               Sea_People:3,
                                Dunkel_Feenkönigin:5,
                                Himmels_Doppelzottel:5}
 
